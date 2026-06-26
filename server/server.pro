@@ -8,15 +8,22 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    loginwindow.cpp
+    loginwindow_s.cpp
 
 HEADERS += \
-    loginwindow.h
+    loginwindow_s.h
 
 FORMS += \
-    loginwindow.ui
+    loginwindow_s.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+HEADERS += \
+    ../common/user.h \
+    ../common/normaluser.h
+
+SOURCES += \
+    ../common/user.cpp \
+    ../common/normaluser.cpp
