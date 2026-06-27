@@ -22,11 +22,16 @@ QString User::decryptString(const QString& encrypted) const {
     }
     return QString::fromUtf8(result);
 }
-User::User(): username(""), passwordHash (""), securityQuestion(""), hashedSecurityAnswer(""), isBlocked(false){}
-User::User( QString us ,QString plainPassword ,QString sq ,QString plainAnswer ,bool ib) :
-     username(encryptString(us)), passwordHash(hashString(plainPassword)), securityQuestion(sq), hashedSecurityAnswer(hashString(plainAnswer)), isBlocked(ib){
-}
+User::User(): userId(-1), username(""), passwordHash (""), securityQuestion(""), hashedSecurityAnswer(""), isBlocked(false){}
+
+User::User(QString us, QString plainPassword, QString sq, QString plainAnswer) :
+    userId(-1), username(encryptString(us)), passwordHash(hashString(plainPassword)), hashedSecurityAnswer(hashString(plainAnswer)), securityQuestion(sq), isBlocked(false) {}
+
+User::User(int userId, QString us, QString passwordHash, QString sq, QString answerHash, bool isBlocked) :
+    userId(userId), username(us), passwordHash(passwordHash), securityQuestion(sq), hashedSecurityAnswer(answerHash),isBlocked(isBlocked) {}
+
 User::~User(){}
+int User::getUserId() const { return userId; }
 bool User::getIsBlocked() const { return isBlocked; }
 QString User::getSecurityQuestion() const { return securityQuestion; }
 QString User::getUsername() const { return decryptString(username); }
@@ -34,25 +39,25 @@ void User::setUserId(int _id) { userId = _id; }
 void User::setUsername(QString newUsername) { username = encryptString(newUsername); }
 void User::setSecurityQuestion(QString question) { securityQuestion = question; }
 void User::setIsBlocked(bool blocked) { isBlocked = blocked; }
-bool User::login(QString inputPassword) {
+bool User::verifyPassword(QString inputPassword) {
     if (isBlocked)
         return false;
     return (this -> passwordHash == hashString(inputPassword));
 }
-void User::logout() {}
-bool User::changePassword(QString oldPassword ,QString newPassword) {
-    if ( this -> passwordHash == hashString(oldPassword)) {
-        if (!newPassword.isEmpty()) {
-            this -> passwordHash = hashString(newPassword);
+bool User::changePassword(QString oldPassword, QString newPassword) {
+    if (passwordHash == hashString(oldPassword)) {
+        if (!newPassword.isEmpty() && hashString(newPassword) != passwordHash) {
+            passwordHash = hashString(newPassword);
             return true;
         }
     }
     return false;
 }
-bool User::recoverPassword( QString answer, QString newPassword) {
-    if ( this -> hashedSecurityAnswer == hashString(answer)) {
-        if (!newPassword.isEmpty()) {
-            this -> passwordHash = hashString(newPassword);
+
+bool User::recoverPassword(QString answer, QString newPassword) {
+    if (hashedSecurityAnswer == hashString(answer)) {
+        if (!newPassword.isEmpty() && hashString(newPassword) != passwordHash) {
+            passwordHash = hashString(newPassword);
             return true;
         }
     }

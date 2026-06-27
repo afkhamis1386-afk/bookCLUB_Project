@@ -21,8 +21,10 @@ protected :
     QString decryptString(const QString& encrypted) const;
 public:
     User();
-    User( QString us, QString pwh, QString sq, QString hsqa, bool ib);
+    User(QString us, QString plainPassword, QString sq, QString plainAnswer);
+    User(int userId, QString us, QString passwordHash, QString sq, QString answerHash, bool isBlocked);
     virtual ~User();
+    int getUserId() const;
     virtual QString getRole() const = 0;
     bool getIsBlocked() const;
     QString getSecurityQuestion() const;
@@ -31,8 +33,7 @@ public:
     void setUsername(QString newUsername);
     void setSecurityQuestion(QString question);
     void setIsBlocked(bool blocked);
-    virtual bool login(QString inputPassword);
-    virtual void logout();
+    virtual bool verifyPassword(QString inputPassword);
     virtual bool changePassword(QString oldPassword ,QString newPassword);
     virtual bool recoverPassword( QString answer, QString newPassword);
 };
