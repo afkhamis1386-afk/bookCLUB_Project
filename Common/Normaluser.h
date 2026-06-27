@@ -14,7 +14,7 @@ private:
     QMap<int, int> lastReadPages;
 public:
     NormalUser();
-    NormalUser(QString us, QString pwh, QString sq, QString hsqa, bool ib, double balance = 0.0);
+    NormalUser(QString username, QString password, QString securityQuestion, QString securityAnswer, double balance = 0.0);
     ~NormalUser() ;
     QString getRole() const;
     bool setFavoriteGenres(const QVector<QString> &genres);

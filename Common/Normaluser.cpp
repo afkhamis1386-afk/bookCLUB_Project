@@ -1,7 +1,7 @@
 #include "normaluser.h"
 NormalUser::NormalUser() : User(), walletBalance(0.0) {}
-NormalUser::NormalUser(QString us, QString pwh, QString sq, QString hsqa, bool ib, double balance)
-    : User(us, pwh, sq, hsqa, ib), walletBalance(balance) {}
+NormalUser::NormalUser( QString username, QString password, QString securityQuestion, QString securityAnswer, double balance)
+    : User(username, password,securityQuestion, securityAnswer), walletBalance(balance) {}
 NormalUser::~NormalUser() {}
 QString NormalUser::getRole() const {
     return "NormalUser";
