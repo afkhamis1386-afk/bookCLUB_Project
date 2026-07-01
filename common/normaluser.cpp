@@ -2,15 +2,13 @@
 NormalUser::NormalUser():User(){}
 NormalUser::NormalUser(const QString &username, const QString &plainPassword, const QString &plainAnswer)
     :User(username, plainPassword, plainAnswer){}
-NormalUser::NormalUser(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, const QDateTime &registerDate)
-    :User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, registerDate){}
+NormalUser::NormalUser(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, bool isDeleted, const QDateTime &registerDate)
+    :User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, registerDate){}
 NormalUser::~NormalUser(){}
 QString NormalUser::getRole() const {
     return "NormalUser";
 }
 bool NormalUser::setFavoriteGenres(const QVector<int> &genreIds){
-    if(genreIds.size() < 1 || genreIds.size() > 3)
-        return false;
     QVector<int> unique;
     for(int id : genreIds){
         if(!unique.contains(id))
@@ -54,7 +52,7 @@ void NormalUser::setSavedBooks(const QVector<int> &bookIds){
     savedBookIds = unique;
 }
 void NormalUser::saveBook(int bookId){
-    if(!savedBookIds.contains(bookId))
+    if (!savedBookIds.contains(bookId))
         savedBookIds.append(bookId);
 }
 void NormalUser::removeSavedBook(int bookId){
@@ -69,14 +67,14 @@ QVector<int> NormalUser::getSavedBooks() const {
 void NormalUser::setReadingProgress(const QMap<int, int> &progress){
     lastReadPages.clear();
     for(auto it = progress.constBegin(); it != progress.constEnd(); ++it){
-        if(it.value() >= 0)
+        if(it.value() >= 1)
             lastReadPages[it.key()] = it.value();
     }
 }
 void NormalUser::setLastReadPage(int bookId, int pageNumber){
-    if(pageNumber >= 0)
+    if(pageNumber >= 1)
         lastReadPages[bookId] = pageNumber;
 }
 int NormalUser::getLastReadPage(int bookId) const {
-    return lastReadPages.value(bookId, 0);
+    return lastReadPages.value(bookId, 1);
 }
