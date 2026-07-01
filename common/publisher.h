@@ -1,69 +1,54 @@
 #ifndef PUBLISHER_H
 #define PUBLISHER_H
+
 #include "user.h"
-#include "Book.h"
 #include <QString>
-#include <memory>
 #include <QVector>
-#include <QRegularExpression>
 #include <QDataStream>
-class Publisher: public User {
-private :
+#include <QRegularExpression>
+class Publisher : public User {
+private:
     QString firstName;
     QString lastName;
-    QString publicationName;
     QString email;
-    QString description;
-    QString licenseNumber;
-    QVector<std::shared_ptr<Book>> publishedBooks;
-public :
+    QString shortDescription;
+    QString publicationName;
+    QString publisherLicenseNumber;
+    QVector<int> publishedBookIds;
+    bool isValidName(const QString &name) const;
+public:
     Publisher();
-    Publisher(const QString& username,
-              const QString& password,
-              const QString& securityAnswer,
-              const QString& firstName,
-              const QString& lastName,
-              const QString& publicationName,
-              const QString& email,
-              const QString& description,
-              const QString& licenseNumber);
+    Publisher(const QString &username, const QString &plainPassword, const QString &plainAnswer,
+              const QString &firstName, const QString &lastName, const QString &email,
+              const QString &publicationName, const QString &publisherLicenseNumber,
+              const QString &shortDescription = QString());
+    Publisher(int userId, const QString &encryptedUsername, const QString &passwordHash,
+              const QString &answerHash, bool isBlocked, bool isDeleted,
+              const QDateTime &registerDate, const QString &firstName, const QString &lastName,
+              const QString &email, const QString &publicationName,
+              const QString &publisherLicenseNumber, const QString &shortDescription);
     ~Publisher() override;
     QString getRole() const override;
     QString getFirstName() const;
-    void setFirstName(const QString& fName);
     QString getLastName() const;
-    void setLastName(const QString& lName);
-    QString getPublicationName() const;
-    void setPublicationName(const QString& name);
+    QString getFullName() const;
     QString getEmail() const;
-    void setEmail(const QString& emailValue);
-    QString getDescription() const;
-    void setDescription(const QString& desc);
-    QString getLicenseNumber() const;
-    void setLicenseNumber(const QString& license);
-    void addBook(const std::shared_ptr<Book>& book);
-    void deactivateBook(int bookId);
-    void activateBook(int bookId);
-    const QVector<std::shared_ptr<Book>>& getPublishedBooks() const;
+    QString getShortDescription() const;
+    QString getPublicationName() const;
+    QString getPublisherLicenseNumber() const;
+    bool setFirstName(const QString &name);
+    bool setLastName(const QString &name);
+    bool setEmail(const QString &email);
+    bool setShortDescription(const QString &desc);
+    bool setPublicationName(const QString &name);
+    bool setPublisherLicenseNumber(const QString &license);
+    void setPublishedBooks(const QVector<int> &bookIds);
+    void addPublishedBook(int bookId);
+    void removePublishedBook(int bookId);
+    bool hasPublishedBook(int bookId) const;
     int getPublishedBooksCount() const;
-    double getTotalRevenue() const;
-    int getTotalSoldCopies() const;
-    double calculateAverageBooksRating() const;
-    QVector<std::shared_ptr<Book>> getTopSellingBooks(int limit = 5) const;
-    QVector<std::shared_ptr<Book>> getLeastSellingBooks(int limit = 5) const;
-    std::shared_ptr<Book> findBook(int bookId) const;
-    void updateBook(int bookId,
-                    const QString& title,
-                    const QString& author,
-                    const QString& genre,
-                    const QString& description,
-                    double price,
-                    double discount);
-    friend QDataStream &operator<<(QDataStream &out, const Publisher &p);
-    friend QDataStream &operator>>(QDataStream &in, Publisher &p);
-
-
-private :
-    bool isValidName(const QString& name) const;
+    QVector<int> getPublishedBookIds() const;
+    friend QDataStream &operator<<(QDataStream &out, const Publisher &publisher);
+    friend QDataStream &operator>>(QDataStream &in, Publisher &publisher);
 };
 #endif // PUBLISHER_H
