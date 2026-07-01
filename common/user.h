@@ -36,7 +36,7 @@ public:
     QString getPasswordHash() const;
     QString getHashedSecurityAnswer() const;
     void setUserId(int _id);
-    void setUsername(const QString& newUsername);
+    bool setUsername(const QString& newUsername);
     void setIsBlocked(bool blocked);
     void setIsDeleted(bool deleted);
     void setRegisterDate(const QDateTime& date);
@@ -46,6 +46,4 @@ public:
     void serializeBase(QDataStream& out) const;
     void deserializeBase(QDataStream& in);
 };
-QDataStream& operator<<(QDataStream& out, const User& user);
-QDataStream& operator>>(QDataStream& in, User& user);
 #endif // USER_H
