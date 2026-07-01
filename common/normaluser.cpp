@@ -75,7 +75,6 @@ void NormalUser::setLastReadPage(int bookId, int pageNumber){
     if(pageNumber >= 1)
         lastReadPages[bookId] = pageNumber;
 }
-
 int NormalUser::getLastReadPage(int bookId) const {
     return lastReadPages.value(bookId, 1);
 }
