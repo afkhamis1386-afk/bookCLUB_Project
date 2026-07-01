@@ -9,6 +9,7 @@ CONFIG += c++17
 SOURCES += \
     ../common/Admin.cpp \
     ../common/Book.cpp \
+    ../common/Cart.cpp \
     ../common/publisher.cpp \
     main.cpp \
     loginwindow_s.cpp
@@ -16,6 +17,7 @@ SOURCES += \
 HEADERS += \
     ../common/Admin.h \
     ../common/Book.h \
+    ../common/Cart.h \
     ../common/publisher.h \
     loginwindow_s.h
 
