@@ -8,6 +8,7 @@ CONFIG += c++17
 
 SOURCES += \
     ../common/Admin.cpp \
+    ../common/Author.cpp \
     ../common/Book.cpp \
     ../common/Cart.cpp \
     ../common/Category.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
 
 HEADERS += \
     ../common/Admin.h \
+    ../common/Author.h \
     ../common/Book.h \
     ../common/Cart.h \
     ../common/Category.h \
