@@ -10,6 +10,7 @@ SOURCES += \
     ../common/Admin.cpp \
     ../common/Book.cpp \
     ../common/Cart.cpp \
+    ../common/Category.cpp \
     ../common/Genre.cpp \
     ../common/publisher.cpp \
     main.cpp \
@@ -19,6 +20,7 @@ HEADERS += \
     ../common/Admin.h \
     ../common/Book.h \
     ../common/Cart.h \
+    ../common/Category.h \
     ../common/Genre.h \
     ../common/publisher.h \
     loginwindow_c.h
