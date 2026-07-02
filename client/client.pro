@@ -16,6 +16,7 @@ SOURCES += \
     ../common/Rating.cpp \
     ../common/Review.cpp \
     ../common/TimedDiscount.cpp \
+    ../common/Transaction.cpp \
     ../common/publisher.cpp \
     main.cpp \
     loginwindow_c.cpp
@@ -30,6 +31,7 @@ HEADERS += \
     ../common/Rating.h \
     ../common/Review.h \
     ../common/TimedDiscount.h \
+    ../common/Transaction.h \
     ../common/publisher.h \
     loginwindow_c.h
 
