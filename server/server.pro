@@ -14,6 +14,7 @@ SOURCES += \
     ../common/Category.cpp \
     ../common/Genre.cpp \
     ../common/Order.cpp \
+    ../common/Payment.cpp \
     ../common/Rating.cpp \
     ../common/Review.cpp \
     ../common/TimedDiscount.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     ../common/Category.h \
     ../common/Genre.h \
     ../common/Order.h \
+    ../common/Payment.h \
     ../common/Rating.h \
     ../common/Review.h \
     ../common/TimedDiscount.h \

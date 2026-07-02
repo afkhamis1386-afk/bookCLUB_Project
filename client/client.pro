@@ -13,6 +13,7 @@ SOURCES += \
     ../common/Cart.cpp \
     ../common/Category.cpp \
     ../common/Genre.cpp \
+    ../common/Payment.cpp \
     ../common/Rating.cpp \
     ../common/Review.cpp \
     ../common/TimedDiscount.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     ../common/Cart.h \
     ../common/Category.h \
     ../common/Genre.h \
+    ../common/Payment.h \
     ../common/Rating.h \
     ../common/Review.h \
     ../common/TimedDiscount.h \
