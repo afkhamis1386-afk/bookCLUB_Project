@@ -17,6 +17,7 @@ SOURCES += \
     ../common/Payment.cpp \
     ../common/Rating.cpp \
     ../common/Review.cpp \
+    ../common/Shelf.cpp \
     ../common/TimedDiscount.cpp \
     ../common/Order.cpp \
     ../common/publisher.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     ../common/Payment.h \
     ../common/Rating.h \
     ../common/Review.h \
+    ../common/Shelf.h \
     ../common/TimedDiscount.h \
     ../common/Order.h \
     ../common/publisher.h \
