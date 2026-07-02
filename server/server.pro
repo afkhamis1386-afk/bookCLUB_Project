@@ -13,6 +13,7 @@ SOURCES += \
     ../common/Cart.cpp \
     ../common/Category.cpp \
     ../common/Genre.cpp \
+    ../common/TimedDiscount.cpp \
     ../common/publisher.cpp \
     main.cpp \
     loginwindow_s.cpp
@@ -24,6 +25,7 @@ HEADERS += \
     ../common/Cart.h \
     ../common/Category.h \
     ../common/Genre.h \
+    ../common/TimedDiscount.h \
     ../common/publisher.h \
     loginwindow_s.h
 
