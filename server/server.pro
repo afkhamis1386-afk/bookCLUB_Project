@@ -24,6 +24,7 @@ SOURCES += \
     ../common/TimedDiscount.cpp \
     ../common/publisher.cpp \
     DatabaseManager.cpp \
+    UserRepository.cpp \
     main.cpp \
     loginwindow_s.cpp
 
@@ -46,6 +47,7 @@ HEADERS += \
     ../common/TimedDiscount.h \
     ../common/publisher.h \
     DatabaseManager.h \
+    UserRepository.h \
     loginwindow_s.h
 
 FORMS += \
