@@ -85,15 +85,15 @@ QString Order::getStatusTitle() const {
     OrderStatus current = static_cast<OrderStatus>(statusId);
     switch (current) {
     case OrderStatus::Pending:
-        return "Pending";
+        return "در انتظار";
     case OrderStatus::Paid:
-        return "Paid";
+        return "پرداخت شده";
     case OrderStatus::Cancelled:
-        return "Cancelled";
+        return "لغو شده";
     case OrderStatus::Completed:
-        return "Completed";
+        return "انجام شده";
     default:
-        return "Unknown";
+        return "نامشخص";
     }
 }
 void Order::recalculatePrices() {

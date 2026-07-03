@@ -13,7 +13,7 @@ ClientSocket::~ClientSocket() {
         socket->close();
 }
 void ClientSocket::connectToServer(const QString &host, quint16 port) {
-    qDebug() << "Connecting to server : " << host << ":" << port;
+    qDebug() << "در حال اتصال به سرور:" << host << ":" << port;
     socket->connectToHost(host, port);
 }
 void ClientSocket::disconnectFromServer() {
@@ -22,8 +22,8 @@ void ClientSocket::disconnectFromServer() {
 }
 void ClientSocket::sendRequest(const Request &req) {
     if (socket->state() != QAbstractSocket::ConnectedState) {
-        qWarning() << "Error: Socket is not connected!";
-        emit errorOccurred("Socket is not connected to the server");
+        qWarning() << "خطا: سوکت متصل نیست";
+        emit errorOccurred("سوکت به سرور متصل نیست");
         return;
     }
     QByteArray data;
@@ -37,12 +37,12 @@ void ClientSocket::sendRequest(const Request &req) {
     packet.append(data);
     qint64 written = socket->write(packet);
     if (written == -1) {
-        qWarning() << "Error sending data : " << socket->errorString();
-        emit errorOccurred("Error sending data");
+        qWarning() << "خطا در ارسال داده:" << socket->errorString();
+        emit errorOccurred("خطا در ارسال داده");
     }
     else {
         socket->flush();
-        qDebug() << "Request sent - Type : "  << static_cast<int>(req.getType());
+        qDebug() << "درخواست ارسال شد - نوع:"  << static_cast<int>(req.getType());
     }
 }
 bool ClientSocket::isConnected() const {
@@ -65,13 +65,13 @@ void ClientSocket::onReadyRead() {
         msgStream.setVersion(QDataStream::Qt_6_5);
         Response res;
         msgStream >> res;
-        qDebug() << "Response received - Status : " << static_cast<int>(res.getStatus());
+        qDebug() << "پاسخ دریافت شد - وضعیت:" << static_cast<int>(res.getStatus());
         emit responseReceived(res);
     }
 }
 void ClientSocket::onError(QAbstractSocket::SocketError socketError) {
     Q_UNUSED(socketError);
     QString errorMsg = socket->errorString();
-    qWarning() << "Socket error : " << errorMsg;
+    qWarning() << "خطای سوکت:" << errorMsg;
     emit errorOccurred(errorMsg);
 }

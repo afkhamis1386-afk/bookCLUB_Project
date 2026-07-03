@@ -12,7 +12,7 @@ Payment::Payment(int orderId, double amount, const QString& transactionCode)
     , paymentDate(QDateTime::currentDateTime())
     , paymentStatusId(static_cast<int>(PaymentStatus::Pending)) {
     if (!setAmount(amount)) {
-        this->amount = 0.0;
+        this->amount = 0;
     }
     if (!setTransactionCode(transactionCode)) {
         this->transactionCode = "";
@@ -43,13 +43,13 @@ void Payment::setPaymentStatusId(int statusId) { paymentStatusId = statusId; }
 QString Payment::getStatusTitle() const {
     switch (paymentStatusId) {
     case static_cast<int>(PaymentStatus::Pending):
-        return "Pending";
+        return "در انتظار";
     case static_cast<int>(PaymentStatus::Successful):
-        return "Successful";
+        return "موفق";
     case static_cast<int>(PaymentStatus::Failed):
-        return "Failed";
+        return "ناموفق";
     default:
-        return "Unknown";
+        return "نامشخص";
     }
 }
 QDataStream& operator<<(QDataStream& out, const Payment& payment) {
