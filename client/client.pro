@@ -1,6 +1,10 @@
 QT += widgets
 
+QT +=network
+
 CONFIG += c++17
+
+INCLUDEPATH += ../common
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -23,6 +27,7 @@ SOURCES += \
     ../common/TimedDiscount.cpp \
     ../common/Order.cpp \
     ../common/publisher.cpp \
+    ClientSocket.cpp \
     main.cpp \
     loginwindow_c.cpp
 
@@ -44,6 +49,7 @@ HEADERS += \
     ../common/TimedDiscount.h \
     ../common/Order.h \
     ../common/publisher.h \
+    ClientSocket.h \
     loginwindow_c.h
 
 FORMS += \
