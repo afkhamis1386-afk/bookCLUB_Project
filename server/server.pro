@@ -1,5 +1,5 @@
 QT += widgets
-
+QT += widgets sql
 CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -23,6 +23,7 @@ SOURCES += \
     ../common/Shelf.cpp \
     ../common/TimedDiscount.cpp \
     ../common/publisher.cpp \
+    DatabaseManager.cpp \
     main.cpp \
     loginwindow_s.cpp
 
@@ -44,6 +45,7 @@ HEADERS += \
     ../common/Shelf.h \
     ../common/TimedDiscount.h \
     ../common/publisher.h \
+    DatabaseManager.h \
     loginwindow_s.h
 
 FORMS += \
