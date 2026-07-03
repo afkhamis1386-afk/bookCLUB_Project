@@ -17,6 +17,8 @@ SOURCES += \
     ../common/Order.cpp \
     ../common/Payment.cpp \
     ../common/Rating.cpp \
+    ../common/Request.cpp \
+    ../common/Response.cpp \
     ../common/Review.cpp \
     ../common/Shelf.cpp \
     ../common/TimedDiscount.cpp \
@@ -30,11 +32,14 @@ HEADERS += \
     ../common/Book.h \
     ../common/Cart.h \
     ../common/Category.h \
+    ../common/Enums.h \
     ../common/Genre.h \
     ../common/Notification.h \
     ../common/Order.h \
     ../common/Payment.h \
     ../common/Rating.h \
+    ../common/Request.h \
+    ../common/Response.h \
     ../common/Review.h \
     ../common/Shelf.h \
     ../common/TimedDiscount.h \
