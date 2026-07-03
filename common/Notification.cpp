@@ -4,7 +4,7 @@ Notification::Notification()
     userId(-1),
     targetId(-1),
     senderId(-1),
-    senderName("System"),
+    senderName("سیستم"),
     notificationType(NotificationType::NewBookInFavouriteGenre),
     read(false),
     createdAt(QDateTime::currentDateTime()) {}
@@ -17,13 +17,13 @@ Notification::Notification(int userId, NotificationType type, const QString &tit
     read(false),
     createdAt(QDateTime::currentDateTime()) {
     if (!setTitle(title)) {
-        this->title = "System Notification";
+        this->title = "اعلان سیستم";
     }
     if (!setMessage(message)) {
-        this->message = "No Details Provided.";
+        this->message = ".جزئیاتی ارائه نشده است";
     }
     if (!setSenderName(senderName)) {
-        this->senderName = "System";
+        this->senderName = "سیستم";
     }
 }
 Notification::Notification(int notificationId, int userId, NotificationType type, const QString &title, const QString &message, bool read, const QDateTime &createdAt, int targetId, int senderId, const QString &senderName)
@@ -35,13 +35,13 @@ Notification::Notification(int notificationId, int userId, NotificationType type
     read(read),
     createdAt(createdAt) {
     if (!setTitle(title)) {
-        this->title = "System Notification";
+        this->title = "اعلان سیستم";
     }
     if (!setMessage(message)) {
-        this->message = "No Details Provided.";
+        this->message = ".جزئیاتی ارائه نشده است";
     }
     if (!setSenderName(senderName)) {
-        this->senderName = "System";
+        this->senderName = "سیستم";
     }
 }
 int Notification::getNotificationId() const { return notificationId; }
@@ -91,27 +91,27 @@ bool Notification::setMessage(const QString &m) {
 QString Notification::getTypeDisplayName() const {
     switch (notificationType) {
     case NotificationType::NewBookInFavouriteGenre:
-        return "New Book in Favorite Genre";
+        return "کتاب جدید در ژانر مورد علاقه";
     case NotificationType::DiscountOnSavedBook:
-        return "Discount on Saved Book";
+        return "تخفیف برای کتاب‌های ذخیره شده";
     case NotificationType::NewSaleForPublisher:
-        return "New Sale Notification";
+        return "اعلان فروش جدید";
     case NotificationType::NewReviewForPublisher:
-        return "New Review or Rating";
+        return "ثبت نظر یا امتیاز جدید";
     default:
-        return "Notification";
+        return "اعلان";
     }
 }
 QString Notification::getRelativeTime() const {
     qint64 seconds = createdAt.secsTo(QDateTime::currentDateTime());
     if (seconds < 60)
-        return "Just now";
+        return "همین الان";
     if (seconds < 3600)
-        return QString::number(seconds / 60) + " minutes ago";
+        return QString::number(seconds / 60) + " دقیقه پیش";
     if (seconds < 86400)
-        return QString::number(seconds / 3600) + " hours ago";
+        return QString::number(seconds / 3600) + " ساعت پیش";
     if (seconds < 604800)
-        return QString::number(seconds / 86400) + " days ago";
+        return QString::number(seconds / 86400) + " روز پیش";
     return createdAt.toString("yyyy/MM/dd");
 }
 QDataStream &operator<<(QDataStream &out, const Notification &n) {
