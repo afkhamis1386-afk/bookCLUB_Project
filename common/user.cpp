@@ -1,36 +1,32 @@
 #include "user.h"
 #include <QRegularExpression>
+
 const QString User::encryptionKey = "MySecretKey1405!";
-QString User::hashString(const QString& plainText) const {
-    return QString(QCryptographicHash::hash(
-                       plainText.toUtf8(),
-                       QCryptographicHash::Sha256
-                       ).toHex());
+QString User::hashString(const QString &plainText) {
+    return QString(QCryptographicHash::hash( plainText.toUtf8(), QCryptographicHash::Sha256).toHex());
 }
-QString User::encryptString(const QString& plainText) const {
+QString User::encryptString(const QString &plainText) {
     QByteArray input = plainText.toUtf8();
     QByteArray result;
-    for (int i = 0; i < input.size(); ++i) {
+    for (int i = 0; i < input.size(); ++i)
         result.append(input[i] ^ encryptionKey[i % encryptionKey.size()].toLatin1());
-    }
     return QString(result.toBase64());
 }
-QString User::decryptString(const QString& encrypted) const {
+QString User::decryptString(const QString &encrypted) {
     QByteArray input = QByteArray::fromBase64(encrypted.toUtf8());
     QByteArray result;
-    for (int i = 0; i < input.size(); ++i) {
+    for (int i = 0; i < input.size(); ++i)
         result.append(input[i] ^ encryptionKey[i % encryptionKey.size()].toLatin1());
-    }
     return QString::fromUtf8(result);
 }
-bool User::isValidUsername(const QString& username) {
+bool User::isValidUsername(const QString &username) {
     QString trimmed = username.trimmed();
     if (trimmed.length() < 3 || trimmed.length() > 20)
         return false;
     static const QRegularExpression regex(R"(^[a-zA-Z0-9_\-]+$)");
     return regex.match(trimmed).hasMatch();
 }
-bool User::isStrongPassword(const QString& password) {
+bool User::isStrongPassword(const QString &password) {
     if (password.length() < 8)
         return false;
     static const QRegularExpression upperRegex("[A-Z]");
@@ -41,43 +37,30 @@ bool User::isStrongPassword(const QString& password) {
            digitRegex.match(password).hasMatch();
 }
 User::User()
-    : userId(-1),
-    encryptedUsername(""),
-    passwordHash(""),
-    hashedSecurityAnswer(""),
-    isBlocked(false),
-    isDeleted(false),
-    registerDate(QDateTime::currentDateTime()) {}
-User::User(const QString& plainUsername,
-           const QString& plainPassword,
-           const QString& plainAnswer)
-    : userId(-1),
-    isBlocked(false),
-    isDeleted(false),
-    registerDate(QDateTime::currentDateTime()){
+    : userId(-1), encryptedUsername(""), passwordHash(""), hashedSecurityAnswer(""),
+    isBlocked(false), isDeleted(false), registerDate(QDateTime::currentDateTime()) {}
+User::User(const QString &plainUsername, const QString &plainPassword, const QString &plainAnswer)
+    : userId(-1), isBlocked(false), isDeleted(false),
+    registerDate(QDateTime::currentDateTime()) {
     encryptedUsername = encryptString(plainUsername.trimmed());
     passwordHash = hashString(plainPassword);
     hashedSecurityAnswer = hashString(plainAnswer.trimmed());
 }
-User::User(int userId, const QString& encryptedUsername, const QString& passwordHash, const QString& answerHash, bool blocked, bool deleted, const QDateTime& regDate)
-    : userId(userId),
-    encryptedUsername(encryptedUsername),
-    passwordHash(passwordHash),
-    hashedSecurityAnswer(answerHash),
-    isBlocked(blocked),
-    isDeleted(deleted),
+User::User(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool blocked, bool deleted, const QDateTime &regDate)
+    : userId(userId), encryptedUsername(encryptedUsername), passwordHash(passwordHash),
+    hashedSecurityAnswer(answerHash), isBlocked(blocked), isDeleted(deleted),
     registerDate(regDate) {}
-User::~User(){}
+User::~User() {}
 int User::getUserId() const { return userId; }
 QString User::getUsername() const { return decryptString(encryptedUsername); }
 QString User::getEncryptedUsername() const { return encryptedUsername; }
+QString User::getPasswordHash() const { return passwordHash; }
+QString User::getHashedSecurityAnswer() const { return hashedSecurityAnswer; }
 bool User::getIsBlocked() const { return isBlocked; }
 bool User::getIsDeleted() const { return isDeleted; }
 QDateTime User::getRegisterDate() const { return registerDate; }
-QString User::getPasswordHash() const { return passwordHash; }
-QString User::getHashedSecurityAnswer() const { return hashedSecurityAnswer; }
 void User::setUserId(int _id) { userId = _id; }
-bool User::setUsername(const QString& newUsername) {
+bool User::setUsername(const QString &newUsername) {
     if (!isValidUsername(newUsername))
         return false;
     encryptedUsername = encryptString(newUsername.trimmed());
@@ -85,46 +68,31 @@ bool User::setUsername(const QString& newUsername) {
 }
 void User::setIsBlocked(bool blocked) { isBlocked = blocked; }
 void User::setIsDeleted(bool deleted) { isDeleted = deleted; }
-void User::setRegisterDate(const QDateTime& date) { registerDate = date; }
-bool User::verifyPassword(const QString& inputPassword) const {
-    return (this->passwordHash == hashString(inputPassword));
+void User::setRegisterDate(const QDateTime &date) { registerDate = date; }
+bool User::verifyPassword(const QString &inputPassword) const {
+    return passwordHash == hashString(inputPassword);
 }
-bool User::changePassword(const QString& oldPassword, const QString& newPassword) {
+bool User::changePassword(const QString &oldPassword, const QString &newPassword) {
     if (passwordHash != hashString(oldPassword))
-        return false;
-    if (!isStrongPassword(newPassword))
         return false;
     if (hashString(newPassword) == passwordHash)
         return false;
     passwordHash = hashString(newPassword);
     return true;
 }
-bool User::recoverPassword(const QString& answer, const QString& newPassword) {
-    if (hashedSecurityAnswer == hashString(answer.trimmed())) {
-        if (!isStrongPassword(newPassword))
-            return false;
-        if (hashString(newPassword) != passwordHash) {
-            passwordHash = hashString(newPassword);
-            return true;
-        }
-    }
-    return false;
+bool User::recoverPassword(const QString &answer, const QString &newPassword) {
+    if (hashedSecurityAnswer != hashString(answer))
+        return false;
+    if (hashString(newPassword) == passwordHash)
+        return false;
+    passwordHash = hashString(newPassword);
+    return true;
 }
-void User::serializeBase(QDataStream& out) const {
-    out << userId
-        << encryptedUsername
-        << passwordHash
-        << hashedSecurityAnswer
-        << isBlocked
-        << isDeleted
-        << registerDate;
+void User::serializeBase(QDataStream &out) const {
+    out << userId << encryptedUsername << passwordHash << hashedSecurityAnswer
+        << isBlocked << isDeleted << registerDate;
 }
-void User::deserializeBase(QDataStream& in) {
-    in >> userId
-        >> encryptedUsername
-        >> passwordHash
-        >> hashedSecurityAnswer
-        >> isBlocked
-        >> isDeleted
-        >> registerDate;
+void User::deserializeBase(QDataStream &in) {
+    in >> userId >> encryptedUsername >> passwordHash >> hashedSecurityAnswer
+        >> isBlocked >> isDeleted >> registerDate;
 }
