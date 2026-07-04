@@ -24,6 +24,7 @@ SOURCES += \
     ../common/TimedDiscount.cpp \
     ../common/publisher.cpp \
     AdminRepository.cpp \
+    AuthManager.cpp \
     AuthorRepository.cpp \
     BookRepository.cpp \
     CartRepository.cpp \
@@ -61,6 +62,7 @@ HEADERS += \
     ../common/TimedDiscount.h \
     ../common/publisher.h \
     AdminRepository.h \
+    AuthManager.h \
     AuthorRepository.h \
     BookRepository.h \
     CartRepository.h \
