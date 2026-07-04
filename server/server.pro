@@ -25,6 +25,7 @@ SOURCES += \
     ../common/publisher.cpp \
     AdminRepository.cpp \
     BookRepository.cpp \
+    CartRepository.cpp \
     DatabaseManager.cpp \
     PublisherRepository.cpp \
     UserRepository.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     ../common/publisher.h \
     AdminRepository.h \
     BookRepository.h \
+    CartRepository.h \
     DatabaseManager.h \
     PublisherRepository.h \
     UserRepository.h \
