@@ -36,6 +36,8 @@ SOURCES += \
     PublisherRepository.cpp \
     RatingRepository.cpp \
     ReviewRepository.cpp \
+    ShelfRepository.cpp \
+    TimedDiscountRepository.cpp \
     UserRepository.cpp \
     main.cpp \
     loginwindow_s.cpp
@@ -71,6 +73,8 @@ HEADERS += \
     PublisherRepository.h \
     RatingRepository.h \
     ReviewRepository.h \
+    ShelfRepository.h \
+    TimedDiscountRepository.h \
     UserRepository.h \
     loginwindow_s.h
 
