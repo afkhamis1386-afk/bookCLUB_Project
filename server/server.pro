@@ -28,6 +28,7 @@ SOURCES += \
     CartRepository.cpp \
     DatabaseManager.cpp \
     GenreRepository.cpp \
+    OrderRepository.cpp \
     PublisherRepository.cpp \
     UserRepository.cpp \
     main.cpp \
@@ -56,6 +57,7 @@ HEADERS += \
     CartRepository.h \
     DatabaseManager.h \
     GenreRepository.h \
+    OrderRepository.h \
     PublisherRepository.h \
     UserRepository.h \
     loginwindow_s.h
