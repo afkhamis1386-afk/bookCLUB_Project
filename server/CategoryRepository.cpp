@@ -45,7 +45,7 @@ bool CategoryRepository::deleteCategory(int categoryId){
     query.prepare("DELETE FROM Categories WHERE CategoryID = :categoryId");
     query.bindValue(":categoryId", categoryId);
     if(!query.exec()){
-        qWarning() << "خطا در حذف دسته‌بندی (احتمالاً کتابی به این دسته وابسته است):" << query.lastError().text();
+        qWarning() << "خطا در حذف دسته بندی (احتمالاً کتابی به این دسته وابسته است):" << query.lastError().text();
         return false;
     }
     return true;
