@@ -1,6 +1,5 @@
 #ifndef USERREPOSITORY_H
 #define USERREPOSITORY_H
-#include "DatabaseManager.h"
 #include "../common/normaluser.h"
 #include "../common/Enums.h"
 #include <QString>
