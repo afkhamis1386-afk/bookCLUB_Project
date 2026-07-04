@@ -93,7 +93,7 @@ Order* OrderRepository::loadOrderById(int orderId) {
         );
     itemsQuery.bindValue(":orderId", orderId);
     if (!itemsQuery.exec()) {
-        qWarning() << "خطا در بارگذاری آیتم‌های سفارش:" << itemsQuery.lastError().text();
+        qWarning() << "خطا در بارگذاری آیتم های سفارش:" << itemsQuery.lastError().text();
         return nullptr;
     }
     while (itemsQuery.next()) {
@@ -114,7 +114,7 @@ QVector<int> OrderRepository::getOrderIdsByUser(int userId) {
     query.prepare("SELECT OrderID FROM Orders WHERE UserID = :userId ORDER BY OrderDate DESC");
     query.bindValue(":userId", userId);
     if (!query.exec()) {
-        qWarning() << "خطا در دریافت سفارش‌های کاربر:" << query.lastError().text();
+        qWarning() << "خطا در دریافت سفارش های کاربر:" << query.lastError().text();
         return orderIds;
     }
     while (query.next()) {
@@ -140,7 +140,7 @@ QVector<int> OrderRepository::getAllOrderIds() {
     QSqlQuery query(db);
     query.prepare("SELECT OrderID FROM Orders ORDER BY OrderDate DESC");
     if (!query.exec()) {
-        qWarning() << "خطا در دریافت همه سفارش‌ها:" << query.lastError().text();
+        qWarning() << "خطا در دریافت همه سفارش ها:" << query.lastError().text();
         return orderIds;
     }
     while (query.next()) {

@@ -106,7 +106,7 @@ bool PublisherRepository::updateProfile(int userId, const QString &firstName, co
     query.bindValue(":pubName", publicationName);
     query.bindValue(":userId", userId);
     if (!query.exec()) {
-        qWarning() << "خطا در به‌روزرسانی پروفایل ناشر:" << query.lastError().text();
+        qWarning() << "خطا در به روزرسانی پروفایل ناشر:" << query.lastError().text();
         return false;
     }
     return true;

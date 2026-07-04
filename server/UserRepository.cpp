@@ -214,7 +214,7 @@ bool UserRepository::removeSavedBook(int userId, int bookId) {
     query.bindValue(":userId", userId);
     query.bindValue(":bookId", bookId);
     if (!query.exec()) {
-        qWarning() << "خطا در حذف کتاب ذخیره‌شده:" << query.lastError().text();
+        qWarning() << "خطا در حذف کتاب ذخیره شده:" << query.lastError().text();
         return false;
     }
     return true;
