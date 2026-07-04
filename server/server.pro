@@ -32,6 +32,7 @@ SOURCES += \
     GenreRepository.cpp \
     NotificationRepository.cpp \
     OrderRepository.cpp \
+    PaymentRepository.cpp \
     PublisherRepository.cpp \
     RatingRepository.cpp \
     ReviewRepository.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     GenreRepository.h \
     NotificationRepository.h \
     OrderRepository.h \
+    PaymentRepository.h \
     PublisherRepository.h \
     RatingRepository.h \
     ReviewRepository.h \
