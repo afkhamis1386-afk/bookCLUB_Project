@@ -24,6 +24,7 @@ public:
     bool removeSavedBook(int userId, int bookId);
     QMap<int, int> getReadingProgress(int userId);
     bool setLastReadPage(int userId, int bookId, int pageNumber);
+    bool findRoleById(int userId, UserRole &outRole);
 };
 
 #endif // USERREPOSITORY_H
