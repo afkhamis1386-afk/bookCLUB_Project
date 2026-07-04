@@ -27,6 +27,7 @@ SOURCES += \
     AdminRepository.cpp \
     AuthManager.cpp \
     AuthorRepository.cpp \
+    BookManager.cpp \
     BookRepository.cpp \
     CartRepository.cpp \
     CategoryRepository.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     AdminRepository.h \
     AuthManager.h \
     AuthorRepository.h \
+    BookManager.h \
     BookRepository.h \
     CartRepository.h \
     CategoryRepository.h \
