@@ -30,6 +30,7 @@ SOURCES += \
     CategoryRepository.cpp \
     DatabaseManager.cpp \
     GenreRepository.cpp \
+    NotificationRepository.cpp \
     OrderRepository.cpp \
     PublisherRepository.cpp \
     UserRepository.cpp \
@@ -61,6 +62,7 @@ HEADERS += \
     CategoryRepository.h \
     DatabaseManager.h \
     GenreRepository.h \
+    NotificationRepository.h \
     OrderRepository.h \
     PublisherRepository.h \
     UserRepository.h \

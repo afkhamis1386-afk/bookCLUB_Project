@@ -1,7 +1,7 @@
 #ifndef ORDERREPOSITORY_H
 #define ORDERREPOSITORY_H
 #include "../common/Order.h"
-
+#include <QVector>
 class OrderRepository {
 public:
     OrderRepository();
