@@ -5,9 +5,9 @@
 #include <QDataStream>
 enum class NotificationType {
     NewBookInFavouriteGenre = 1,
-    DiscountOnSavedBook = 2,
-    NewSaleForPublisher = 3,
-    NewReviewForPublisher = 4
+    DiscountOnSavedBook     = 2,
+    NewSaleForPublisher     = 3,
+    NewReviewForPublisher   = 4
 };
 class Notification {
 private:
@@ -15,7 +15,6 @@ private:
     int userId;
     int targetId;
     int senderId;
-    QString senderName;
     NotificationType notificationType;
     QString title;
     QString message;
@@ -23,13 +22,12 @@ private:
     QDateTime createdAt;
 public:
     Notification();
-    Notification(int userId, NotificationType type, const QString &title, const QString &message, int targetId = -1, int senderId = -1, const QString &senderName = "System");
-    Notification(int notificationId, int userId, NotificationType type, const QString &title, const QString &message, bool read, const QDateTime &createdAt, int targetId = -1, int senderId = -1, const QString &senderName = "System");
+    Notification(int userId, NotificationType type, const QString &title, const QString &message, int targetId = -1, int senderId = -1);
+    Notification(int notificationId, int userId, NotificationType type, const QString &title, const QString &message, bool read, const QDateTime &createdAt, int targetId = -1, int senderId = -1);
     int getNotificationId() const;
     int getUserId() const;
     int getTargetId() const;
     int getSenderId() const;
-    QString getSenderName() const;
     NotificationType getNotificationType() const;
     QString getTitle() const;
     QString getMessage() const;
@@ -39,7 +37,6 @@ public:
     bool setUserId(int id);
     void setTargetId(int id);
     bool setSenderId(int id);
-    bool setSenderName(const QString &name);
     void markAsRead();
     void markAsUnread();
     bool setTitle(const QString &t);
