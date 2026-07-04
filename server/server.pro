@@ -33,6 +33,7 @@ SOURCES += \
     NotificationRepository.cpp \
     OrderRepository.cpp \
     PublisherRepository.cpp \
+    RatingRepository.cpp \
     ReviewRepository.cpp \
     UserRepository.cpp \
     main.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     NotificationRepository.h \
     OrderRepository.h \
     PublisherRepository.h \
+    RatingRepository.h \
     ReviewRepository.h \
     UserRepository.h \
     loginwindow_s.h
