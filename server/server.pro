@@ -23,6 +23,7 @@ SOURCES += \
     ../common/Shelf.cpp \
     ../common/TimedDiscount.cpp \
     ../common/publisher.cpp \
+    AccessControl.cpp \
     AdminRepository.cpp \
     AuthManager.cpp \
     AuthorRepository.cpp \
@@ -61,6 +62,7 @@ HEADERS += \
     ../common/Shelf.h \
     ../common/TimedDiscount.h \
     ../common/publisher.h \
+    AccessControl.h \
     AdminRepository.h \
     AuthManager.h \
     AuthorRepository.h \
