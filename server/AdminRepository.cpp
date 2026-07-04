@@ -1,4 +1,5 @@
 #include "AdminRepository.h"
+#include "DatabaseManager.h"
 #include "../common/Enums.h"
 #include <QSqlQuery>
 #include <QSqlError>
