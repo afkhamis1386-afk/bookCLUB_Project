@@ -26,6 +26,7 @@ SOURCES += \
     AdminRepository.cpp \
     BookRepository.cpp \
     DatabaseManager.cpp \
+    PublisherRepository.cpp \
     UserRepository.cpp \
     main.cpp \
     loginwindow_s.cpp
@@ -51,6 +52,7 @@ HEADERS += \
     AdminRepository.h \
     BookRepository.h \
     DatabaseManager.h \
+    PublisherRepository.h \
     UserRepository.h \
     loginwindow_s.h
 
