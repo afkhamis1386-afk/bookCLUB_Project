@@ -1,6 +1,5 @@
 #ifndef ADMINREPOSITORY_H
 #define ADMINREPOSITORY_H
-#include "DatabaseManager.h"
 #include "../common/Admin.h"
 #include <QString>
 #include <QVector>
