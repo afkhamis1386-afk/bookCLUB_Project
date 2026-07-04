@@ -250,3 +250,13 @@ bool UserRepository::setLastReadPage(int userId, int bookId, int pageNumber) {
     }
     return true;
 }
+bool UserRepository::findRoleById(int userId, UserRole &outRole) {
+    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare("SELECT RoleID FROM Users WHERE UserID = :userId AND IsDeleted = 0");
+    query.bindValue(":userId", userId);
+    if (!query.exec() || !query.next()) { return false; }
+    int roleId = query.value(0).toInt();
+    outRole = static_cast<UserRole>(roleId - 1);
+    return true;
+}
