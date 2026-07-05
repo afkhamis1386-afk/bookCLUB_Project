@@ -1,5 +1,4 @@
 #include "Order.h"
-#include "PriceCalculator.h"
 OrderItem::OrderItem()
     : orderItemId(-1), orderId(-1), bookId(-1), unitPrice(0), discountPercent(0), discountAmount(0) {}
 OrderItem::OrderItem(int bookId, double unitPrice, double discountPercent, double discountAmount)
@@ -19,7 +18,9 @@ double OrderItem::getUnitPrice() const { return unitPrice; }
 double OrderItem::getDiscountPercent() const { return discountPercent; }
 double OrderItem::getDiscountAmount() const { return discountAmount; }
 double OrderItem::getFinalPrice() const {
-    return PriceCalculator::calculateItemFinalPrice(unitPrice, discountPercent, discountAmount);
+    double afterPercent = unitPrice - (unitPrice * discountPercent / 100);
+    double final = afterPercent - discountAmount;
+    return final < 0 ? 0 : final;
 }
 void OrderItem::setOrderItemId(int id) { orderItemId = id; }
 void OrderItem::setOrderId(int id) { orderId = id; }
@@ -103,4 +104,3 @@ QDataStream &operator>>(QDataStream &in, Order &order) {
     }
     return in;
 }
-

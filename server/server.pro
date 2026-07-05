@@ -29,6 +29,7 @@ SOURCES += \
     AuthorRepository.cpp \
     BookManager.cpp \
     BookRepository.cpp \
+    CartManager.cpp \
     CartRepository.cpp \
     CategoryRepository.cpp \
     DatabaseManager.cpp \
@@ -71,6 +72,7 @@ HEADERS += \
     AuthorRepository.h \
     BookManager.h \
     BookRepository.h \
+    CartManager.h \
     CartRepository.h \
     CategoryRepository.h \
     DatabaseManager.h \
