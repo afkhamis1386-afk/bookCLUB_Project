@@ -6,7 +6,7 @@ class BookManager {
 public:
     BookManager();
     Response addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName, const QString &coverImagePath,
-                     const QString &pdfFilePath);
+     const QString &pdfFilePath);
     Response updateBook(int publisherUserId, int bookId, const QString &bookName, const QString &description, double price);
     Response applyDiscount(int publisherUserId, int bookId, double discountPercent, double discountAmount);
     Response deactivateBook(int publisherUserId, int bookId);
