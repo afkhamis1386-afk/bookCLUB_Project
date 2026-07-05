@@ -8,6 +8,10 @@
 PublisherRepository::PublisherRepository() {}
 int PublisherRepository::insertPublisher(const Publisher &publisher) {
     QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    if (!db.transaction()) {
+        qWarning() << "خطا در شروع تراکنش:" << db.lastError().text();
+        return -1;
+    }
     QSqlQuery insertUser(db);
     insertUser.prepare(
         "INSERT INTO Users (Username, PasswordHash, IsBlocked, IsDeleted, RegisterDate, RoleID) "
@@ -20,8 +24,9 @@ int PublisherRepository::insertPublisher(const Publisher &publisher) {
     insertUser.bindValue(":isDeleted", publisher.getIsDeleted());
     insertUser.bindValue(":registerDate", publisher.getRegisterDate());
     insertUser.bindValue(":roleId", static_cast<int>(UserRole::Publisher) + 1);
-        if (!insertUser.exec() || !insertUser.next()) {
+    if (!insertUser.exec() || !insertUser.next()) {
         qWarning() << "خطا در ثبت کاربر پایه برای ناشر:" << insertUser.lastError().text();
+        db.rollback();
         return -1;
     }
     int newUserId = insertUser.value(0).toInt();
@@ -42,6 +47,12 @@ int PublisherRepository::insertPublisher(const Publisher &publisher) {
     insertPub.bindValue(":answerHash", publisher.getHashedSecurityAnswer());
     if (!insertPub.exec()) {
         qWarning() << "خطا در ثبت اطلاعات ناشر:" << insertPub.lastError().text();
+        db.rollback();
+        return -1;
+    }
+    if (!db.commit()) {
+        qWarning() << "خطا در نهایی سازی تراکنش ثبت نام ناشر:" << db.lastError().text();
+        db.rollback();
         return -1;
     }
     return newUserId;
@@ -88,8 +99,7 @@ Publisher* PublisherRepository::loadPublisherById(int userId) {
     publisher->setPublishedBooks(bookIds);
     return publisher;
 }
-bool PublisherRepository::updateProfile(int userId, const QString &firstName, const QString &lastName,
-                                        const QString &email, const QString &shortDescription,
+bool PublisherRepository::updateProfile(int userId, const QString &firstName, const QString &lastName, const QString &email, const QString &shortDescription,
                                         const QString &publicationName) {
     QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
