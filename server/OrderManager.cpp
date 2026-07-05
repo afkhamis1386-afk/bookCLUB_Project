@@ -1,125 +1,146 @@
 #include "OrderManager.h"
+#include "CartRepository.h"
+#include "OrderRepository.h"
+#include "BookRepository.h"
+#include "TimedDiscountRepository.h"
+#include "DatabaseManager.h"
 #include "PriceCalculator.h"
-#include <QScopedPointer>
+#include "../common/Cart.h"
+#include "../common/Order.h"
+#include "../common/Book.h"
+#include "../common/Enums.h"
+#include "../common/TimedDiscount.h"
+#include <memory>
 
-#include <QDebug>
-
-OrderManager::OrderManager(QObject *parent)
-    : QObject(parent) {
-}
-OrderManager::~OrderManager() {
-}
-int OrderManager::createOrder(int userId, const QVector<OrderItem> &items, double promoDiscount) {
-    if (items.isEmpty()) {
-        qWarning() << "امکان ثبت سفارش وجود ندارد: لیست آیتم‌ها خالی است";
-        return -1;
+OrderManager::OrderManager() {}
+Response OrderManager::checkout(int userId) {
+    CartRepository cartRepo;
+    std::unique_ptr<Cart> cart(cartRepo.loadCartByUserId(userId));
+    if (!cart || cart->getItemCount() == 0) {
+        return Response(ResponseStatus::ValidationFailed, "سبد خرید شما خالی است");
     }
-    double totalOriginalPrice = 0;
+    BookRepository bookRepo;
+    TimedDiscountRepository timedDiscountRepo;
+    QVector<CartItem> cartItems = cart->getItems();
+    Order newOrder(userId);
+    double totalPrice = 0;
     double totalDiscountAmount = 0;
-    double totalFinalPrice = 0;
-    QVector<OrderItem> processedItems;
-    for (const OrderItem &item : items) {
-        double itemFinalPrice = PriceCalculator::calculateFinalPrice( item.getUnitPrice(), item.getDiscountPercent(), item.getDiscountAmount() );
-        totalOriginalPrice += item.getUnitPrice();
-        double itemDiscount = item.getUnitPrice() - itemFinalPrice;
-        totalDiscountAmount += itemDiscount;
-        totalFinalPrice += itemFinalPrice;
-        processedItems.append(item);
+    for (const CartItem &cartItem : qAsConst(cartItems)) {
+        std::unique_ptr<Book> book(bookRepo.loadBookById(cartItem.getBookId()));
+        if (!book || !book->isAvailableForPurchase()) {
+            return Response(ResponseStatus::Error, QString("کتاب با شناسه %1 دیگر برای خرید موجود نیست").arg(cartItem.getBookId()));
+        }
+        std::unique_ptr<TimedDiscount> activeDiscount(
+            timedDiscountRepo.getActiveDiscountForBook(cartItem.getBookId())
+            );
+        double timedPercent = activeDiscount ? activeDiscount->getDiscountPercent() : 0.0;
+        double effectivePercent = PriceCalculator::calculateEffectivePercent(
+            book->getDiscountPercent(), timedPercent
+            );
+        double itemPrice = book->getBookPrice();
+        double itemFinalPrice = PriceCalculator::calculateFinalPrice(
+            itemPrice, effectivePercent, book->getDiscountAmount()
+            );
+        double itemDiscountTotal = itemPrice - itemFinalPrice;
+        OrderItem orderItem(book->getBookId(), itemPrice, effectivePercent, book->getDiscountAmount());
+        newOrder.addItem(orderItem);
+        totalPrice += itemPrice;
+        totalDiscountAmount += itemDiscountTotal;
     }
-    double finalOrderPrice = totalFinalPrice;
-    if (promoDiscount > 0) {
-        finalOrderPrice = PriceCalculator::calculateFinalPrice(totalFinalPrice, 0, promoDiscount);
-        double extraDiscount = totalFinalPrice - finalOrderPrice;
-        totalDiscountAmount += extraDiscount;
+    double finalPrice = totalPrice - totalDiscountAmount;
+    if (finalPrice < 0) finalPrice = 0;
+    newOrder.setTotalPrice(totalPrice);
+    newOrder.setDiscountAmount(totalDiscountAmount);
+    newOrder.setFinalPrice(finalPrice);
+    newOrder.setStatus(OrderStatus::Paid);
+    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    if (!db.transaction()) {
+        return Response(ResponseStatus::Error, "خطا در شروع تراکنش ثبت سفارش");
     }
-    Order order(userId);
-    order.setItems(processedItems);
-    order.setTotalPrice(totalOriginalPrice);
-    order.setDiscountAmount(totalDiscountAmount);
-    order.setFinalPrice(finalOrderPrice);
-    order.setStatus(OrderStatus::Pending);
-    int newOrderId = orderRepo.insertOrder(order);
+    OrderRepository orderRepo;
+    int newOrderId = orderRepo.insertOrder(newOrder);
     if (newOrderId == -1) {
-        qCritical() << "خطا در ذخیره‌سازی سفارش در دیتابیس";
+        db.rollback();
+        return Response(ResponseStatus::Error, "خطا در ثبت سفارش. لطفاً دوباره تلاش کنید");
     }
-    return newOrderId;
-}
-Order* OrderManager::getOrderById(int orderId) {
-    return orderRepo.loadOrderById(orderId);
-}
-QVector<Order*> OrderManager::getUserOrders(int userId) {
-    QVector<Order*> orders;
-    QVector<int> ids = orderRepo.getOrderIdsByUser(userId);
-    for (int id : qAsConst(ids)) {
-        Order *order = orderRepo.loadOrderById(id);
-        if (order) {
-            orders.append(order);
-        }
+    int cartId = cartRepo.getOrCreateCartId(userId);
+    if (!cartRepo.clearCart(cartId)) {
+        db.rollback();
+        return Response(ResponseStatus::Error, "خطا در خالی کردن سبد خرید پس از ثبت سفارش");
     }
-    return orders;
-}
-void OrderManager::extracted(QVector<Order *> &orders, QVector<int> &ids) {
-    for (const int id : ids) {
-        Order *order = orderRepo.loadOrderById(id);
-        if (order) {
-            orders.append(order);
-        }
+    if (!db.commit()) {
+        db.rollback();
+        return Response(ResponseStatus::Error, "خطا در نهایی‌سازی تراکنش خرید");
     }
+    QVariantMap data;
+    data["orderId"] = newOrderId;
+    data["finalPrice"] = finalPrice;
+    data["totalPrice"] = totalPrice;
+    data["discountAmount"] = totalDiscountAmount;
+    return Response(ResponseStatus::Success, "خرید با موفقیت انجام شد", data);
 }
-QVector<Order *> OrderManager::getAllOrders() {
-    QVector<Order *> orders;
-    QVector<int> ids = orderRepo.getAllOrderIds();
-    extracted(orders, ids);
-    return orders;
+Response OrderManager::getOrderHistory(int userId) {
+    OrderRepository orderRepo;
+    QVector<int> orderIds = orderRepo.getOrderIdsByUser(userId);
+    QVariantList orderList;
+    for (int orderId : qAsConst(orderIds)) {
+        std::unique_ptr<Order> order(orderRepo.loadOrderById(orderId));
+        if (!order) continue;
+        QVariantMap orderData;
+        orderData["orderId"] = order->getOrderId();
+        orderData["orderDate"] = order->getOrderDate();
+        orderData["finalPrice"] = order->getFinalPrice();
+        orderData["status"] = order->getStatusTitle();
+        orderData["itemCount"] = order->getItemCount();
+        orderList.append(orderData);
+    }
+    QVariantMap data;
+    data["orders"] = orderList;
+    return Response(ResponseStatus::Success, "تاریخچه خرید بازیابی شد", data);
 }
-bool OrderManager::updateOrderStatus(int orderId, OrderStatus newStatus) {
-    return orderRepo.updateStatus(orderId, newStatus);
-}
-bool OrderManager::payOrder(int orderId, double userWalletBalance, double &outNewBalance) {
-    Order* order = orderRepo.loadOrderById(orderId);
+Response OrderManager::getOrderDetails(int userId, int orderId) {
+    OrderRepository orderRepo;
+    std::unique_ptr<Order> order(orderRepo.loadOrderById(orderId));
     if (!order) {
-        qWarning() << "پرداخت ناموفق: سفارش پیدا نشد. شناسه:" << orderId;
-        return false;
+        return Response(ResponseStatus::NotFound, "سفارش یافت نشد");
     }
-    QScopedPointer<Order> orderPtr(order);
-    if (orderPtr->getStatus() != OrderStatus::Pending) {
-        qWarning() << "پرداخت ناموفق: سفارش در وضعیت پرداخت معلق نیست";
-        return false;
+    if (order->getUserId() != userId) {
+        return Response(ResponseStatus::Unauthorized, "شما اجازه مشاهده این سفارش را ندارید");
     }
-    double finalPrice = orderPtr->getFinalPrice();
-    if (userWalletBalance < finalPrice) {
-        qWarning() << "پرداخت ناموفق: موجودی کیف پول کاربر کافی نیست";
-        return false;
+    QVariantList itemList;
+    for (const OrderItem &item : order->getItems()) {
+        QVariantMap itemData;
+        itemData["bookId"] = item.getBookId();
+        itemData["unitPrice"] = item.getUnitPrice();
+        itemData["discountPercent"] = item.getDiscountPercent();
+        itemData["discountAmount"] = item.getDiscountAmount();
+        itemData["finalPrice"] = item.getFinalPrice();
+        itemList.append(itemData);
     }
-    if (orderRepo.updateStatus(orderId, OrderStatus::Paid)) {
-        outNewBalance = userWalletBalance - finalPrice;
-        qInfo() << "پرداخت سفارش با موفقیت انجام شد. شناسه:" << orderId;
-        return true;
-    }
-    qWarning() << "خطا در بروزرسانی وضعیت پرداخت سفارش در دیتابیس";
-    return false;
+    QVariantMap data;
+    data["orderId"] = order->getOrderId();
+    data["orderDate"] = order->getOrderDate();
+    data["totalPrice"] = order->getTotalPrice();
+    data["discountAmount"] = order->getDiscountAmount();
+    data["finalPrice"] = order->getFinalPrice();
+    data["status"] = order->getStatusTitle();
+    data["items"] = itemList;
+    return Response(ResponseStatus::Success, "جزئیات سفارش بازیابی شد", data);
 }
-bool OrderManager::cancelOrder(int orderId) {
-    Order* order = orderRepo.loadOrderById(orderId);
+Response OrderManager::cancelOrder(int userId, int orderId) {
+    OrderRepository orderRepo;
+    std::unique_ptr<Order> order(orderRepo.loadOrderById(orderId));
     if (!order) {
-        return false;
+        return Response(ResponseStatus::NotFound, "سفارش یافت نشد");
     }
-    QScopedPointer<Order> orderPtr(order);
-    if (orderPtr->getStatus() != OrderStatus::Pending) {
-        qWarning() << "امکان لغو سفارش وجود ندارد؛ سفارش در وضعیت Pending نیست";
-        return false;
+    if (order->getUserId() != userId) {
+        return Response(ResponseStatus::Unauthorized, "شما اجازه لغو این سفارش را ندارید");
     }
-    return orderRepo.updateStatus(orderId, OrderStatus::Cancelled);
-}
-bool OrderManager::completeOrder(int orderId) {
-    Order* order = orderRepo.loadOrderById(orderId);
-    if (!order) {
-        return false;
+    if (!order->isPending()) {
+        return Response(ResponseStatus::Error, "فقط سفارش های در انتظار قابل لغو هستند");
     }
-    QScopedPointer<Order> orderPtr(order);
-    if (orderPtr->getStatus() != OrderStatus::Paid) {
-        qWarning() << "امکان تکمیل سفارش وجود ندارد؛ ابتدا باید پرداخت شود";
-        return false;
+    if (!orderRepo.updateStatus(orderId, OrderStatus::Cancelled)) {
+        return Response(ResponseStatus::Error, "خطا در لغو سفارش");
     }
-    return orderRepo.updateStatus(orderId, OrderStatus::Completed);
+    return Response(ResponseStatus::Success, "سفارش با موفقیت لغو شد");
 }
