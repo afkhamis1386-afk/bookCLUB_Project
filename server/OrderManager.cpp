@@ -70,7 +70,7 @@ Response OrderManager::checkout(int userId) {
     }
     if (!db.commit()) {
         db.rollback();
-        return Response(ResponseStatus::Error, "خطا در نهایی‌سازی تراکنش خرید");
+        return Response(ResponseStatus::Error, "خطا در نهایی سازی تراکنش خرید");
     }
     QVariantMap data;
     data["orderId"] = newOrderId;

@@ -40,8 +40,11 @@ SOURCES += \
     PaymentRepository.cpp \
     PriceCalculator.cpp \
     PublisherRepository.cpp \
+    RatingManager.cpp \
     RatingRepository.cpp \
+    ReviewManager.cpp \
     ReviewRepository.cpp \
+    ShelfManager.cpp \
     ShelfRepository.cpp \
     TimedDiscountRepository.cpp \
     UserRepository.cpp \
@@ -83,8 +86,11 @@ HEADERS += \
     PaymentRepository.h \
     PriceCalculator.h \
     PublisherRepository.h \
+    RatingManager.h \
     RatingRepository.h \
+    ReviewManager.h \
     ReviewRepository.h \
+    ShelfManager.h \
     ShelfRepository.h \
     TimedDiscountRepository.h \
     UserRepository.h \

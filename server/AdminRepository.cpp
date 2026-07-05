@@ -7,6 +7,10 @@
 AdminRepository::AdminRepository(){}
 int AdminRepository::insertAdmin(const Admin &admin){
     QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    if(!db.transaction()){
+        qWarning() << "خطا در شروع تراکنش:" << db.lastError().text();
+        return -1;
+    }
     QSqlQuery insertUser(db);
     insertUser.prepare(
         "INSERT INTO Users (Username, PasswordHash, IsBlocked, IsDeleted, RegisterDate, RoleID) "
@@ -20,6 +24,7 @@ int AdminRepository::insertAdmin(const Admin &admin){
     insertUser.bindValue(":roleId", static_cast<int>(UserRole::Admin) + 1);
     if(!insertUser.exec() || !insertUser.next()){
         qWarning() << "خطا در ثبت کاربر پایه برای ادمین:" << insertUser.lastError().text();
+        db.rollback();
         return -1;
     }
     int newUserId = insertUser.value(0).toInt();
@@ -32,6 +37,12 @@ int AdminRepository::insertAdmin(const Admin &admin){
     insertAdm.bindValue(":lastName", admin.getLastName());
     if(!insertAdm.exec()){
         qWarning() << "خطا در ثبت اطلاعات ادمین:" << insertAdm.lastError().text();
+        db.rollback();
+        return -1;
+    }
+    if(!db.commit()){
+        qWarning() << "خطا در نهایی سازی تراکنش ثبت نام ادمین:" << db.lastError().text();
+        db.rollback();
         return -1;
     }
     return newUserId;

@@ -5,13 +5,14 @@
 #include "AuthorRepository.h"
 #include "RatingRepository.h"
 #include "TimedDiscountRepository.h"
+#include "DatabaseManager.h"
 #include "../common/Book.h"
 #include "../common/Genre.h"
 #include "../common/Category.h"
 #include <memory>
 BookManager::BookManager(){}
 Response BookManager::addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName, const QString &coverImagePath,
-     const QString &pdfFilePath){
+    const QString &pdfFilePath){
     if(bookName.trimmed().isEmpty() || bookName.length() > 60){
         return Response(ResponseStatus::ValidationFailed, "نام کتاب نامعتبر است (حداکثر ۶۰ کاراکتر)");
     }
@@ -45,16 +46,26 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     if(categoryId == -1){
         return Response(ResponseStatus::ValidationFailed, "دسته بندی انتخاب شده معتبر نیست");
     }
+    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    if(!db.transaction()){
+        return Response(ResponseStatus::Error, "خطا در شروع تراکنش ثبت کتاب");
+    }
     AuthorRepository authorRepo;
     int authorId = authorRepo.getOrCreateAuthor(authorName.trimmed());
     if(authorId == -1){
+        db.rollback();
         return Response(ResponseStatus::Error, "خطا در ثبت نویسنده");
     }
     Book newBook(bookName.trimmed(), description.trimmed(), price, genreId, categoryId, authorId, publisherUserId, coverImagePath, pdfFilePath);
     BookRepository bookRepo;
     int newBookId = bookRepo.insertBook(newBook);
     if(newBookId == -1){
+        db.rollback();
         return Response(ResponseStatus::Error, "خطا در ثبت کتاب");
+    }
+    if(!db.commit()){
+        db.rollback();
+        return Response(ResponseStatus::Error, "خطا در نهایی سازی ثبت کتاب");
     }
     QVariantMap data;
     data["bookId"] = newBookId;
