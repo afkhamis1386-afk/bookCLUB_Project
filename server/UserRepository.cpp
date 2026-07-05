@@ -6,6 +6,10 @@
 UserRepository::UserRepository() {}
 int UserRepository::insertNormalUser(const NormalUser &user) {
     QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    if (!db.transaction()) {
+        qWarning() << "خطا در شروع تراکنش:" << db.lastError().text();
+        return -1;
+    }
     QSqlQuery insertUser(db);
     insertUser.prepare(
         "INSERT INTO Users (Username, PasswordHash, IsBlocked, IsDeleted, RegisterDate, RoleID) "
@@ -20,17 +24,22 @@ int UserRepository::insertNormalUser(const NormalUser &user) {
     insertUser.bindValue(":roleId", static_cast<int>(UserRole::NormalUser) + 1);
     if (!insertUser.exec() || !insertUser.next()) {
         qWarning() << "خطا در ثبت کاربر جدید:" << insertUser.lastError().text();
+        db.rollback();
         return -1;
     }
     int newUserId = insertUser.value(0).toInt();
     QSqlQuery insertNormal(db);
-    insertNormal.prepare(
-        "INSERT INTO NormalUsers (UserID, SecurityAnswerHash) VALUES (:userId, :answerHash)"
-        );
+    insertNormal.prepare( "INSERT INTO NormalUsers (UserID, SecurityAnswerHash) VALUES (:userId, :answerHash)" );
     insertNormal.bindValue(":userId", newUserId);
     insertNormal.bindValue(":answerHash", user.getHashedSecurityAnswer());
     if (!insertNormal.exec()) {
         qWarning() << "خطا در ثبت NormalUser:" << insertNormal.lastError().text();
+        db.rollback();
+        return -1;
+    }
+    if (!db.commit()) {
+        qWarning() << "خطا در نهایی‌سازی تراکنش ثبت نام:" << db.lastError().text();
+        db.rollback();
         return -1;
     }
     return newUserId;
