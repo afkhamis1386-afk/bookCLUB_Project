@@ -1,52 +1,53 @@
 #include "Order.h"
+#include "PriceCalculator.h"
 OrderItem::OrderItem()
-    : orderItemId(-1), orderId(-1), bookId(-1), unitPrice(0), discountPercent(0) {}
-OrderItem::OrderItem(int bookId, double unitPrice, double discountPercent)
+    : orderItemId(-1), orderId(-1), bookId(-1), unitPrice(0), discountPercent(0), discountAmount(0) {}
+OrderItem::OrderItem(int bookId, double unitPrice, double discountPercent, double discountAmount)
     : orderItemId(-1), orderId(-1), bookId(bookId),
     unitPrice(unitPrice >= 0 ? unitPrice : 0),
-    discountPercent(discountPercent >= 0 && discountPercent <= 100 ? discountPercent : 0) {}
-OrderItem::OrderItem(int orderItemId, int orderId, int bookId, double unitPrice, double discountPercent)
+    discountPercent(discountPercent >= 0 && discountPercent <= 100 ? discountPercent : 0),
+    discountAmount(discountAmount >= 0 ? discountAmount : 0) {}
+OrderItem::OrderItem(int orderItemId, int orderId, int bookId, double unitPrice, double discountPercent, double discountAmount)
     : orderItemId(orderItemId), orderId(orderId), bookId(bookId),
     unitPrice(unitPrice >= 0 ? unitPrice : 0),
-    discountPercent(discountPercent >= 0 && discountPercent <= 100 ? discountPercent : 0) {}
+    discountPercent(discountPercent >= 0 && discountPercent <= 100 ? discountPercent : 0),
+    discountAmount(discountAmount >= 0 ? discountAmount : 0) {}
 int OrderItem::getOrderItemId() const { return orderItemId; }
 int OrderItem::getOrderId() const { return orderId; }
 int OrderItem::getBookId() const { return bookId; }
 double OrderItem::getUnitPrice() const { return unitPrice; }
 double OrderItem::getDiscountPercent() const { return discountPercent; }
+double OrderItem::getDiscountAmount() const { return discountAmount; }
 double OrderItem::getFinalPrice() const {
-    return unitPrice - (unitPrice * discountPercent / 100);
+    return PriceCalculator::calculateItemFinalPrice(unitPrice, discountPercent, discountAmount);
 }
 void OrderItem::setOrderItemId(int id) { orderItemId = id; }
 void OrderItem::setOrderId(int id) { orderId = id; }
-QDataStream& operator<<(QDataStream& out, const OrderItem& item) {
+QDataStream &operator<<(QDataStream &out, const OrderItem &item) {
     out << item.orderItemId << item.orderId << item.bookId
-        << item.unitPrice << item.discountPercent;
+        << item.unitPrice << item.discountPercent << item.discountAmount;
     return out;
 }
-QDataStream& operator>>(QDataStream& in, OrderItem& item) {
+QDataStream &operator>>(QDataStream &in, OrderItem &item) {
     in >> item.orderItemId >> item.orderId >> item.bookId
-        >> item.unitPrice >> item.discountPercent;
+        >> item.unitPrice >> item.discountPercent >> item.discountAmount;
+    if (item.unitPrice < 0)
+        item.unitPrice = 0;
+    if (item.discountPercent < 0 || item.discountPercent > 100)
+        item.discountPercent = 0;
+    if (item.discountAmount < 0)
+        item.discountAmount = 0;
     return in;
 }
 Order::Order()
     : orderId(-1), userId(-1), orderDate(QDateTime::currentDateTime()),
-    totalPrice(0), discountAmount(0), finalPrice(0), statusId(static_cast<int>(OrderStatus::Pending)) {}
-Order::Order(int userId, const QVector<OrderItem>& items)
-    : orderId(-1),
-    userId(userId),
-    items(items),
-    orderDate(QDateTime::currentDateTime()),
-    totalPrice(0),
-    discountAmount(0),
-    finalPrice(0),
-    statusId(static_cast<int>(OrderStatus::Pending)) { recalculatePrices();}
-Order::Order(int orderId, int userId, const QVector<OrderItem>& items,
-             const QDateTime& orderDate, double totalPrice, double discountAmount,
-             double finalPrice, int statusId)
-    : orderId(orderId), userId(userId), items(items), orderDate(orderDate),
-    totalPrice(totalPrice), discountAmount(discountAmount),
-    finalPrice(finalPrice), statusId(statusId) {}
+    totalPrice(0), discountAmount(0), finalPrice(0), status(OrderStatus::Pending) {}
+Order::Order(int userId)
+    : orderId(-1), userId(userId), orderDate(QDateTime::currentDateTime()),
+    totalPrice(0), discountAmount(0), finalPrice(0), status(OrderStatus::Pending) {}
+Order::Order(int orderId, int userId, const QDateTime &orderDate, double totalPrice, double discountAmount, double finalPrice, OrderStatus status)
+    : orderId(orderId), userId(userId), orderDate(orderDate), totalPrice(totalPrice),
+    discountAmount(discountAmount), finalPrice(finalPrice), status(status) {}
 int Order::getOrderId() const { return orderId; }
 int Order::getUserId() const { return userId; }
 QVector<OrderItem> Order::getItems() const { return items; }
@@ -54,82 +55,52 @@ QDateTime Order::getOrderDate() const { return orderDate; }
 double Order::getTotalPrice() const { return totalPrice; }
 double Order::getDiscountAmount() const { return discountAmount; }
 double Order::getFinalPrice() const { return finalPrice; }
-int Order::getStatusId() const { return statusId; }
-double Order::calculateTotalPrice() const {
-    double total = 0;
-    for (const auto& item : items) {
-        total += item.getUnitPrice();
-    }
-    return total;
-}
-double Order::calculateFinalPrice() const {
-    return totalPrice - discountAmount;
-}
-double Order::calculateDiscountAmount() const {
-    double sumDiscount = 0;
-    for (const auto& item : items) {
-        sumDiscount += (item.getUnitPrice() * item.getDiscountPercent() / 100);
-    }
-    return sumDiscount;
-}
-
-bool Order::isValid() const {
-    return !items.isEmpty() && userId > 0 && finalPrice >= 0;
-}
-int Order::getItemCount() const {
-    return items.size();
-}
+OrderStatus Order::getStatus() const { return status; }
+int Order::getStatusId() const { return static_cast<int>(status); }
+int Order::getItemCount() const { return items.size(); }
 void Order::setOrderId(int id) { orderId = id; }
-void Order::setStatusId(int id) { statusId = id; }
+bool Order::setTotalPrice(double price) { if (price < 0) return false; totalPrice = price; return true; }
+bool Order::setDiscountAmount(double amount) { if (amount < 0) return false; discountAmount = amount; return true; }
+bool Order::setFinalPrice(double price) { if (price < 0) return false; finalPrice = price; return true; }
+void Order::setStatus(OrderStatus s) { status = s; }
+void Order::setItems(const QVector<OrderItem> &i) { items = i; }
+void Order::addItem(const OrderItem &item) { items.append(item); }
 QString Order::getStatusTitle() const {
-    OrderStatus current = static_cast<OrderStatus>(statusId);
-    switch (current) {
-    case OrderStatus::Pending:
-        return "در انتظار";
-    case OrderStatus::Paid:
-        return "پرداخت شده";
-    case OrderStatus::Cancelled:
-        return "لغو شده";
-    case OrderStatus::Completed:
-        return "انجام شده";
-    default:
-        return "نامشخص";
+    switch (status) {
+    case OrderStatus::Pending:   return "در انتظار";
+    case OrderStatus::Paid:      return "پرداخت شده";
+    case OrderStatus::Cancelled: return "لغو شده ";
+    case OrderStatus::Completed: return "تکمیل شده";
+    default: return "نامشخص";
     }
 }
-void Order::recalculatePrices() {
-        totalPrice = calculateTotalPrice();
-        discountAmount = calculateDiscountAmount();
-        finalPrice = calculateFinalPrice();
-    }
-QDataStream& operator<<(QDataStream& out, const Order& order) {
-    out << order.orderId
-        << order.userId
-        << order.orderDate
-        << order.totalPrice
-        << order.discountAmount
-        << order.finalPrice
-        << order.statusId;
+bool Order::isPending() const{ return status == OrderStatus::Pending; }
+bool Order::isPaid() const { return status == OrderStatus::Paid; }
+bool Order::isCancelled() const { return status == OrderStatus::Cancelled; }
+bool Order::isCompleted() const { return status == OrderStatus::Completed; }
+QDataStream &operator<<(QDataStream &out, const Order &order) {
+    out << order.orderId << order.userId << order.orderDate << order.totalPrice
+        << order.discountAmount << order.finalPrice << static_cast<int>(order.status);
     out << static_cast<quint32>(order.items.size());
-    for (const OrderItem& item : order.items) {
-        out << item;
-    }
+    for (const OrderItem &item : order.items) out << item;
     return out;
 }
-QDataStream& operator>>(QDataStream& in, Order& order) {
-    in >> order.orderId
-        >> order.userId
-        >> order.orderDate
-        >> order.totalPrice
-        >> order.discountAmount
-        >> order.finalPrice
-        >> order.statusId;
-    quint32 itemCount = 0;
-    in >> itemCount;
+QDataStream &operator>>(QDataStream &in, Order &order) {
+    int statusInt;
+    in >> order.orderId >> order.userId >> order.orderDate >> order.totalPrice
+        >> order.discountAmount >> order.finalPrice >> statusInt;
+    if (statusInt < 1 || statusInt > 4)
+        order.status = OrderStatus::Pending;
+    else
+        order.status = static_cast<OrderStatus>(statusInt);
+    quint32 count;
+    in >> count;
     order.items.clear();
-    for (quint32 i = 0; i < itemCount; ++i) {
+    for (quint32 i = 0; i < count; ++i) {
         OrderItem item;
         in >> item;
         order.items.append(item);
     }
     return in;
 }
+

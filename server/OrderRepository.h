@@ -8,8 +8,9 @@ public:
     int insertOrder(const Order &order);
     Order* loadOrderById(int orderId);
     QVector<int> getOrderIdsByUser(int userId);
-    bool updateStatus(int orderId, OrderStatus newStatus);
     QVector<int> getAllOrderIds();
+    bool updateStatus(int orderId, OrderStatus newStatus);
 };
 
 #endif // ORDERREPOSITORY_H
+
