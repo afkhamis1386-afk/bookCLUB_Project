@@ -30,7 +30,7 @@ TimedDiscount* TimedDiscountRepository::loadDiscountById(int discountId){
         "FROM TimedDiscount WHERE DiscountID = :discountId");
     query.bindValue(":discountId", discountId);
     if(!query.exec() || !query.next()){
-        qWarning() << "تخفیف زمان‌دار یافت نشد:" << query.lastError().text();
+        qWarning() << "تخفیف زمان دار یافت نشد:" << query.lastError().text();
         return nullptr;
     }
     return new TimedDiscount(

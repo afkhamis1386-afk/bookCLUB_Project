@@ -41,6 +41,7 @@ SOURCES += \
     PriceCalculator.cpp \
     PublisherRepository.cpp \
     RatingRepository.cpp \
+    ReviewManager.cpp \
     ReviewRepository.cpp \
     ShelfRepository.cpp \
     TimedDiscountRepository.cpp \
@@ -84,6 +85,7 @@ HEADERS += \
     PriceCalculator.h \
     PublisherRepository.h \
     RatingRepository.h \
+    ReviewManager.h \
     ReviewRepository.h \
     ShelfRepository.h \
     TimedDiscountRepository.h \

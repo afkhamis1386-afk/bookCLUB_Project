@@ -174,7 +174,7 @@ bool OrderRepository::updateStatus(int orderId, OrderStatus newStatus) {
     query.bindValue(":statusId", static_cast<int>(newStatus));
     query.bindValue(":orderId", orderId);
     if (!query.exec()) {
-        qWarning() << "خطا در بروزرسانی وضعیت سفارش:" << query.lastError().text();
+        qWarning() << "خطا در به روزرسانی وضعیت سفارش:" << query.lastError().text();
         return false;
     }
     return query.numRowsAffected() > 0;

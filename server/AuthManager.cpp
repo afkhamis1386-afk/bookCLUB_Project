@@ -20,7 +20,7 @@ Response AuthManager::validateNormalUserRegistration(const QString &username, co
         return Response(ResponseStatus::ValidationFailed, "رمز عبور ضعیف است. باید حداقل ۸ کاراکتر و شامل حروف بزرگ، کوچک و عدد باشد");
     }
     if (cleanAnswer.isEmpty()) {
-        return Response(ResponseStatus::ValidationFailed, "پاسخ سوال امنیتی نمی‌تواند خالی باشد");
+        return Response(ResponseStatus::ValidationFailed, "پاسخ سوال امنیتی نمی تواند خالی باشد");
     }
     return Response(ResponseStatus::Success, "");
 }
@@ -42,25 +42,25 @@ Response AuthManager::validatePublisherRegistration(const QString &username,
         return Response(ResponseStatus::ValidationFailed, "رمز عبور ضعیف است. باید حداقل ۸ کاراکتر و شامل حروف بزرگ، کوچک و عدد باشد");
     }
     if (cleanAnswer.isEmpty()) {
-        return Response(ResponseStatus::ValidationFailed, "پاسخ سوال امنیتی نمی‌تواند خالی باشد");
+        return Response(ResponseStatus::ValidationFailed, "پاسخ سوال امنیتی نمی تواند خالی باشد");
     }
     if (cleanFirstName.isEmpty()) {
-        return Response(ResponseStatus::ValidationFailed, "نام نمی‌تواند خالی باشد");
+        return Response(ResponseStatus::ValidationFailed, "نام نمی تواند خالی باشد");
     }
     if (cleanLastName.isEmpty()) {
-        return Response(ResponseStatus::ValidationFailed, "نام خانوادگی نمی‌تواند خالی باشد");
+        return Response(ResponseStatus::ValidationFailed, "نام خانوادگی نمی تواند خالی باشد");
     }
     if (cleanEmail.isEmpty()) {
-        return Response(ResponseStatus::ValidationFailed, "ایمیل نمی‌تواند خالی باشد");
+        return Response(ResponseStatus::ValidationFailed, "ایمیل نمی تواند خالی باشد");
     }
     if (!isValidEmail(cleanEmail)) {
         return Response(ResponseStatus::ValidationFailed, "فرمت ایمیل نامعتبر است");
     }
     if (cleanPublicationName.isEmpty()) {
-        return Response(ResponseStatus::ValidationFailed, "نام انتشارات نمی‌تواند خالی باشد");
+        return Response(ResponseStatus::ValidationFailed, "نام انتشارات نمی تواند خالی باشد");
     }
     if (cleanLicenseNumber.isEmpty()) {
-        return Response(ResponseStatus::ValidationFailed, "شماره پروانه نشر نمی‌تواند خالی باشد");
+        return Response(ResponseStatus::ValidationFailed, "شماره پروانه نشر نمی تواند خالی باشد");
     }
     return Response(ResponseStatus::Success, "");
 }
@@ -120,18 +120,18 @@ Response AuthManager::registerNormalUser(const QString &username, const QString 
         NormalUser newUser(cleanUsername, plainPassword, cleanAnswer);
         const int newUserId = userRepo.insertNormalUser(newUser);
         if (newUserId == -1) {
-            return Response(ResponseStatus::Error, "خطا در ثبت‌نام. لطفاً دوباره تلاش کنید");
+            return Response(ResponseStatus::Error, "خطا در ثبت نام. لطفاً دوباره تلاش کنید");
         }
         QVariantMap data;
         data["userId"] = newUserId;
         data["role"] = static_cast<int>(UserRole::NormalUser);
-        return Response(ResponseStatus::Success, "ثبت‌نام با موفقیت انجام شد", data);
+        return Response(ResponseStatus::Success, "ثبت نام با موفقیت انجام شد", data);
     }
     catch (const std::exception &) {
-        return Response(ResponseStatus::Error, "خطای داخلی در ثبت‌نام کاربر");
+        return Response(ResponseStatus::Error, "خطای داخلی در ثبت نام کاربر");
     }
     catch (...) {
-        return Response(ResponseStatus::Error, "خطای ناشناخته در ثبت‌نام کاربر");
+        return Response(ResponseStatus::Error, "خطای ناشناخته در ثبت نام کاربر");
     }
 }
 Response AuthManager::registerPublisher(const QString &username,
@@ -169,19 +169,19 @@ Response AuthManager::registerPublisher(const QString &username,
         Publisher newPublisher(cleanUsername, plainPassword, cleanAnswer, cleanFirstName, cleanLastName, cleanEmail, cleanPublicationName, cleanLicenseNumber,cleanShortDescription);
         const int newUserId = publisherRepo.insertPublisher(newPublisher);
         if (newUserId == -1) {
-            return Response(ResponseStatus::Error, "خطا در ثبت‌نام ناشر. لطفاً دوباره تلاش کنید");
+            return Response(ResponseStatus::Error, "خطا در ثبت نام ناشر. لطفاً دوباره تلاش کنید");
         }
         QVariantMap data;
         data["userId"] = newUserId;
         data["role"] = static_cast<int>(UserRole::Publisher);
 
-        return Response(ResponseStatus::Success, "ثبت‌نام ناشر با موفقیت انجام شد", data);
+        return Response(ResponseStatus::Success, "ثبت نام ناشر با موفقیت انجام شد", data);
     }
     catch (const std::exception &) {
-        return Response(ResponseStatus::Error, "خطای داخلی در ثبت‌نام ناشر");
+        return Response(ResponseStatus::Error, "خطای داخلی در ثبت نام ناشر");
     }
     catch (...) {
-        return Response(ResponseStatus::Error, "خطای ناشناخته در ثبت‌نام ناشر");
+        return Response(ResponseStatus::Error, "خطای ناشناخته در ثبت نام ناشر");
     }
 }
 Response AuthManager::login(const QString &username, const QString &plainPassword) {
@@ -265,8 +265,7 @@ Response AuthManager::changePassword(int userId, UserRole role, const QString &o
             }
             const bool updated = userRepo.updatePasswordHash(userId, user->getPasswordHash());
             if (!updated) {
-                return Response(ResponseStatus::Error,
-                                "خطا در به‌روزرسانی رمز عبور");
+                return Response(ResponseStatus::Error, "خطا در به روزرسانی رمز عبور");
             }
             return Response(ResponseStatus::Success,"رمز عبور با موفقیت تغییر یافت");
         }
@@ -340,8 +339,7 @@ Response AuthManager::recoverPassword(const QString &username, const QString &se
                 return Response(ResponseStatus::Unauthorized,"حساب کاربری مسدود است");
             }
             if (!user->recoverPassword(cleanAnswer, newPassword)) {
-                return Response(ResponseStatus::Unauthorized,
-                                "اطلاعات وارد شده صحیح نیست");
+                return Response(ResponseStatus::Unauthorized, "اطلاعات وارد شده صحیح نیست");
             }
             const bool updated = userRepo.updatePasswordHash(userId, user->getPasswordHash());
             if (!updated) {
