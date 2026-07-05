@@ -60,8 +60,7 @@ Response AuthManager::validatePublisherRegistration(const QString &username,
         return Response(ResponseStatus::ValidationFailed, "نام انتشارات نمی‌تواند خالی باشد");
     }
     if (cleanLicenseNumber.isEmpty()) {
-        return Response(ResponseStatus::ValidationFailed,
-                        "شماره پروانه نشر نمی‌تواند خالی باشد");
+        return Response(ResponseStatus::ValidationFailed, "شماره پروانه نشر نمی‌تواند خالی باشد");
     }
     return Response(ResponseStatus::Success, "");
 }
@@ -77,14 +76,12 @@ Response AuthManager::validatePasswordChangeInput(const QString &oldPassword, co
     }
     return Response(ResponseStatus::Success, "");
 }
-Response AuthManager::validateRecoverPasswordInput(const QString &username,
-                                                   const QString &securityAnswer,
-                                                   const QString &newPassword) const {
+Response AuthManager::validateRecoverPasswordInput(const QString &username, const QString &securityAnswer, const QString &newPassword) const {
     if (username.trimmed().isEmpty()) {
         return Response(ResponseStatus::ValidationFailed, "نام کاربری را وارد کنید");
     }
     if (securityAnswer.trimmed().isEmpty()) {
-        return Response(ResponseStatus::ValidationFailed, "پاسخ سوال امنیتی نمی‌تواند خالی باشد");
+        return Response(ResponseStatus::ValidationFailed, "پاسخ سوال امنیتی نمی تواند خالی باشد");
     }
     if (!User::isStrongPassword(newPassword)) {
         return Response(ResponseStatus::ValidationFailed, "رمز عبور جدید ضعیف است. باید حداقل ۸ کاراکتر و شامل حروف بزرگ، کوچک و عدد باشد");
@@ -95,8 +92,7 @@ bool AuthManager::isValidEmail(const QString &email) const {
     static const QRegularExpression emailRegex( R"(^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$)" );
     return emailRegex.match(email.trimmed()).hasMatch();
 }
-Response AuthManager::buildLoginSuccessResponse(int userId,
-                                                const QString &username, UserRole role, const QString &publicationName) const {
+Response AuthManager::buildLoginSuccessResponse(int userId, const QString &username, UserRole role, const QString &publicationName) const {
     QVariantMap data;
     data["userId"] = userId;
     data["username"] = username;
@@ -104,7 +100,7 @@ Response AuthManager::buildLoginSuccessResponse(int userId,
     if (role == UserRole::Publisher) {
         data["publicationName"] = publicationName;
     }
-    return Response(ResponseStatus::Success, "ورود موفقیت‌آمیز بود", data);
+    return Response(ResponseStatus::Success, "ورود موفقیت آمیز بود", data);
 }
 Response AuthManager::registerNormalUser(const QString &username, const QString &plainPassword, const QString &plainAnswer) {
     try {
@@ -199,8 +195,7 @@ Response AuthManager::login(const QString &username, const QString &plainPasswor
         int userId = -1;
         UserRole role = UserRole::NormalUser;
         if (!userRepo.findUserRoleAndId(encryptedUsername, userId, role)) {
-            return Response(ResponseStatus::NotFound,
-                            "نام کاربری یا رمز عبور اشتباه است");
+            return Response(ResponseStatus::NotFound, "نام کاربری یا رمز عبور اشتباه است");
         }
         if (role == UserRole::NormalUser) {
             std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
@@ -244,12 +239,10 @@ Response AuthManager::login(const QString &username, const QString &plainPasswor
         return buildLoginSuccessResponse(admin->getUserId(), admin->getUsername(), UserRole::Admin);
     }
     catch (const std::exception &) {
-        return Response(ResponseStatus::Error,
-                        "خطای داخلی در ورود به سیستم");
+        return Response(ResponseStatus::Error, "خطای داخلی در ورود به سیستم");
     }
     catch (...) {
-        return Response(ResponseStatus::Error,
-                        "خطای ناشناخته در ورود به سیستم");
+        return Response(ResponseStatus::Error, "خطای ناشناخته در ورود به سیستم");
     }
 }
 Response AuthManager::changePassword(int userId, UserRole role, const QString &oldPassword, const QString &newPassword){
@@ -291,7 +284,7 @@ Response AuthManager::changePassword(int userId, UserRole role, const QString &o
             }
             const bool updated = userRepo.updatePasswordHash(userId, publisher->getPasswordHash());
             if (!updated) {
-                return Response(ResponseStatus::Error,"خطا در به‌روزرسانی رمز عبور");
+                return Response(ResponseStatus::Error,"خطا در به روزرسانی رمز عبور");
             }
             return Response(ResponseStatus::Success,"رمز عبور با موفقیت تغییر یافت");
         }
@@ -308,7 +301,7 @@ Response AuthManager::changePassword(int userId, UserRole role, const QString &o
         }
         const bool updated = userRepo.updatePasswordHash(userId, admin->getPasswordHash());
         if (!updated) {
-            return Response(ResponseStatus::Error,"خطا در به‌روزرسانی رمز عبور");
+            return Response(ResponseStatus::Error,"خطا در به روزرسانی رمز عبور");
         }
 
         return Response(ResponseStatus::Success,"رمز عبور با موفقیت تغییر یافت");
@@ -352,7 +345,7 @@ Response AuthManager::recoverPassword(const QString &username, const QString &se
             }
             const bool updated = userRepo.updatePasswordHash(userId, user->getPasswordHash());
             if (!updated) {
-                return Response(ResponseStatus::Error,"خطا در به‌روزرسانی رمز عبور");
+                return Response(ResponseStatus::Error,"خطا در به روزرسانی رمز عبور");
             }
             return Response(ResponseStatus::Success,"رمز عبور با موفقیت بازیابی شد");
         }
@@ -372,7 +365,7 @@ Response AuthManager::recoverPassword(const QString &username, const QString &se
 
         const bool updated = userRepo.updatePasswordHash(userId, publisher->getPasswordHash());
         if (!updated) {
-            return Response(ResponseStatus::Error,"خطا در به‌روزرسانی رمز عبور");
+            return Response(ResponseStatus::Error,"خطا در به روزرسانی رمز عبور");
         }
 
         return Response(ResponseStatus::Success,"رمز عبور با موفقیت بازیابی شد");

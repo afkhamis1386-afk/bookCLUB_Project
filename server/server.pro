@@ -34,8 +34,10 @@ SOURCES += \
     DatabaseManager.cpp \
     GenreRepository.cpp \
     NotificationRepository.cpp \
+    OrderManager.cpp \
     OrderRepository.cpp \
     PaymentRepository.cpp \
+    PriceCalculator.cpp \
     PublisherRepository.cpp \
     RatingRepository.cpp \
     ReviewRepository.cpp \
@@ -74,8 +76,10 @@ HEADERS += \
     DatabaseManager.h \
     GenreRepository.h \
     NotificationRepository.h \
+    OrderManager.h \
     OrderRepository.h \
     PaymentRepository.h \
+    PriceCalculator.h \
     PublisherRepository.h \
     RatingRepository.h \
     ReviewRepository.h \
