@@ -11,5 +11,4 @@ public:
     Response deleteReviewByAdmin(int reviewId);
     Response getReviewsForBook(int bookId);
 };
-
 #endif // REVIEWMANAGER_H

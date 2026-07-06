@@ -1,6 +1,7 @@
 #include "ReviewManager.h"
 #include "ReviewRepository.h"
 #include "BookRepository.h"
+#include "NotificationManager.h"
 #include "../common/Review.h"
 #include "../common/Book.h"
 #include <memory>
@@ -29,12 +30,18 @@ Response ReviewManager::submitReview(int userId, int bookId, const QString &comm
     if(newReviewId == -1){
         return Response(ResponseStatus::Error, "خطا در ثبت نظر");
     }
+    if(parentId == -1){
+        NotificationManager notifManager;
+        notifManager.sendNotification(
+            book->getPublisherUserId(),
+            NotificationType::NewReviewForPublisher, "نظر جدید", QString("یک نظر جدید برای کتاب «%1» ثبت شد").arg(book->getBookName()), bookId, userId );
+    }
     QVariantMap data;
     data["reviewId"] = newReviewId;
     return Response(ResponseStatus::Success, "نظر با موفقیت ثبت شد", data);
 }
 Response ReviewManager::editReview(int userId, int reviewId, const QString &newCommentText){
-    if(newCommentText.trimmed().isEmpty() || newCommentText.length() > 1000){
+    if(newCommentText.trimmed().isEmpty() || newCommentText.length() > 1000) {
         return Response(ResponseStatus::ValidationFailed, "متن نظر نمی تواند خالی باشد و باید حداکثر ۱۰۰۰ کاراکتر باشد");
     }
     ReviewRepository reviewRepo;
@@ -109,7 +116,4 @@ Response ReviewManager::getReviewsForBook(int bookId){
     data["reviews"] = reviewList;
     return Response(ResponseStatus::Success, "نظرات بازیابی شد", data);
 }
-
-
-
 
