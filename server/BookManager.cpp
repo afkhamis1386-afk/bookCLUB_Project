@@ -6,9 +6,11 @@
 #include "RatingRepository.h"
 #include "TimedDiscountRepository.h"
 #include "DatabaseManager.h"
+#include "PriceCalculator.h"
 #include "../common/Book.h"
 #include "../common/Genre.h"
 #include "../common/Category.h"
+#include "../common/TimedDiscount.h"
 #include <memory>
 BookManager::BookManager(){}
 Response BookManager::addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName, const QString &coverImagePath,
@@ -233,12 +235,11 @@ Response BookManager::getBookDetails(int bookId){
     }
     TimedDiscountRepository timedDiscountRepo;
     std::unique_ptr<TimedDiscount> activeDiscount(timedDiscountRepo.getActiveDiscountForBook(bookId));
-    double effectivePercent = book->getDiscountPercent();
-    if(activeDiscount && activeDiscount->getDiscountPercent() > effectivePercent){
-        effectivePercent = activeDiscount->getDiscountPercent();
-    }
-    double finalPrice = book->getBookPrice() - (book->getBookPrice() * effectivePercent / 100.0) - book->getDiscountAmount();
-    if(finalPrice < 0) finalPrice = 0;
+    double timedPercent = activeDiscount ? activeDiscount->getDiscountPercent() : 0.0;
+    double effectivePercent = PriceCalculator::calculateEffectivePercent(
+    book->getDiscountPercent(), timedPercent);
+    double finalPrice = PriceCalculator::calculateFinalPrice(
+    book->getBookPrice(), effectivePercent, book->getDiscountAmount());
     RatingRepository ratingRepo;
     double avgRating = ratingRepo.getAverageRating(bookId);
     int ratingCount = ratingRepo.getRatingCount(bookId);
@@ -276,7 +277,3 @@ Response BookManager::getPublisherDashboard(int publisherUserId){
     data["books"] = bookStats;
     return Response(ResponseStatus::Success, "داشبورد ناشر بازیابی شد", data);
 }
-
-
-
-
