@@ -1,6 +1,7 @@
 #ifndef RATINGMANAGER_H
 #define RATINGMANAGER_H
 #include "../common/Response.h"
+#include "../common/Response.h"
 class RatingManager {
 public:
     RatingManager();

@@ -1,6 +1,7 @@
 #include "RatingManager.h"
 #include "RatingRepository.h"
 #include "BookRepository.h"
+#include "NotificationManager.h"
 #include "../common/Rating.h"
 #include "../common/Book.h"
 #include <memory>
@@ -19,6 +20,10 @@ Response RatingManager::submitRating(int userId, int bookId, int ratingValue){
     if(!ratingRepo.upsertRating(newRating)){
         return Response(ResponseStatus::Error, "خطا در ثبت امتیاز");
     }
+    NotificationManager notifManager;
+    notifManager.sendNotification(
+        book->getPublisherUserId(),
+        NotificationType::NewReviewForPublisher, "امتیاز جدید", QString("کتاب «%1» یک امتیاز جدید دریافت کرد").arg(book->getBookName()), bookId, userId);
     QVariantMap data;
     data["newAverage"] = ratingRepo.getAverageRating(bookId);
     data["ratingCount"] = ratingRepo.getRatingCount(bookId);
@@ -31,4 +36,3 @@ Response RatingManager::getBookRatingSummary(int bookId){
     data["ratingCount"] = ratingRepo.getRatingCount(bookId);
     return Response(ResponseStatus::Success, "خلاصه امتیازات بازیابی شد", data);
 }
-
