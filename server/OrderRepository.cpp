@@ -61,13 +61,39 @@ int OrderRepository::insertOrder(const Order &order) {
             db.rollback();
             return -1;
         }
+        QSqlQuery checkLibraryQuery(db);
+        checkLibraryQuery.prepare(
+            "SELECT COUNT(*) FROM UserLibrary WHERE UserID = :userId AND BookID = :bookId"
+            );
+        checkLibraryQuery.bindValue(":userId", order.getUserId());
+        checkLibraryQuery.bindValue(":bookId", item.getBookId());
+        if (!checkLibraryQuery.exec() || !checkLibraryQuery.next()) {
+            qWarning() << "خطا در بررسی کتابخانه شخصی:" << checkLibraryQuery.lastError().text();
+            db.rollback();
+            return -1;
+        }
+        bool alreadyOwned = checkLibraryQuery.value(0).toInt() > 0;
+        if (!alreadyOwned) {
+            QSqlQuery insertLibraryQuery(db);
+            insertLibraryQuery.prepare(
+                "INSERT INTO UserLibrary (UserID, BookID) VALUES (:userId, :bookId)"
+                );
+            insertLibraryQuery.bindValue(":userId", order.getUserId());
+            insertLibraryQuery.bindValue(":bookId", item.getBookId());
+            if (!insertLibraryQuery.exec()) {
+                qWarning() << "خطا در انتقال کتاب به کتابخانه شخصی:" << insertLibraryQuery.lastError().text();
+                db.rollback();
+                return -1;
+            }
+        }
     }
     if (!db.commit()) {
         qWarning() << "خطا در تایید نهایی تراکنش ثبت سفارش:" << db.lastError().text();
         db.rollback();
         return -1;
+
     }
-    return newOrderId;
+return newOrderId;
 }
 Order* OrderRepository::loadOrderById(int orderId) {
     QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
