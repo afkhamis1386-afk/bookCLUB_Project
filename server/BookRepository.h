@@ -22,5 +22,8 @@ public:
     QVector<int> getFreeBooks();
     QVector<int> getBooksByPublisher(int publisherUserId);
     int getTotalBooksCountByPublisher(int publisherUserId);
+    int getSoldCopiesCount(int bookId);
+    QVector<int> getTopSellingBooksByPublisher(int publisherUserId, int limit);
+    QVector<int> getLeastSellingBooksByPublisher(int publisherUserId, int limit);
 };
 #endif // BOOKREPOSITORY_H
