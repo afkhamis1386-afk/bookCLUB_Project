@@ -263,5 +263,63 @@ int BookRepository::getTotalBooksCountByPublisher(int publisherUserId){
         return query.value(0).toInt();
     return 0;
 }
+int BookRepository::getSoldCopiesCount(int bookId){
+    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare(
+        "SELECT COUNT(*) FROM OrderItems oi "
+        "JOIN Orders o ON oi.OrderID = o.OrderID "
+        "JOIN Statuses s ON o.StatusID = s.StatusID "
+        "WHERE oi.BookID = :bookId AND s.StatusTitle IN ('Paid', 'Completed')"
+        );
+    query.bindValue(":bookId", bookId);
+    if(query.exec() && query.next())
+        return query.value(0).toInt();
+    return 0;
+}
+QVector<int> BookRepository::getTopSellingBooksByPublisher(int publisherUserId, int limit){
+    QVector<int> ids;
+    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare(
+        "SELECT TOP (:limit) b.BookID, COUNT(oi.OrderItemID) AS SoldCount "
+        "FROM Books b "
+        "LEFT JOIN OrderItems oi ON b.BookID = oi.BookID "
+        "LEFT JOIN Orders o ON oi.OrderID = o.OrderID "
+        "LEFT JOIN Statuses s ON o.StatusID = s.StatusID AND s.StatusTitle IN ('Paid', 'Completed') "
+        "WHERE b.PublisherUserID = :publisherId AND b.IsDeleted = 0 "
+        "GROUP BY b.BookID "
+        "ORDER BY SoldCount DESC"
+        );
+    query.bindValue(":limit", limit);
+    query.bindValue(":publisherId", publisherUserId);
+    if(query.exec()){
+        while(query.next())
+            ids.append(query.value(0).toInt());
+    }
+    return ids;
+}
+QVector<int> BookRepository::getLeastSellingBooksByPublisher(int publisherUserId, int limit){
+    QVector<int> ids;
+    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare(
+        "SELECT TOP (:limit) b.BookID, COUNT(oi.OrderItemID) AS SoldCount "
+        "FROM Books b "
+        "LEFT JOIN OrderItems oi ON b.BookID = oi.BookID "
+        "LEFT JOIN Orders o ON oi.OrderID = o.OrderID "
+        "LEFT JOIN Statuses s ON o.StatusID = s.StatusID AND s.StatusTitle IN ('Paid', 'Completed') "
+        "WHERE b.PublisherUserID = :publisherId AND b.IsDeleted = 0 "
+        "GROUP BY b.BookID "
+        "ORDER BY SoldCount ASC"
+        );
+    query.bindValue(":limit", limit);
+    query.bindValue(":publisherId", publisherUserId);
+    if(query.exec()){
+        while (query.next())
+            ids.append(query.value(0).toInt());
+    }
+    return ids;
+}
 
 
