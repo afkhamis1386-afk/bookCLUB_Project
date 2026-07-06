@@ -35,11 +35,14 @@ SOURCES += \
     CategoryRepository.cpp \
     DatabaseManager.cpp \
     GenreRepository.cpp \
+    NotificationManager.cpp \
     NotificationRepository.cpp \
     OrderManager.cpp \
     OrderRepository.cpp \
+    PaymentManager.cpp \
     PaymentRepository.cpp \
     PriceCalculator.cpp \
+    PublisherManager.cpp \
     PublisherRepository.cpp \
     RatingManager.cpp \
     RatingRepository.cpp \
@@ -82,11 +85,14 @@ HEADERS += \
     CategoryRepository.h \
     DatabaseManager.h \
     GenreRepository.h \
+    NotificationManager.h \
     NotificationRepository.h \
     OrderManager.h \
     OrderRepository.h \
+    PaymentManager.h \
     PaymentRepository.h \
     PriceCalculator.h \
+    PublisherManager.h \
     PublisherRepository.h \
     RatingManager.h \
     RatingRepository.h \
