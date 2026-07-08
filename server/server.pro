@@ -1,11 +1,5 @@
-QT += widgets
-QT += widgets sql
+QT += core widgets network sql
 CONFIG += c++17
-QT += core network
-QT += core network sql
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
     ../common/Admin.cpp \
@@ -24,6 +18,8 @@ SOURCES += \
     ../common/Shelf.cpp \
     ../common/TimedDiscount.cpp \
     ../common/publisher.cpp \
+    ../common/user.cpp \
+    ../common/normaluser.cpp \
     AccessControl.cpp \
     AdminManager.cpp \
     AdminRepository.cpp \
@@ -52,13 +48,12 @@ SOURCES += \
     ReviewRepository.cpp \
     ServerApplication.cpp \
     ServerMonitorManager.cpp \
+    serverdashboardwindow.cpp \
     ShelfManager.cpp \
     ShelfRepository.cpp \
     TimedDiscountRepository.cpp \
     UserRepository.cpp \
-    main.cpp \
-    loginwindow_s.cpp \
-    serverdashboardwindow.cpp
+    main.cpp
 
 HEADERS += \
     ../common/Admin.h \
@@ -78,6 +73,8 @@ HEADERS += \
     ../common/Shelf.h \
     ../common/TimedDiscount.h \
     ../common/publisher.h \
+    ../common/user.h \
+    ../common/normaluser.h \
     AccessControl.h \
     AdminManager.h \
     AdminRepository.h \
@@ -106,25 +103,15 @@ HEADERS += \
     ReviewRepository.h \
     ServerApplication.h \
     ServerMonitorManager.h \
+    serverdashboardwindow.h \
     ShelfManager.h \
     ShelfRepository.h \
     TimedDiscountRepository.h \
-    UserRepository.h \
-    loginwindow_s.h \
-    serverdashboardwindow.h
+    UserRepository.h
 
 FORMS += \
-    loginwindow_s.ui \
     serverdashboardwindow.ui
 
-# Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-HEADERS += \
-    ../common/user.h \
-    ../common/normaluser.h
-
-SOURCES += \
-    ../common/user.cpp \
-    ../common/normaluser.cpp
