@@ -66,7 +66,7 @@ Response ShelfManager::moveBookBetweenShelves(int userId, int sourceShelfId, int
     if(!shelfRepo.shelfBelongsToUser(destShelfId, userId)){
         return Response(ResponseStatus::Unauthorized, "شما مالک قفسه مقصد نیستید");
     }
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if(!db.transaction()){
         return Response(ResponseStatus::Error, "خطا در شروع تراکنش انتقال کتاب");
     }

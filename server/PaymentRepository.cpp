@@ -29,7 +29,7 @@ int PaymentRepository::insertPayment(const Payment &payment) {
     return query.value(0).toInt();
 }
 Payment* PaymentRepository::loadPaymentById(int paymentId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT PaymentID, OrderID, Amount, TransactionCode, PaymentDate, PaymentStatusID "
@@ -51,7 +51,7 @@ Payment* PaymentRepository::loadPaymentById(int paymentId) {
     return payment;
 }
 Payment* PaymentRepository::loadPaymentByOrderId(int orderId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT PaymentID, OrderID, Amount, TransactionCode, PaymentDate, PaymentStatusID "
@@ -72,7 +72,7 @@ Payment* PaymentRepository::loadPaymentByOrderId(int orderId) {
     return payment;
 }
 bool PaymentRepository::updatePaymentStatus(int paymentId, int newStatusId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Payments SET PaymentStatusID = :statusId WHERE PaymentID = :paymentId");
     query.bindValue(":statusId", newStatusId);
@@ -84,7 +84,7 @@ bool PaymentRepository::updatePaymentStatus(int paymentId, int newStatusId) {
     return true;
 }
 bool PaymentRepository::setTransactionCode(int paymentId, const QString &code) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Payments SET TransactionCode = :code WHERE PaymentID = :paymentId");
     query.bindValue(":code", code);
@@ -97,7 +97,7 @@ bool PaymentRepository::setTransactionCode(int paymentId, const QString &code) {
 }
 QVector<int> PaymentRepository::getAllPaymentIds() {
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT PaymentID FROM Payments ORDER BY PaymentDate DESC");
     if (query.exec()) {

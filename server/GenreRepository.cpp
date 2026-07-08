@@ -5,7 +5,7 @@
 #include <QDebug>
 GenreRepository::GenreRepository(){}
 int GenreRepository::insertGenre(const Genre &genre){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO Genres (GenreTitle) OUTPUT INSERTED.GenreID VALUES (:title)");
@@ -17,7 +17,7 @@ int GenreRepository::insertGenre(const Genre &genre){
     return query.value(0).toInt();
 }
 Genre* GenreRepository::loadGenreById(int genreId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT GenreID, GenreTitle FROM Genres WHERE GenreID = :genreId");
     query.bindValue(":genreId", genreId);
@@ -28,7 +28,7 @@ Genre* GenreRepository::loadGenreById(int genreId){
     return new Genre(query.value(0).toInt(), query.value(1).toString());
 }
 bool GenreRepository::updateGenreTitle(int genreId, const QString &newTitle){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Genres SET GenreTitle = :title WHERE GenreID = :genreId");
     query.bindValue(":title", newTitle);
@@ -40,7 +40,7 @@ bool GenreRepository::updateGenreTitle(int genreId, const QString &newTitle){
     return true;
 }
 bool GenreRepository::deleteGenre(int genreId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("DELETE FROM Genres WHERE GenreID = :genreId");
     query.bindValue(":genreId", genreId);
@@ -52,7 +52,7 @@ bool GenreRepository::deleteGenre(int genreId){
 }
 QVector<Genre> GenreRepository::getAllGenres(){
     QVector<Genre> genres;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT GenreID, GenreTitle FROM Genres ORDER BY GenreTitle");
     if(query.exec()){
@@ -62,7 +62,7 @@ QVector<Genre> GenreRepository::getAllGenres(){
     return genres;
 }
 bool GenreRepository::genreExists(const QString &title) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM Genres WHERE GenreTitle = :title");
     query.bindValue(":title", title);

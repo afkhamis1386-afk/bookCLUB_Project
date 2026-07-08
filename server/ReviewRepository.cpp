@@ -5,7 +5,7 @@
 #include <QDebug>
 ReviewRepository::ReviewRepository(){}
 int ReviewRepository::insertReview(const Review &review){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO Reviews (UserID, BookID, CommentText, ParentID, IsDeleted, ReviewDate) "
@@ -27,7 +27,7 @@ int ReviewRepository::insertReview(const Review &review){
     return query.value(0).toInt();
 }
 Review* ReviewRepository::loadReviewById(int reviewId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT ReviewID, UserID, BookID, CommentText, ParentID, IsDeleted, ReviewDate "
@@ -49,7 +49,7 @@ Review* ReviewRepository::loadReviewById(int reviewId){
         query.value(6).toDateTime());
 }
 bool ReviewRepository::updateCommentText(int reviewId, const QString &newComment){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Reviews SET CommentText = :comment WHERE ReviewID = :reviewId");
     query.bindValue(":comment", newComment);
@@ -61,7 +61,7 @@ bool ReviewRepository::updateCommentText(int reviewId, const QString &newComment
     return true;
 }
 bool ReviewRepository::setDeletedStatus(int reviewId, bool isDeleted){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Reviews SET IsDeleted = :isDeleted WHERE ReviewID = :reviewId");
     query.bindValue(":isDeleted", isDeleted);
@@ -74,7 +74,7 @@ bool ReviewRepository::setDeletedStatus(int reviewId, bool isDeleted){
 }
 QVector<int> ReviewRepository::getReviewIdsByBook(int bookId){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT ReviewID FROM Reviews WHERE BookID = :bookId AND IsDeleted = 0 "
@@ -90,7 +90,7 @@ QVector<int> ReviewRepository::getReviewIdsByBook(int bookId){
 }
 QVector<int> ReviewRepository::getRepliesOf(int reviewId){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT ReviewID FROM Reviews WHERE ParentID = :parentId AND IsDeleted = 0 "
@@ -104,7 +104,7 @@ QVector<int> ReviewRepository::getRepliesOf(int reviewId){
 }
 QVector<int> ReviewRepository::getReviewIdsByUser(int userId){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT ReviewID FROM Reviews WHERE UserID = :userId AND IsDeleted = 0");
     query.bindValue(":userId", userId);
@@ -116,7 +116,7 @@ QVector<int> ReviewRepository::getReviewIdsByUser(int userId){
 }
 QVector<int> ReviewRepository::getAllReviewIds(){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT ReviewID FROM Reviews ORDER BY ReviewDate DESC");
     if(query.exec()){
@@ -126,7 +126,7 @@ QVector<int> ReviewRepository::getAllReviewIds(){
     return ids;
 }
 bool ReviewRepository::reviewBelongsToUser(int reviewId, int userId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM Reviews WHERE ReviewID = :reviewId AND UserID = :userId");
     query.bindValue(":reviewId", reviewId);

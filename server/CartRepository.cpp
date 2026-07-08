@@ -29,7 +29,7 @@ Cart* CartRepository::loadCartByUserId(int userId) {
         return nullptr;
     Cart *cart = new Cart(userId);
     cart->setCartId(cartId);
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT b.BookID, b.BookPrice, b.DiscountPercent, b.DiscountAmount "
@@ -53,7 +53,7 @@ Cart* CartRepository::loadCartByUserId(int userId) {
 bool CartRepository::addItemToCart(int cartId, int bookId) {
     if (isBookInCart(cartId, bookId))
         return false;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("INSERT INTO CartItems (CartID, BookID) VALUES (:cartId, :bookId)");
     query.bindValue(":cartId", cartId);
@@ -65,7 +65,7 @@ bool CartRepository::addItemToCart(int cartId, int bookId) {
     return true;
 }
 bool CartRepository::removeItemFromCart(int cartId, int bookId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("DELETE FROM CartItems WHERE CartID = :cartId AND BookID = :bookId");
     query.bindValue(":cartId", cartId);
@@ -77,7 +77,7 @@ bool CartRepository::removeItemFromCart(int cartId, int bookId) {
     return true;
 }
 bool CartRepository::isBookInCart(int cartId, int bookId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM CartItems WHERE CartID = :cartId AND BookID = :bookId");
     query.bindValue(":cartId", cartId);
@@ -88,7 +88,7 @@ bool CartRepository::isBookInCart(int cartId, int bookId) {
     return false;
 }
 bool CartRepository::clearCart(int cartId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("DELETE FROM CartItems WHERE CartID = :cartId");
     query.bindValue(":cartId", cartId);
@@ -99,7 +99,7 @@ bool CartRepository::clearCart(int cartId) {
     return true;
 }
 int CartRepository::getItemCount(int cartId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM CartItems WHERE CartID = :cartId");
     query.bindValue(":cartId", cartId);

@@ -48,7 +48,7 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     if(categoryId == -1){
         return Response(ResponseStatus::ValidationFailed, "دسته بندی انتخاب شده معتبر نیست");
     }
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if(!db.transaction()){
         return Response(ResponseStatus::Error, "خطا در شروع تراکنش ثبت کتاب");
     }

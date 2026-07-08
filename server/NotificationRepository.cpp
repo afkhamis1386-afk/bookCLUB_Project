@@ -38,7 +38,7 @@ int NotificationRepository::insertNotification(const Notification &notification)
     return query.value(0).toInt();
 }
 Notification* NotificationRepository::loadNotificationById(int notificationId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT NotificationID, UserID, NotificationTypeID, Title, Message, IsRead, CreatedAt, "
@@ -66,7 +66,7 @@ Notification* NotificationRepository::loadNotificationById(int notificationId) {
 }
 QVector<int> NotificationRepository::getNotificationIdsByUser(int userId) {
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT NotificationID FROM Notifications WHERE UserID = :userId ORDER BY CreatedAt DESC");
     query.bindValue(":userId", userId);
@@ -78,7 +78,7 @@ QVector<int> NotificationRepository::getNotificationIdsByUser(int userId) {
 }
 QVector<int> NotificationRepository::getUnreadNotificationIds(int userId) {
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT NotificationID FROM Notifications WHERE UserID = :userId AND IsRead = 0 "
@@ -92,7 +92,7 @@ QVector<int> NotificationRepository::getUnreadNotificationIds(int userId) {
     return ids;
 }
 bool NotificationRepository::markAsRead(int notificationId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Notifications SET IsRead = 1 WHERE NotificationID = :notificationId");
     query.bindValue(":notificationId", notificationId);
@@ -103,7 +103,7 @@ bool NotificationRepository::markAsRead(int notificationId) {
     return true;
 }
 bool NotificationRepository::markAsUnread(int notificationId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Notifications SET IsRead = 0 WHERE NotificationID = :notificationId");
     query.bindValue(":notificationId", notificationId);
@@ -114,7 +114,7 @@ bool NotificationRepository::markAsUnread(int notificationId) {
     return true;
 }
 int NotificationRepository::getUnreadCount(int userId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM Notifications WHERE UserID = :userId AND IsRead = 0");
     query.bindValue(":userId", userId);
@@ -123,7 +123,7 @@ int NotificationRepository::getUnreadCount(int userId) {
     return 0;
 }
 bool NotificationRepository::deleteNotification(int notificationId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("DELETE FROM Notifications WHERE NotificationID = :notificationId");
     query.bindValue(":notificationId", notificationId);
@@ -134,7 +134,7 @@ bool NotificationRepository::deleteNotification(int notificationId) {
     return true;
 }
 bool NotificationRepository::notificationBelongsToUser(int notificationId, int userId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM Notifications WHERE NotificationID = :notificationId AND UserID = :userId");
     query.bindValue(":notificationId", notificationId);
