@@ -7,7 +7,7 @@
 
 PublisherRepository::PublisherRepository() {}
 int PublisherRepository::insertPublisher(const Publisher &publisher) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction()) {
         qWarning() << "خطا در شروع تراکنش:" << db.lastError().text();
         return -1;

@@ -12,7 +12,7 @@ int OrderRepository::insertOrder(const Order &order) {
         qWarning() << "سفارش خالی است و قابل ثبت نیست.";
         return -1;
     }
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction()) {
         qWarning() << "خطا در شروع تراکنش ثبت سفارش:" << db.lastError().text();
         return -1;

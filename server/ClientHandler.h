@@ -1,0 +1,45 @@
+#ifndef CLIENTHANDLER_H
+#define CLIENTHANDLER_H
+
+#include <QObject>
+#include <QTcpSocket>
+#include <QByteArray>
+#include "../common/Request.h"
+#include "../common/Response.h"
+#include "../common/Enums.h"
+class ClientHandler : public QObject {
+    Q_OBJECT
+public:
+    explicit ClientHandler(qintptr socketDescriptor, QObject *parent = nullptr);
+public slots:
+    void run();
+signals:
+    void clientDisconnected(qintptr socketDescriptor);
+    void requestLogReceived(const QString &requestType, int statusCode);
+private slots:
+    void onReadyRead();
+    void onDisconnected();
+private:
+    qintptr socketDescriptor;
+    QTcpSocket *socket;
+    QByteArray buffer;
+    int authenticatedUserId;
+    UserRole authenticatedRole;
+    bool isAuthenticated;
+    void processRequest(const Request &req);
+    void sendResponse(const Response &res);
+    bool checkRole(const QVector<UserRole> &allowedRoles, Response &outErrorResponse);
+    Response handleAuthRequest(const Request &req);
+    Response handleBookRequest(const Request &req);
+    Response handleCartRequest(const Request &req);
+    Response handleOrderRequest(const Request &req);
+    Response handleReviewRequest(const Request &req);
+    Response handleRatingRequest(const Request &req);
+    Response handleShelfRequest(const Request &req);
+    Response handleNotificationRequest(const Request &req);
+    Response handleAdminRequest(const Request &req);
+    Response handlePublisherRequest(const Request &req);
+};
+
+#endif // CLIENTHANDLER_H
+

@@ -5,7 +5,7 @@
 #include <QDebug>
 CartRepository::CartRepository() {}
 int CartRepository::getOrCreateCartId(int userId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery selectQuery(db);
     selectQuery.prepare("SELECT CartID FROM ShoppingCarts WHERE UserID = :userId");
     selectQuery.bindValue(":userId", userId);
