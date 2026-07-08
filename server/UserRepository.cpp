@@ -45,7 +45,7 @@ int UserRepository::insertNormalUser(const NormalUser &user) {
     return newUserId;
 }
 NormalUser* UserRepository::loadNormalUserById(int userId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID, u.Username, u.PasswordHash, nu.SecurityAnswerHash, "
@@ -74,7 +74,7 @@ NormalUser* UserRepository::loadNormalUserById(int userId) {
     return user;
 }
 bool UserRepository::findUserRoleAndId(const QString &encryptedUsername, int &outUserId, UserRole &outRole) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT UserID, RoleID FROM Users WHERE Username = :username AND IsDeleted = 0");
     query.bindValue(":username", encryptedUsername);
@@ -87,7 +87,7 @@ bool UserRepository::findUserRoleAndId(const QString &encryptedUsername, int &ou
     return true;
 }
 bool UserRepository::updateBlockedStatus(int userId, bool isBlocked) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Users SET IsBlocked = :isBlocked WHERE UserID = :userId");
     query.bindValue(":isBlocked", isBlocked);
@@ -99,7 +99,7 @@ bool UserRepository::updateBlockedStatus(int userId, bool isBlocked) {
     return true;
 }
 bool UserRepository::updateDeletedStatus(int userId, bool isDeleted) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Users SET IsDeleted = :isDeleted WHERE UserID = :userId");
     query.bindValue(":isDeleted", isDeleted);
@@ -111,7 +111,7 @@ bool UserRepository::updateDeletedStatus(int userId, bool isDeleted) {
     return true;
 }
 bool UserRepository::updatePasswordHash(int userId, const QString &newPasswordHash) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Users SET PasswordHash = :hash WHERE UserID = :userId");
     query.bindValue(":hash", newPasswordHash);
@@ -124,7 +124,7 @@ bool UserRepository::updatePasswordHash(int userId, const QString &newPasswordHa
 }
 QVector<int> UserRepository::getAllUserIds() {
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT UserID FROM Users WHERE IsDeleted = 0");
     if (query.exec()) {
@@ -135,7 +135,7 @@ QVector<int> UserRepository::getAllUserIds() {
 }
 QVector<int> UserRepository::getAllNormalUserIds() {
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID FROM Users u JOIN NormalUsers nu ON u.UserID = nu.UserID "
@@ -149,7 +149,7 @@ QVector<int> UserRepository::getAllNormalUserIds() {
 }
 QVector<int> UserRepository::getFavoriteGenreIds(int userId) {
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT GenreID FROM FavouriteGenre WHERE UserID = :userId");
     query.bindValue(":userId", userId);
@@ -160,7 +160,7 @@ QVector<int> UserRepository::getFavoriteGenreIds(int userId) {
     return ids;
 }
 bool UserRepository::setFavoriteGenreIds(int userId, const QVector<int> &genreIds) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery deleteQuery(db);
     deleteQuery.prepare("DELETE FROM FavouriteGenre WHERE UserID = :userId");
     deleteQuery.bindValue(":userId", userId);
@@ -182,7 +182,7 @@ bool UserRepository::setFavoriteGenreIds(int userId, const QVector<int> &genreId
 }
 QVector<int> UserRepository::getPurchasedBookIds(int userId) {
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT BookID FROM UserLibrary WHERE UserID = :userId");
     query.bindValue(":userId", userId);
@@ -194,7 +194,7 @@ QVector<int> UserRepository::getPurchasedBookIds(int userId) {
 }
 QVector<int> UserRepository::getSavedBookIds(int userId) {
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT BookID FROM SavedBooks WHERE UserID = :userId");
     query.bindValue(":userId", userId);
@@ -205,7 +205,7 @@ QVector<int> UserRepository::getSavedBookIds(int userId) {
     return ids;
 }
 bool UserRepository::addSavedBook(int userId, int bookId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("INSERT INTO SavedBooks (UserID, BookID) VALUES (:userId, :bookId)");
     query.bindValue(":userId", userId);
@@ -217,7 +217,7 @@ bool UserRepository::addSavedBook(int userId, int bookId) {
     return true;
 }
 bool UserRepository::removeSavedBook(int userId, int bookId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("DELETE FROM SavedBooks WHERE UserID = :userId AND BookID = :bookId");
     query.bindValue(":userId", userId);
@@ -230,7 +230,7 @@ bool UserRepository::removeSavedBook(int userId, int bookId) {
 }
 QMap<int, int> UserRepository::getReadingProgress(int userId) {
     QMap<int, int> progress;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT BookID, LastPage FROM ReadingProgress WHERE UserID = :userId");
     query.bindValue(":userId", userId);
@@ -241,7 +241,7 @@ QMap<int, int> UserRepository::getReadingProgress(int userId) {
     return progress;
 }
 bool UserRepository::setLastReadPage(int userId, int bookId, int pageNumber) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "MERGE INTO ReadingProgress AS target "
@@ -260,7 +260,7 @@ bool UserRepository::setLastReadPage(int userId, int bookId, int pageNumber) {
     return true;
 }
 bool UserRepository::findRoleById(int userId, UserRole &outRole) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT RoleID FROM Users WHERE UserID = :userId AND IsDeleted = 0");
     query.bindValue(":userId", userId);

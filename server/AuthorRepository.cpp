@@ -5,7 +5,7 @@
 #include <QDebug>
 AuthorRepository::AuthorRepository(){}
 int AuthorRepository::insertAuthor(const Author &author){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO Authors (AuthorName) OUTPUT INSERTED.AuthorID VALUES (:name)");
@@ -17,7 +17,7 @@ int AuthorRepository::insertAuthor(const Author &author){
     return query.value(0).toInt();
 }
 Author* AuthorRepository::loadAuthorById(int authorId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT AuthorID, AuthorName FROM Authors WHERE AuthorID = :authorId");
     query.bindValue(":authorId", authorId);
@@ -28,7 +28,7 @@ Author* AuthorRepository::loadAuthorById(int authorId){
     return new Author(query.value(0).toInt(), query.value(1).toString());
 }
 bool AuthorRepository::updateAuthorName(int authorId, const QString &newName){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Authors SET AuthorName = :name WHERE AuthorID = :authorId");
     query.bindValue(":name", newName);
@@ -40,7 +40,7 @@ bool AuthorRepository::updateAuthorName(int authorId, const QString &newName){
     return true;
 }
 bool AuthorRepository::deleteAuthor(int authorId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("DELETE FROM Authors WHERE AuthorID = :authorId");
     query.bindValue(":authorId", authorId);
@@ -52,7 +52,7 @@ bool AuthorRepository::deleteAuthor(int authorId){
 }
 QVector<Author> AuthorRepository::getAllAuthors(){
     QVector<Author> authors;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT AuthorID, AuthorName FROM Authors ORDER BY AuthorName");
     if(query.exec()){
@@ -62,7 +62,7 @@ QVector<Author> AuthorRepository::getAllAuthors(){
     return authors;
 }
 bool AuthorRepository::authorExists(const QString &name){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM Authors WHERE AuthorName = :name");
     query.bindValue(":name", name);
@@ -71,7 +71,7 @@ bool AuthorRepository::authorExists(const QString &name){
     return false;
 }
 int AuthorRepository::getOrCreateAuthor(const QString &authorName){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery selectQuery(db);
     selectQuery.prepare("SELECT AuthorID FROM Authors WHERE AuthorName = :name");
     selectQuery.bindValue(":name", authorName);

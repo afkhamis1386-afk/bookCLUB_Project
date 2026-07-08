@@ -5,7 +5,7 @@
 #include <QDebug>
 RatingRepository::RatingRepository(){}
 bool RatingRepository::upsertRating(const Rating &rating) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "MERGE INTO Ratings AS target "
@@ -24,7 +24,7 @@ bool RatingRepository::upsertRating(const Rating &rating) {
     return true;
 }
 Rating* RatingRepository::loadRating(int userId, int bookId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT RatingID, UserID, BookID, Rating FROM Ratings "
@@ -41,7 +41,7 @@ Rating* RatingRepository::loadRating(int userId, int bookId){
         query.value(3).toInt());
 }
 double RatingRepository::getAverageRating(int bookId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT ISNULL(AVG(CAST(Rating AS FLOAT)), 0) FROM Ratings WHERE BookID = :bookId");
     query.bindValue(":bookId", bookId);
@@ -50,7 +50,7 @@ double RatingRepository::getAverageRating(int bookId){
     return 0.0;
 }
 int RatingRepository::getRatingCount(int bookId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM Ratings WHERE BookID = :bookId");
     query.bindValue(":bookId", bookId);
@@ -59,7 +59,7 @@ int RatingRepository::getRatingCount(int bookId){
     return 0;
 }
 bool RatingRepository::deleteRating(int userId, int bookId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("DELETE FROM Ratings WHERE UserID = :userId AND BookID = :bookId");
     query.bindValue(":userId", userId);

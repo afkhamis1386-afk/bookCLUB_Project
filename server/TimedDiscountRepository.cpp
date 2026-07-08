@@ -6,7 +6,7 @@
 #include <QDebug>
 TimedDiscountRepository::TimedDiscountRepository(){}
 int TimedDiscountRepository::insertTimedDiscount(const TimedDiscount &discount){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO TimedDiscount (BookID, DiscountPercent, StartDate, EndDate) "
@@ -23,7 +23,7 @@ int TimedDiscountRepository::insertTimedDiscount(const TimedDiscount &discount){
     return query.value(0).toInt();
 }
 TimedDiscount* TimedDiscountRepository::loadDiscountById(int discountId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT DiscountID, BookID, DiscountPercent, StartDate, EndDate "
@@ -42,7 +42,7 @@ TimedDiscount* TimedDiscountRepository::loadDiscountById(int discountId){
         );
 }
 TimedDiscount* TimedDiscountRepository::getActiveDiscountForBook(int bookId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT TOP 1 DiscountID, BookID, DiscountPercent, StartDate, EndDate "
@@ -62,7 +62,7 @@ TimedDiscount* TimedDiscountRepository::getActiveDiscountForBook(int bookId){
 }
 QVector<int> TimedDiscountRepository::getAllDiscountIdsForBook(int bookId){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT DiscountID FROM TimedDiscount WHERE BookID = :bookId ORDER BY StartDate DESC");
     query.bindValue(":bookId", bookId);
@@ -73,7 +73,7 @@ QVector<int> TimedDiscountRepository::getAllDiscountIdsForBook(int bookId){
     return ids;
 }
 bool TimedDiscountRepository::updateDates(int discountId, const QDateTime &startDate, const QDateTime &endDate){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "UPDATE TimedDiscount SET StartDate = :startDate, EndDate = :endDate "
@@ -88,7 +88,7 @@ bool TimedDiscountRepository::updateDates(int discountId, const QDateTime &start
     return true;
 }
 bool TimedDiscountRepository::deleteDiscount(int discountId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("DELETE FROM TimedDiscount WHERE DiscountID = :discountId");
     query.bindValue(":discountId", discountId);
@@ -100,7 +100,7 @@ bool TimedDiscountRepository::deleteDiscount(int discountId){
 }
 QVector<int> TimedDiscountRepository::getExpiredDiscountIds(){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT DiscountID FROM TimedDiscount WHERE EndDate <= GETDATE()");
     if(query.exec()){

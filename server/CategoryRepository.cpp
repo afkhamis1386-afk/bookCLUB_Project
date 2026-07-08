@@ -5,7 +5,7 @@
 #include <QDebug>
 CategoryRepository::CategoryRepository(){}
 int CategoryRepository::insertCategory(const Category &category){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO Categories (CategoryTitle) OUTPUT INSERTED.CategoryID VALUES (:title)");
@@ -17,7 +17,7 @@ int CategoryRepository::insertCategory(const Category &category){
     return query.value(0).toInt();
 }
 Category* CategoryRepository::loadCategoryById(int categoryId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT CategoryID, CategoryTitle FROM Categories WHERE CategoryID = :categoryId");
     query.bindValue(":categoryId", categoryId);
@@ -28,7 +28,7 @@ Category* CategoryRepository::loadCategoryById(int categoryId){
     return new Category(query.value(0).toInt(), query.value(1).toString());
 }
 bool CategoryRepository::updateCategoryTitle(int categoryId, const QString &newTitle){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Categories SET CategoryTitle = :title WHERE CategoryID = :categoryId");
     query.bindValue(":title", newTitle);
@@ -40,7 +40,7 @@ bool CategoryRepository::updateCategoryTitle(int categoryId, const QString &newT
     return true;
 }
 bool CategoryRepository::deleteCategory(int categoryId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("DELETE FROM Categories WHERE CategoryID = :categoryId");
     query.bindValue(":categoryId", categoryId);
@@ -52,7 +52,7 @@ bool CategoryRepository::deleteCategory(int categoryId){
 }
 QVector<Category> CategoryRepository::getAllCategories(){
     QVector<Category> categories;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT CategoryID, CategoryTitle FROM Categories ORDER BY CategoryTitle");
     if(query.exec()){

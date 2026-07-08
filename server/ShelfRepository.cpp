@@ -5,7 +5,7 @@
 #include <QDebug>
 ShelfRepository::ShelfRepository(){}
 int ShelfRepository::insertShelf(const Shelf &shelf){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO Shelves (UserID, ShelfName) OUTPUT INSERTED.ShelfID "
@@ -19,7 +19,7 @@ int ShelfRepository::insertShelf(const Shelf &shelf){
     return query.value(0).toInt();
 }
 Shelf* ShelfRepository::loadShelfById(int shelfId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT ShelfID, UserID, ShelfName FROM Shelves WHERE ShelfID = :shelfId");
     query.bindValue(":shelfId", shelfId);
@@ -45,7 +45,7 @@ Shelf* ShelfRepository::loadShelfById(int shelfId){
 }
 QVector<int> ShelfRepository::getShelfIdsByUser(int userId){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT ShelfID FROM Shelves WHERE UserID = :userId ORDER BY ShelfName");
     query.bindValue(":userId", userId);
@@ -56,7 +56,7 @@ QVector<int> ShelfRepository::getShelfIdsByUser(int userId){
     return ids;
 }
 bool ShelfRepository::updateShelfName(int shelfId, const QString &newName){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Shelves SET ShelfName = :name WHERE ShelfID = :shelfId");
     query.bindValue(":name", newName);
@@ -68,25 +68,36 @@ bool ShelfRepository::updateShelfName(int shelfId, const QString &newName){
     return true;
 }
 bool ShelfRepository::deleteShelf(int shelfId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    if(!db.transaction()){
+        qWarning() << "خطا در شروع تراکنش حذف قفسه:" << db.lastError().text();
+        return false;
+    }
     QSqlQuery deleteItems(db);
     deleteItems.prepare("DELETE FROM ShelfBooks WHERE ShelfID = :shelfId");
     deleteItems.bindValue(":shelfId", shelfId);
     if(!deleteItems.exec()){
-        qWarning() << "خطا در حذف کتاب های قفسه:" << deleteItems.lastError().text();
+        qWarning() << "خطا در حذف کتاب‌های قفسه:" << deleteItems.lastError().text();
+        db.rollback();
         return false;
     }
-    QSqlQuery deleteShelf(db);
-    deleteShelf.prepare("DELETE FROM Shelves WHERE ShelfID = :shelfId");
-    deleteShelf.bindValue(":shelfId", shelfId);
-    if(!deleteShelf.exec()){
-        qWarning() << "خطا در حذف قفسه:" << deleteShelf.lastError().text();
+    QSqlQuery deleteShelfQuery(db);
+    deleteShelfQuery.prepare("DELETE FROM Shelves WHERE ShelfID = :shelfId");
+    deleteShelfQuery.bindValue(":shelfId", shelfId);
+    if(!deleteShelfQuery.exec()){
+        qWarning() << "خطا در حذف قفسه:" << deleteShelfQuery.lastError().text();
+        db.rollback();
+        return false;
+    }
+    if(!db.commit()){
+        qWarning() << "خطا در نهایی سازی تراکنش حذف قفسه:" << db.lastError().text();
+        db.rollback();
         return false;
     }
     return true;
 }
 bool ShelfRepository::addBookToShelf(int shelfId, int bookId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("INSERT INTO ShelfBooks (ShelfID, BookID) VALUES (:shelfId, :bookId)");
     query.bindValue(":shelfId", shelfId);
@@ -98,7 +109,7 @@ bool ShelfRepository::addBookToShelf(int shelfId, int bookId){
     return true;
 }
 bool ShelfRepository::removeBookFromShelf(int shelfId, int bookId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("DELETE FROM ShelfBooks WHERE ShelfID = :shelfId AND BookID = :bookId");
     query.bindValue(":shelfId", shelfId);
@@ -110,7 +121,7 @@ bool ShelfRepository::removeBookFromShelf(int shelfId, int bookId){
     return true;
 }
 bool ShelfRepository::shelfNameExistsForUser(int userId, const QString &shelfName){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT COUNT(*) FROM Shelves WHERE UserID = :userId AND ShelfName = :name");
@@ -121,7 +132,7 @@ bool ShelfRepository::shelfNameExistsForUser(int userId, const QString &shelfNam
     return false;
 }
 bool ShelfRepository::shelfBelongsToUser(int shelfId, int userId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM Shelves WHERE ShelfID = :shelfId AND UserID = :userId");
     query.bindValue(":shelfId", shelfId);

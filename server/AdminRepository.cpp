@@ -6,7 +6,7 @@
 #include <QDebug>
 AdminRepository::AdminRepository(){}
 int AdminRepository::insertAdmin(const Admin &admin){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if(!db.transaction()){
         qWarning() << "خطا در شروع تراکنش:" << db.lastError().text();
         return -1;
@@ -48,7 +48,7 @@ int AdminRepository::insertAdmin(const Admin &admin){
     return newUserId;
 }
 Admin* AdminRepository::loadAdminById(int userId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID, u.Username, u.PasswordHash, "
@@ -74,7 +74,7 @@ Admin* AdminRepository::loadAdminById(int userId){
     return admin;
 }
 bool AdminRepository::updateFirstName(int userId, const QString &firstName){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE ApplicationAdmins SET FirstName = :firstName WHERE UserID = :userId");
     query.bindValue(":firstName", firstName);
@@ -86,7 +86,7 @@ bool AdminRepository::updateFirstName(int userId, const QString &firstName){
     return true;
 }
 bool AdminRepository::updateLastName(int userId, const QString &lastName){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE ApplicationAdmins SET LastName = :lastName WHERE UserID = :userId");
     query.bindValue(":lastName", lastName);
@@ -99,7 +99,7 @@ bool AdminRepository::updateLastName(int userId, const QString &lastName){
 }
 QVector<int> AdminRepository::getAllAdminIds(){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID FROM Users u JOIN ApplicationAdmins a ON u.UserID = a.UserID "
@@ -111,7 +111,7 @@ QVector<int> AdminRepository::getAllAdminIds(){
     return ids;
 }
 bool AdminRepository::isAdminExists(int userId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM ApplicationAdmins WHERE UserID = :userId");
     query.bindValue(":userId", userId);

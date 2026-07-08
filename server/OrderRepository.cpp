@@ -96,7 +96,7 @@ int OrderRepository::insertOrder(const Order &order) {
 return newOrderId;
 }
 Order* OrderRepository::loadOrderById(int orderId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery orderQuery(db);
     orderQuery.prepare(
         "SELECT "
@@ -151,7 +151,7 @@ Order* OrderRepository::loadOrderById(int orderId) {
 }
 QVector<int> OrderRepository::getOrderIdsByUser(int userId) {
     QVector<int> orderIds;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT OrderID "
@@ -172,7 +172,7 @@ QVector<int> OrderRepository::getOrderIdsByUser(int userId) {
 }
 QVector<int> OrderRepository::getAllOrderIds() {
     QVector<int> orderIds;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT OrderID "
@@ -190,7 +190,7 @@ QVector<int> OrderRepository::getAllOrderIds() {
     return orderIds;
 }
 bool OrderRepository::updateStatus(int orderId, OrderStatus newStatus) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "UPDATE Orders "

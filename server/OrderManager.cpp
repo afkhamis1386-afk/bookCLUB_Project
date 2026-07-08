@@ -53,7 +53,7 @@ Response OrderManager::checkout(int userId) {
     newOrder.setDiscountAmount(totalDiscountAmount);
     newOrder.setFinalPrice(finalPrice);
     newOrder.setStatus(OrderStatus::Paid);
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction()) {
         return Response(ResponseStatus::Error, "خطا در شروع تراکنش ثبت سفارش");
     }

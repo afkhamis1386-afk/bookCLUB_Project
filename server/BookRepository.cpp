@@ -5,7 +5,7 @@
 #include <QDebug>
 BookRepository::BookRepository(){}
 int BookRepository::insertBook(const Book &book){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO Books "
@@ -36,7 +36,7 @@ int BookRepository::insertBook(const Book &book){
     return query.value(0).toInt();
 }
 Book* BookRepository::loadBookById(int bookId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT BookID, BookName, BookDescription, BookPrice, DiscountPercent, DiscountAmount, "
@@ -67,7 +67,7 @@ Book* BookRepository::loadBookById(int bookId){
     return book;
 }
 bool BookRepository::updateBook(const Book &book){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "UPDATE Books SET "
@@ -91,7 +91,7 @@ bool BookRepository::updateBook(const Book &book){
     return true;
 }
 bool BookRepository::updateDiscount(int bookId, double discountPercent, double discountAmount){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "UPDATE Books SET DiscountPercent = :percent, DiscountAmount = :amount "
@@ -106,7 +106,7 @@ bool BookRepository::updateDiscount(int bookId, double discountPercent, double d
     return true;
 }
 bool BookRepository::setActiveStatus(int bookId, bool isActive) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Books SET IsActive = :isActive WHERE BookID = :bookId");
     query.bindValue(":isActive", isActive);
@@ -118,7 +118,7 @@ bool BookRepository::setActiveStatus(int bookId, bool isActive) {
     return true;
 }
 bool BookRepository::setDeletedStatus(int bookId, bool isDeleted){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("UPDATE Books SET IsDeleted = :isDeleted WHERE BookID = :bookId");
     query.bindValue(":isDeleted", isDeleted);
@@ -131,7 +131,7 @@ bool BookRepository::setDeletedStatus(int bookId, bool isDeleted){
 }
 QVector<int> BookRepository::searchByName(const QString &nameQuery){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT BookID FROM Books WHERE BookName LIKE :pattern "
@@ -145,7 +145,7 @@ QVector<int> BookRepository::searchByName(const QString &nameQuery){
 }
 QVector<int> BookRepository::searchByAuthorName(const QString &authorNameQuery){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT b.BookID FROM Books b JOIN Authors a ON b.AuthorID = a.AuthorID "
@@ -159,7 +159,7 @@ QVector<int> BookRepository::searchByAuthorName(const QString &authorNameQuery){
 }
 QVector<int> BookRepository::searchByPublisherName(const QString &publisherNameQuery){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT b.BookID FROM Books b JOIN Publishers p ON b.PublisherUserID = p.UserID "
@@ -173,7 +173,7 @@ QVector<int> BookRepository::searchByPublisherName(const QString &publisherNameQ
 }
 QVector<int> BookRepository::getAllActiveBookIds(){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT BookID FROM Books WHERE IsActive = 1 AND IsDeleted = 0");
     if(query.exec()){
@@ -184,7 +184,7 @@ QVector<int> BookRepository::getAllActiveBookIds(){
 }
 QVector<int> BookRepository::getBooksByGenre(int genreId){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT BookID FROM Books WHERE GenreID = :genreId "
@@ -198,7 +198,7 @@ QVector<int> BookRepository::getBooksByGenre(int genreId){
 }
 QVector<int> BookRepository::getBooksByCategory(int categoryId){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT BookID FROM Books WHERE CategoryID = :categoryId "
@@ -212,7 +212,7 @@ QVector<int> BookRepository::getBooksByCategory(int categoryId){
 }
 QVector<int> BookRepository::getNewestBooks(int limit){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT TOP (:limit) BookID FROM Books "
@@ -227,7 +227,7 @@ QVector<int> BookRepository::getNewestBooks(int limit){
 }
 QVector<int> BookRepository::getFreeBooks(){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT BookID FROM Books WHERE BookPrice = 0 "
@@ -240,7 +240,7 @@ QVector<int> BookRepository::getFreeBooks(){
 }
 QVector<int> BookRepository::getBooksByPublisher(int publisherUserId){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT BookID FROM Books WHERE PublisherUserID = :publisherId "
@@ -253,7 +253,7 @@ QVector<int> BookRepository::getBooksByPublisher(int publisherUserId){
     return ids;
 }
 int BookRepository::getTotalBooksCountByPublisher(int publisherUserId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT COUNT(*) FROM Books WHERE PublisherUserID = :publisherId "
@@ -264,7 +264,7 @@ int BookRepository::getTotalBooksCountByPublisher(int publisherUserId){
     return 0;
 }
 int BookRepository::getSoldCopiesCount(int bookId){
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT COUNT(*) FROM OrderItems oi "
@@ -279,7 +279,7 @@ int BookRepository::getSoldCopiesCount(int bookId){
 }
 QVector<int> BookRepository::getTopSellingBooksByPublisher(int publisherUserId, int limit){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT TOP (:limit) b.BookID, COUNT(oi.OrderItemID) AS SoldCount "
@@ -301,7 +301,7 @@ QVector<int> BookRepository::getTopSellingBooksByPublisher(int publisherUserId, 
 }
 QVector<int> BookRepository::getLeastSellingBooksByPublisher(int publisherUserId, int limit){
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT TOP (:limit) b.BookID, COUNT(oi.OrderItemID) AS SoldCount "

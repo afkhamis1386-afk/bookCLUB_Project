@@ -58,7 +58,7 @@ int PublisherRepository::insertPublisher(const Publisher &publisher) {
     return newUserId;
 }
 Publisher* PublisherRepository::loadPublisherById(int userId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID, u.Username, u.PasswordHash, p.SecurityAnswerHash, "
@@ -101,7 +101,7 @@ Publisher* PublisherRepository::loadPublisherById(int userId) {
 }
 bool PublisherRepository::updateProfile(int userId, const QString &firstName, const QString &lastName, const QString &email, const QString &shortDescription,
                                         const QString &publicationName) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "UPDATE Publishers SET "
@@ -123,7 +123,7 @@ bool PublisherRepository::updateProfile(int userId, const QString &firstName, co
 }
 QVector<int> PublisherRepository::getAllPublisherIds() {
     QVector<int> ids;
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID FROM Users u JOIN Publishers p ON u.UserID = p.UserID "
@@ -136,7 +136,7 @@ QVector<int> PublisherRepository::getAllPublisherIds() {
     return ids;
 }
 bool PublisherRepository::isEmailTaken(const QString &email) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM Publishers WHERE Email = :email");
     query.bindValue(":email", email);
@@ -145,7 +145,7 @@ bool PublisherRepository::isEmailTaken(const QString &email) {
     return false;
 }
 bool PublisherRepository::isLicenseNumberTaken(const QString &licenseNumber) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM Publishers WHERE PublisherLicenseNumber = :license");
     query.bindValue(":license", licenseNumber);
@@ -154,7 +154,7 @@ bool PublisherRepository::isLicenseNumberTaken(const QString &licenseNumber) {
     return false;
 }
 double PublisherRepository::getTotalRevenue(int publisherUserId) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "SELECT ISNULL(SUM(oi.UnitPrice * (1 - oi.DiscountPercent / 100.0)), 0) "
