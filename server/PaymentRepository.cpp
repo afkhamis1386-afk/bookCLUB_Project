@@ -7,7 +7,7 @@
 
 PaymentRepository::PaymentRepository() {}
 int PaymentRepository::insertPayment(const Payment &payment) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO Payments (OrderID, Amount, TransactionCode, PaymentDate, PaymentStatusID) "

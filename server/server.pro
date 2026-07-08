@@ -1,6 +1,7 @@
 QT += widgets
 QT += widgets sql
 CONFIG += c++17
+QT += core network
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -33,6 +34,7 @@ SOURCES += \
     CartManager.cpp \
     CartRepository.cpp \
     CategoryRepository.cpp \
+    ClientHandler.cpp \
     DatabaseManager.cpp \
     GenreRepository.cpp \
     NotificationManager.cpp \
@@ -83,6 +85,7 @@ HEADERS += \
     CartManager.h \
     CartRepository.h \
     CategoryRepository.h \
+    ClientHandler.h \
     DatabaseManager.h \
     GenreRepository.h \
     NotificationManager.h \

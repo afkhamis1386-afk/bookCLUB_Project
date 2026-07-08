@@ -7,7 +7,7 @@
 
 NotificationRepository::NotificationRepository() {}
 int NotificationRepository::insertNotification(const Notification &notification) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO Notifications "

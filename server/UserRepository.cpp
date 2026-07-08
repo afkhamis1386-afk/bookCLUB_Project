@@ -5,7 +5,7 @@
 #include <QDebug>
 UserRepository::UserRepository() {}
 int UserRepository::insertNormalUser(const NormalUser &user) {
-    QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction()) {
         qWarning() << "خطا در شروع تراکنش:" << db.lastError().text();
         return -1;
