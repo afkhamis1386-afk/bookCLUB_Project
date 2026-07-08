@@ -69,18 +69,29 @@ bool ShelfRepository::updateShelfName(int shelfId, const QString &newName){
 }
 bool ShelfRepository::deleteShelf(int shelfId){
     QSqlDatabase &db = DatabaseManager::getInstance()->getConnection();
+    if(!db.transaction()){
+        qWarning() << "خطا در شروع تراکنش حذف قفسه:" << db.lastError().text();
+        return false;
+    }
     QSqlQuery deleteItems(db);
     deleteItems.prepare("DELETE FROM ShelfBooks WHERE ShelfID = :shelfId");
     deleteItems.bindValue(":shelfId", shelfId);
     if(!deleteItems.exec()){
-        qWarning() << "خطا در حذف کتاب های قفسه:" << deleteItems.lastError().text();
+        qWarning() << "خطا در حذف کتاب‌های قفسه:" << deleteItems.lastError().text();
+        db.rollback();
         return false;
     }
-    QSqlQuery deleteShelf(db);
-    deleteShelf.prepare("DELETE FROM Shelves WHERE ShelfID = :shelfId");
-    deleteShelf.bindValue(":shelfId", shelfId);
-    if(!deleteShelf.exec()){
-        qWarning() << "خطا در حذف قفسه:" << deleteShelf.lastError().text();
+    QSqlQuery deleteShelfQuery(db);
+    deleteShelfQuery.prepare("DELETE FROM Shelves WHERE ShelfID = :shelfId");
+    deleteShelfQuery.bindValue(":shelfId", shelfId);
+    if(!deleteShelfQuery.exec()){
+        qWarning() << "خطا در حذف قفسه:" << deleteShelfQuery.lastError().text();
+        db.rollback();
+        return false;
+    }
+    if(!db.commit()){
+        qWarning() << "خطا در نهایی سازی تراکنش حذف قفسه:" << db.lastError().text();
+        db.rollback();
         return false;
     }
     return true;
