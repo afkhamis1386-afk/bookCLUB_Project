@@ -51,12 +51,14 @@ SOURCES += \
     ReviewManager.cpp \
     ReviewRepository.cpp \
     ServerApplication.cpp \
+    ServerMonitorManager.cpp \
     ShelfManager.cpp \
     ShelfRepository.cpp \
     TimedDiscountRepository.cpp \
     UserRepository.cpp \
     main.cpp \
-    loginwindow_s.cpp
+    loginwindow_s.cpp \
+    serverdashboardwindow.cpp
 
 HEADERS += \
     ../common/Admin.h \
@@ -103,14 +105,17 @@ HEADERS += \
     ReviewManager.h \
     ReviewRepository.h \
     ServerApplication.h \
+    ServerMonitorManager.h \
     ShelfManager.h \
     ShelfRepository.h \
     TimedDiscountRepository.h \
     UserRepository.h \
-    loginwindow_s.h
+    loginwindow_s.h \
+    serverdashboardwindow.h
 
 FORMS += \
-    loginwindow_s.ui
+    loginwindow_s.ui \
+    serverdashboardwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
