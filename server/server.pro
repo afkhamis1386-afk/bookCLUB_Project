@@ -51,6 +51,7 @@ SOURCES += \
     ReviewManager.cpp \
     ReviewRepository.cpp \
     ServerApplication.cpp \
+    ServerMonitorManager.cpp \
     ShelfManager.cpp \
     ShelfRepository.cpp \
     TimedDiscountRepository.cpp \
@@ -103,6 +104,7 @@ HEADERS += \
     ReviewManager.h \
     ReviewRepository.h \
     ServerApplication.h \
+    ServerMonitorManager.h \
     ShelfManager.h \
     ShelfRepository.h \
     TimedDiscountRepository.h \
