@@ -16,6 +16,7 @@ public:
     int getOnlineClientCount() const;
 
 signals:
+    void requestProcessed(const QString &requestType, int statusCode);
     void clientConnected(qintptr socketDescriptor);
     void clientDisconnected(qintptr socketDescriptor);
     void logMessage(const QString &message);

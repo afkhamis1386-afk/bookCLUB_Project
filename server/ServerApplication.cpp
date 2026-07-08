@@ -14,7 +14,7 @@ bool ServerApplication::startListening(quint16 port){
     return true;
 }
 void ServerApplication::stopListening(){
-    if (this->isListening()) {
+    if(this->isListening()){
         emit logMessage("سرور در حال توقف...");
         this->close();
     }
@@ -39,9 +39,10 @@ void ServerApplication::incomingConnection(qintptr socketDescriptor){
     ClientHandler *handler = new ClientHandler(socketDescriptor);
     handler->moveToThread(thread);
     connect(thread, &QThread::started, handler, &ClientHandler::run);
-    connect(handler, &ClientHandler::clientDisconnected, this, [this](qintptr sd) {
-        emit clientDisconnected(sd);
+    connect(handler, &ClientHandler::clientDisconnected, this, [this](qintptr sd){
+    emit clientDisconnected(sd);
     });
+    connect(handler, &ClientHandler::requestLogReceived, this, &ServerApplication::requestProcessed);
     connect(handler, &ClientHandler::clientDisconnected, thread, &QThread::quit);
     connect(thread, &QThread::finished, handler, &QObject::deleteLater);
     connect(thread, &QThread::finished, this, &ServerApplication::onClientThreadFinished);
@@ -51,6 +52,7 @@ void ServerApplication::incomingConnection(qintptr socketDescriptor){
         activeThreads.insert(socketDescriptor, thread);
     }
     thread->start();
+
     emit clientConnected(socketDescriptor);
     emit logMessage(QString("کلاینت جدید متصل شد. تعداد کل: %1").arg(getOnlineClientCount()));
 }
@@ -59,8 +61,8 @@ void ServerApplication::onClientThreadFinished() {
     if(!finishedThread) return;
     QMutexLocker locker(&activeThreadsMutex);
     qintptr keyToRemove = -1;
-    for (auto it = activeThreads.begin(); it != activeThreads.end(); ++it) {
-        if (it.value() == finishedThread) {
+    for(auto it = activeThreads.begin(); it != activeThreads.end(); ++it){
+        if(it.value() == finishedThread){
             keyToRemove = it.key();
             break;
         }
