@@ -186,6 +186,10 @@ void NetworkManager::onSocketError(const QString &errorMessage) {
     emit connectionError(errorMessage);
 }
 void NetworkManager::onSocketResponseReceived(const Response &response) {
+    if (response.getStatus() == ResponseStatus::PushNotification) {
+        emit pushNotificationReceived(response.getData());
+        return;
+    }
     if (pendingRequestQueue.isEmpty()) {
         qWarning() << "پاسخی دریافت شد بدون درخواست معلق متناظر";
         return;
