@@ -3,6 +3,7 @@
 #include "UserRepository.h"
 #include "PublisherRepository.h"
 #include "AdminRepository.h"
+#include "ClientRegistry.h"
 #include "../common/normaluser.h"
 #include "../common/publisher.h"
 #include "../common/Admin.h"
@@ -16,6 +17,8 @@ Response NotificationManager::sendNotification(int userId, NotificationType type
     if (newId == -1) {
         return Response(ResponseStatus::Error, "خطا در ارسال اعلان");
     }
+    notification.setNotificationId(newId);
+    ClientRegistry::getInstance()->pushToUser(userId, notification);
     QVariantMap data;
     data["notificationId"] = newId;
     return Response(ResponseStatus::Success, "اعلان ارسال شد", data);
@@ -24,7 +27,11 @@ void NotificationManager::broadcastNotification(const QVector<int> &userIds, Not
     NotificationRepository notifRepo;
     for (int userId : userIds) {
         Notification notification(userId, type, title, message, targetId, senderId);
-        notifRepo.insertNotification(notification);
+        int newId = notifRepo.insertNotification(notification);
+        if (newId != -1) {
+            notification.setNotificationId(newId);
+            ClientRegistry::getInstance()->pushToUser(userId, notification);
+        }
     }
 }
 Response NotificationManager::getUserNotifications(int userId) {
