@@ -7,7 +7,6 @@
 #include "ReviewManager.h"
 #include "RatingManager.h"
 #include "ShelfManager.h"
-#include "NotificationManager.h"
 #include "AdminManager.h"
 #include "PublisherManager.h"
 #include "DatabaseManager.h"
@@ -17,6 +16,17 @@
 ClientHandler::ClientHandler(qintptr socketDescriptor, QObject *parent)
     : QObject(parent), socketDescriptor(socketDescriptor), socket(nullptr),
     authenticatedUserId(-1), authenticatedRole(UserRole::NormalUser), isAuthenticated(false) {}
+void ClientHandler::pushNotificationToClient(const Notification &notification) {
+    QVariantMap data;
+    data["notificationId"] = notification.getNotificationId();
+    data["type"] = static_cast<int>(notification.getNotificationType());
+    data["title"] = notification.getTitle();
+    data["message"] = notification.getMessage();
+    data["targetId"] = notification.getTargetId();
+
+    Response pushMsg(ResponseStatus::PushNotification, "اعلان جدید", data);
+    sendResponse(pushMsg);
+}
 void ClientHandler::run() {
     socket = new QTcpSocket();
     if (!socket->setSocketDescriptor(socketDescriptor)) {
