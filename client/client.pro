@@ -28,6 +28,7 @@ SOURCES += \
     ../common/Order.cpp \
     ../common/publisher.cpp \
     ClientSocket.cpp \
+    NetworkManager.cpp \
     main.cpp \
     loginwindow_c.cpp
 
@@ -50,6 +51,7 @@ HEADERS += \
     ../common/Order.h \
     ../common/publisher.h \
     ClientSocket.h \
+    NetworkManager.h \
     loginwindow_c.h
 
 FORMS += \
