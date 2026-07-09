@@ -1,6 +1,5 @@
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
-
 #include <QObject>
 #include "ClientSocket.h"
 #include "../common/Response.h"
@@ -65,5 +64,4 @@ private:
     QVector<RequestType> pendingRequestQueue;
     void sendRequest(RequestType type, const QVariantMap &payload = QVariantMap());
 };
-
 #endif // NETWORKMANAGER_H

@@ -33,7 +33,6 @@ SOURCES += \
     ClientHandler.cpp \
     DatabaseManager.cpp \
     GenreRepository.cpp \
-    NetworkManager.cpp \
     NotificationManager.cpp \
     NotificationRepository.cpp \
     OrderManager.cpp \
@@ -89,7 +88,6 @@ HEADERS += \
     ClientHandler.h \
     DatabaseManager.h \
     GenreRepository.h \
-    NetworkManager.h \
     NotificationManager.h \
     NotificationRepository.h \
     OrderManager.h \
