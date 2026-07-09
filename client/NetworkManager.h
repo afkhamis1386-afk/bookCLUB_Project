@@ -51,6 +51,7 @@ signals:
     void responseReceived(RequestType requestType, const Response &response);
     void loginSucceeded(int userId, UserRole role);
     void loginFailed(const QString &message);
+    void pushNotificationReceived(const QVariantMap &notificationData);
 private slots:
     void onSocketResponseReceived(const Response &response);
     void onSocketConnected();
