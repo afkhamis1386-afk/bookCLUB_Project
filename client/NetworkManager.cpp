@@ -4,8 +4,7 @@
 
 NetworkManager::NetworkManager(QObject *parent)
     : QObject(parent), socket(new ClientSocket(this)),
-    currentUserId(-1), currentUserRole(UserRole::NormalUser), loggedIn(false)
-{
+    currentUserId(-1), currentUserRole(UserRole::NormalUser), loggedIn(false) {
     connect(socket, &ClientSocket::connected, this, &NetworkManager::onSocketConnected);
     connect(socket, &ClientSocket::disconnected, this, &NetworkManager::onSocketDisconnected);
     connect(socket, &ClientSocket::responseReceived, this, &NetworkManager::onSocketResponseReceived);
@@ -20,7 +19,6 @@ bool NetworkManager::isConnected() const {
 int NetworkManager::getCurrentUserId() const { return currentUserId; }
 UserRole NetworkManager::getCurrentUserRole() const { return currentUserRole; }
 bool NetworkManager::isLoggedIn() const { return loggedIn; }
-
 void NetworkManager::logout() {
     currentUserId = -1;
     loggedIn = false;

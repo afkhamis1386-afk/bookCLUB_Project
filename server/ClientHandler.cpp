@@ -1,4 +1,6 @@
 #include "ClientHandler.h"
+#include "ClientRegistry.h"
+#include"NotificationManager.h"
 #include "AuthManager.h"
 #include "AccessControl.h"
 #include "BookManager.h"
@@ -23,7 +25,6 @@ void ClientHandler::pushNotificationToClient(const Notification &notification) {
     data["title"] = notification.getTitle();
     data["message"] = notification.getMessage();
     data["targetId"] = notification.getTargetId();
-
     Response pushMsg(ResponseStatus::PushNotification, "اعلان جدید", data);
     sendResponse(pushMsg);
 }
@@ -59,7 +60,10 @@ void ClientHandler::onReadyRead() {
     }
 }
 void ClientHandler::onDisconnected() {
-    qDebug() << "کلاینت قطع شد Socket ID:" << socketDescriptor;
+    qDebug() << "کلاینت قطع شد. Socket ID:" << socketDescriptor;
+    if (isAuthenticated) {
+        ClientRegistry::getInstance()->unregisterClient(authenticatedUserId);
+    }
     DatabaseManager::getInstance()->closeConnectionForCurrentThread();
     emit clientDisconnected(socketDescriptor);
     socket->deleteLater();
@@ -86,6 +90,7 @@ void ClientHandler::processRequest(const Request &req) {
             authenticatedUserId = response.getData().value("userId").toInt();
             authenticatedRole = static_cast<UserRole>(response.getData().value("role").toInt());
             isAuthenticated = true;
+            ClientRegistry::getInstance()->registerClient(authenticatedUserId, this);
         }
     }
     else if (!isAuthenticated) {
