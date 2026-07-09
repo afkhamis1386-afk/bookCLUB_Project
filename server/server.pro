@@ -31,6 +31,7 @@ SOURCES += \
     CartRepository.cpp \
     CategoryRepository.cpp \
     ClientHandler.cpp \
+    ClientRegistry.cpp \
     DatabaseManager.cpp \
     GenreRepository.cpp \
     NotificationManager.cpp \
@@ -86,6 +87,7 @@ HEADERS += \
     CartRepository.h \
     CategoryRepository.h \
     ClientHandler.h \
+    ClientRegistry.h \
     DatabaseManager.h \
     GenreRepository.h \
     NotificationManager.h \
