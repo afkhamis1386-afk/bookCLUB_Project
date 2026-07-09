@@ -46,4 +46,6 @@ public:
     friend QDataStream &operator<<(QDataStream &out, const Notification &n);
     friend QDataStream &operator>>(QDataStream &in, Notification &n);
 };
+#include <QMetaType>
+Q_DECLARE_METATYPE(Notification)
 #endif // NOTIFICATION_H

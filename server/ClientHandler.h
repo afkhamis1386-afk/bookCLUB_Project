@@ -1,6 +1,6 @@
 #ifndef CLIENTHANDLER_H
 #define CLIENTHANDLER_H
-#include "NotificationManager.h"
+#include "../common/Notification.h"
 #include <QObject>
 #include <QTcpSocket>
 #include <QByteArray>
@@ -11,7 +11,7 @@ class ClientHandler : public QObject {
     Q_OBJECT
 public:
     explicit ClientHandler(qintptr socketDescriptor, QObject *parent = nullptr);
-    void pushNotificationToClient(const Notification &notification);
+    Q_INVOKABLE void pushNotificationToClient(const Notification &notification);
     int getAuthenticatedUserId() const { return authenticatedUserId; }
 public slots:
     void run();
