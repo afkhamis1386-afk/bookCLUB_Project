@@ -38,7 +38,8 @@ enum class ResponseStatus {
     Error,
     Unauthorized,
     NotFound,
-    ValidationFailed
+    ValidationFailed,
+    PushNotification
 };
 inline QDataStream &operator<<(QDataStream &out, UserRole role) {
     out << static_cast<int>(role);
