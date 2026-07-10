@@ -10,7 +10,7 @@ private:
 public:
     Admin();
     Admin(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName, const QString &lastName);
-    Admin(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, bool isDeleted, const QDateTime &registerDate, const QString &firstName, const QString &lastName);
+    Admin(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive, const QDateTime &registerDate, const QString &firstName, const QString &lastName);
     ~Admin() override;
     QString getRole() const override;
     QString getFirstName() const;

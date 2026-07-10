@@ -52,25 +52,21 @@ Admin* AdminRepository::loadAdminById(int userId){
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID, u.Username, u.PasswordHash, "
-        "u.IsBlocked, u.IsDeleted, u.RegisterDate, "
+        "u.IsBlocked, u.IsDeleted, u.IsActive, u.RegisterDate, "
         "a.FirstName, a.LastName "
         "FROM Users u JOIN ApplicationAdmins a ON u.UserID = a.UserID "
-        "WHERE u.UserID = :userId" );
+        "WHERE u.UserID = :userId");
     query.bindValue(":userId", userId);
     if(!query.exec() || !query.next()){
         qWarning() << "ادمین یافت نشد:" << query.lastError().text();
         return nullptr;
     }
     Admin *admin = new Admin(
-        query.value(0).toInt(),
-        query.value(1).toString(),
-        query.value(2).toString(),
-        QString(),
-        query.value(3).toBool(),
-        query.value(4).toBool(),
-        query.value(5).toDateTime(),
-        query.value(6).toString(),
-        query.value(7).toString());
+        query.value(0).toInt(), query.value(1).toString(), query.value(2).toString(), QString(),
+        query.value(3).toBool(), query.value(4).toBool(),
+        query.value(5).toBool(),
+        query.value(6).toDateTime(),
+        query.value(7).toString(), query.value(8).toString());
     return admin;
 }
 bool AdminRepository::updateFirstName(int userId, const QString &firstName){

@@ -20,6 +20,7 @@ public:
     Response searchBooks(const QString &query);
     Response getBookDetails(int bookId);
     Response getPublisherDashboard(int publisherUserId);
+    Response getRecommendedBooks(int userId);
 };
 
 #endif // BOOKMANAGER_H

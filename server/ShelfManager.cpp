@@ -1,7 +1,9 @@
 #include "ShelfManager.h"
 #include "ShelfRepository.h"
 #include "DatabaseManager.h"
+#include "UserRepository.h"
 #include "../common/Shelf.h"
+#include "../common/normaluser.h"
 #include <QSqlDatabase>
 #include <memory>
 ShelfManager::ShelfManager(){}
@@ -53,6 +55,11 @@ Response ShelfManager::addBookToShelf(int userId, int shelfId, int bookId) {
     if(!shelfRepo.shelfBelongsToUser(shelfId, userId)){
         return Response(ResponseStatus::Unauthorized, "شما اجازه افزودن کتاب به این قفسه را ندارید");
     }
+    UserRepository userRepo;
+    std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
+    if(!user || !user->hasPurchased(bookId)){
+        return Response(ResponseStatus::Error, "فقط کتاب هایی که خریداری کرده اید قابل افزودن به قفسه هستند");
+    }
     if(!shelfRepo.addBookToShelf(shelfId, bookId)){
         return Response(ResponseStatus::Error, "خطا در افزودن کتاب به قفسه (احتمالاً کتاب قبلاً در این قفسه موجود است)");
     }
@@ -65,6 +72,11 @@ Response ShelfManager::moveBookBetweenShelves(int userId, int sourceShelfId, int
     }
     if(!shelfRepo.shelfBelongsToUser(destShelfId, userId)){
         return Response(ResponseStatus::Unauthorized, "شما مالک قفسه مقصد نیستید");
+    }
+    UserRepository userRepo;
+    std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
+    if(!user || !user->hasPurchased(bookId)){
+        return Response(ResponseStatus::Error, "فقط کتاب هایی که خریداری کرده اید قابل جابجایی هستند");
     }
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if(!db.transaction()){

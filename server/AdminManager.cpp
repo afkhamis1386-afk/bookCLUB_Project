@@ -103,6 +103,13 @@ Response AdminManager::deleteUser(int userId){
     }
     return Response(ResponseStatus::Success, "حساب کاربری با موفقیت حذف شد");
 }
+Response AdminManager::setUserActiveStatus(int targetUserId, bool active) {
+    UserRepository userRepo;
+    if(!userRepo.updateActiveStatus(targetUserId, active)){
+        return Response(ResponseStatus::Error, "خطا در تغییر وضعیت فعال سازی کاربر");
+    }
+    return Response(ResponseStatus::Success, active ? "کاربر فعال شد" : "کاربر غیرفعال شد");
+}
 Response AdminManager::getAllBooks(){
     BookRepository bookRepo;
     QVector<int> bookIds = bookRepo.getAllActiveBookIds();

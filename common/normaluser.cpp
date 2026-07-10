@@ -1,9 +1,9 @@
 #include "normaluser.h"
 NormalUser::NormalUser():User(){}
 NormalUser::NormalUser(const QString &username, const QString &plainPassword, const QString &plainAnswer)
-    :User(username, plainPassword, plainAnswer){}
-NormalUser::NormalUser(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, bool isDeleted, const QDateTime &registerDate)
-    :User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, registerDate){}
+:User(username, plainPassword, plainAnswer){}
+NormalUser::NormalUser(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive, const QDateTime &registerDate)
+:User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, isActive, registerDate){}
 NormalUser::~NormalUser(){}
 QString NormalUser::getRole() const {
     return "NormalUser";
