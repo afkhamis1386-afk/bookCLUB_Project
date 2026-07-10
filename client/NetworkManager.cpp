@@ -127,6 +127,9 @@ void NetworkManager::removeFromCart(int bookId) {
     p["bookId"] = bookId;
     sendRequest(RequestType::RemoveFromCart, p);
 }
+void NetworkManager::getCart(){
+    sendRequest(RequestType::GetCart);
+}
 void NetworkManager::checkout() {
     sendRequest(RequestType::Checkout);
 }

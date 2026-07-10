@@ -34,6 +34,7 @@ public:
     void getPublisherStats();
     void addToCart(int bookId);
     void removeFromCart(int bookId);
+    void getCart();
     void checkout();
     void submitReview(int bookId, const QString &commentText, int parentId = -1);
     void submitRating(int bookId, int ratingValue);
