@@ -149,6 +149,35 @@ void NetworkManager::submitRating(int bookId, int ratingValue) {
 void NetworkManager::getShelf() {
     sendRequest(RequestType::GetShelf);
 }
+void NetworkManager::createShelf(const QString &shelfName) {
+    QVariantMap p;
+    p["shelfName"] = shelfName;
+    sendRequest(RequestType::CreateShelf, p);
+}
+void NetworkManager::renameShelf(int shelfId, const QString &newName) {
+    QVariantMap p;
+    p["shelfId"] = shelfId;
+    p["newName"] = newName;
+    sendRequest(RequestType::RenameShelf, p);
+}
+void NetworkManager::deleteShelf(int shelfId) {
+    QVariantMap p;
+    p["shelfId"] = shelfId;
+    sendRequest(RequestType::DeleteShelf, p);
+}
+void NetworkManager::addBookToShelf(int shelfId, int bookId) {
+    QVariantMap p;
+    p["shelfId"] = shelfId;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::AddBookToShelf, p);
+}
+void NetworkManager::moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId) {
+    QVariantMap p;
+    p["sourceShelfId"] = sourceShelfId;
+    p["destShelfId"] = destShelfId;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::MoveBookBetweenShelves, p);
+}
 void NetworkManager::getNotifications() {
     sendRequest(RequestType::GetNotifications);
 }

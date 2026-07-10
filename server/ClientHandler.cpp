@@ -117,6 +117,7 @@ void ClientHandler::processRequest(const Request &req) {
             break;
         case RequestType::AddToCart:
         case RequestType::RemoveFromCart:
+        case RequestType::GetCart:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleCartRequest(req);
             else
@@ -142,11 +143,17 @@ void ClientHandler::processRequest(const Request &req) {
             break;
         case RequestType::SaveBook:
         case RequestType::GetShelf:
+        case RequestType::CreateShelf:
+        case RequestType::RenameShelf:
+        case RequestType::DeleteShelf:
+        case RequestType::AddBookToShelf:
+        case RequestType::MoveBookBetweenShelves:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleShelfRequest(req);
             else
                 response = accessError;
             break;
+
         case RequestType::GetNotifications:
         case RequestType::MarkNotificationRead:
             response = handleNotificationRequest(req);
@@ -250,6 +257,7 @@ Response ClientHandler::handleCartRequest(const Request &req) {
         return Response(ResponseStatus::Error, "درخواست سبد خرید نامعتبر");
     }
 }
+
 Response ClientHandler::handleOrderRequest(const Request &req) {
     Q_UNUSED(req)
     OrderManager orderManager;
@@ -267,9 +275,23 @@ Response ClientHandler::handleRatingRequest(const Request &req) {
 }
 Response ClientHandler::handleShelfRequest(const Request &req) {
     ShelfManager shelfManager;
-    if (req.getType() == RequestType::GetShelf)
+    QVariantMap p = req.getPayload();
+    switch (req.getType()) {
+    case RequestType::GetShelf:
         return shelfManager.getUserShelves(authenticatedUserId);
-    return Response(ResponseStatus::Error, "درخواست قفسه نامعتبر");
+    case RequestType::CreateShelf:
+        return shelfManager.createShelf(authenticatedUserId, p.value("shelfName").toString());
+    case RequestType::RenameShelf:
+        return shelfManager.renameShelf(authenticatedUserId, p.value("shelfId").toInt(), p.value("newName").toString());
+    case RequestType::DeleteShelf:
+        return shelfManager.deleteShelf(authenticatedUserId, p.value("shelfId").toInt());
+    case RequestType::AddBookToShelf:
+        return shelfManager.addBookToShelf(authenticatedUserId, p.value("shelfId").toInt(), p.value("bookId").toInt());
+    case RequestType::MoveBookBetweenShelves:
+        return shelfManager.moveBookBetweenShelves(authenticatedUserId,p.value("sourceShelfId").toInt(), p.value("destShelfId").toInt(), p.value("bookId").toInt());
+    default:
+        return Response(ResponseStatus::Error, "درخواست قفسه نامعتبر");
+    }
 }
 Response ClientHandler::handleNotificationRequest(const Request &req) {
     NotificationManager notifManager;
