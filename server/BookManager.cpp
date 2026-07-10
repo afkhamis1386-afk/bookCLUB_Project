@@ -4,6 +4,7 @@
 #include "CategoryRepository.h"
 #include "AuthorRepository.h"
 #include "RatingRepository.h"
+#include "UserRepository.h"
 #include "TimedDiscountRepository.h"
 #include "DatabaseManager.h"
 #include "PriceCalculator.h"
@@ -276,4 +277,26 @@ Response BookManager::getPublisherDashboard(int publisherUserId){
     data["totalBooksCount"] = totalBooks;
     data["books"] = bookStats;
     return Response(ResponseStatus::Success, "داشبورد ناشر بازیابی شد", data);
+}
+Response BookManager::getRecommendedBooks(int userId){
+    UserRepository userRepo;
+    QVector<int> favoriteGenreIds = userRepo.getFavoriteGenreIds(userId);
+    if(favoriteGenreIds.isEmpty()){
+        return Response(ResponseStatus::Success, "ژانر مورد علاقه ثبت نشده", QVariantMap{{"bookIds", QVariantList()}});
+    }
+    BookRepository bookRepo;
+    QVector<int> resultIds;
+    for(int genreId : qAsConst(favoriteGenreIds)){
+        QVector<int> genreBooks = bookRepo.getBooksByGenre(genreId);
+        for(int id : qAsConst(genreBooks)){
+            if(!resultIds.contains(id))
+                resultIds.append(id);
+        }
+    }
+    QVariantList bookList;
+    for(int id : qAsConst(resultIds))
+        bookList.append(id);
+    QVariantMap data;
+    data["bookIds"] = bookList;
+    return Response(ResponseStatus::Success, "کتاب های پیشنهادی بازیابی شد", data);
 }

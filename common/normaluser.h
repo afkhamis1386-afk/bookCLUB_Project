@@ -13,7 +13,7 @@ private:
 public:
     NormalUser();
     NormalUser(const QString &username, const QString &plainPassword, const QString &plainAnswer);
-    NormalUser(int userId, const QString &encryptedUsername, const QString &passwordHash,const QString &answerHash, bool isBlocked, bool isDeleted, const QDateTime &registerDate);
+    NormalUser(int userId, const QString &encryptedUsername, const QString &passwordHash,const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive, const QDateTime &registerDate);
     ~NormalUser() override;
     QString getRole() const override;
     bool setFavoriteGenres(const QVector<int> &genreIds);

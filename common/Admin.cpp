@@ -1,9 +1,10 @@
 #include "Admin.h"
 Admin::Admin():User(){}
 Admin::Admin(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName, const QString &lastName)
-    :User(username, plainPassword, plainAnswer), firstName(firstName), lastName(lastName){}
-Admin::Admin(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, bool isDeleted, const QDateTime &registerDate, const QString &firstName, const QString &lastName)
-    :User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, registerDate), firstName(firstName), lastName(lastName){}
+:User(username, plainPassword, plainAnswer), firstName(firstName), lastName(lastName){}
+Admin::Admin(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive,
+const QDateTime &registerDate, const QString &firstName, const QString &lastName)
+:User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, isActive, registerDate), firstName(firstName), lastName(lastName){}
 Admin::~Admin(){}
 QString Admin::getRole() const {
     return "Admin";

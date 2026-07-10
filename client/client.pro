@@ -29,6 +29,7 @@ SOURCES += \
     ../common/publisher.cpp \
     CartController.cpp \
     ClientSocket.cpp \
+    LibraryController.cpp \
     LoginController.cpp \
     NetworkManager.cpp \
     main.cpp \
@@ -54,6 +55,7 @@ HEADERS += \
     ../common/publisher.h \
     CartController.h \
     ClientSocket.h \
+    LibraryController.h \
     LoginController.h \
     NetworkManager.h \
     loginwindow_c.h

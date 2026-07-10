@@ -9,6 +9,7 @@ public:
     bool isUserBlocked(int userId, UserRole role);
     bool hasPermission(UserRole userRole, const QVector<UserRole> &allowedRoles);
     Response checkAccess(int userId, UserRole role, const QVector<UserRole> &allowedRoles);
+    bool isUserInactive(int, UserRole);
 };
 
 #endif // ACCESSCONTROL_H
