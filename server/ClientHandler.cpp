@@ -244,6 +244,8 @@ Response ClientHandler::handleCartRequest(const Request &req) {
         return cartManager.addBookToCart(authenticatedUserId, p.value("bookId").toInt());
     case RequestType::RemoveFromCart:
         return cartManager.removeBookFromCart(authenticatedUserId, p.value("bookId").toInt());
+    case RequestType::GetCart:
+        return cartManager.getCart(authenticatedUserId);
     default:
         return Response(ResponseStatus::Error, "درخواست سبد خرید نامعتبر");
     }
