@@ -39,6 +39,11 @@ public:
     void submitReview(int bookId, const QString &commentText, int parentId = -1);
     void submitRating(int bookId, int ratingValue);
     void getShelf();
+    void createShelf(const QString &shelfName);
+    void renameShelf(int shelfId, const QString &newName);
+    void deleteShelf(int shelfId);
+    void addBookToShelf(int shelfId, int bookId);
+    void moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId);
     void getNotifications();
     void markNotificationRead(int notificationId);
     void getAllUsers();

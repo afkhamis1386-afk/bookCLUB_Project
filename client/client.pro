@@ -27,6 +27,7 @@ SOURCES += \
     ../common/TimedDiscount.cpp \
     ../common/Order.cpp \
     ../common/publisher.cpp \
+    CartController.cpp \
     ClientSocket.cpp \
     LoginController.cpp \
     NetworkManager.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     ../common/TimedDiscount.h \
     ../common/Order.h \
     ../common/publisher.h \
+    CartController.h \
     ClientSocket.h \
     LoginController.h \
     NetworkManager.h \
