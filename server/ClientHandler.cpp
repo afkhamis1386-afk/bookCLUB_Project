@@ -173,6 +173,12 @@ void ClientHandler::processRequest(const Request &req) {
             else
                 response = accessError;
             break;
+        case RequestType::SaveReadingProgress:
+            if (checkRole({UserRole::NormalUser}, accessError))
+                response = handleBookRequest(req);
+            else
+                response = accessError;
+            break;
         case RequestType::SaveBook:
         case RequestType::UnsaveBook:
         case RequestType::GetSavedBooks:
@@ -262,6 +268,12 @@ Response ClientHandler::handleBookRequest(const Request &req) {
         return bookManager.searchBooks(p.value("query").toString());
     case RequestType::GetBookDetails:
         return bookManager.getBookDetails(p.value("bookId").toInt());
+    case RequestType::SaveReadingProgress:
+        return bookManager.saveReadingProgress(
+            authenticatedUserId,
+            p.value("bookId").toInt(),
+            p.value("lastPage").toInt()
+            );
     case RequestType::AddBook:
         return bookManager.addBook(authenticatedUserId, p.value("bookName").toString(),
                                    p.value("description").toString(), p.value("price").toDouble(),

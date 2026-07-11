@@ -87,6 +87,12 @@ void NetworkManager::getBookDetails(int bookId) {
     p["bookId"] = bookId;
     sendRequest(RequestType::GetBookDetails, p);
 }
+void NetworkManager::saveReadingProgress(int bookId, int lastPage) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    p["lastPage"] = lastPage;
+    sendRequest(RequestType::SaveReadingProgress, p);
+}
 void NetworkManager::getBooksByGenre(int genreId) {
     QVariantMap p;
     p["genreId"] = genreId;

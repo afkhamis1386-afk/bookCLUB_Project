@@ -26,6 +26,7 @@ public:
     void getBooks();
     void searchBooks(const QString &query);
     void getBookDetails(int bookId);
+    void saveReadingProgress(int bookId, int lastPage);
     void getBooksByGenre(int genreId);
     void getBooksByCategory(int categoryId);
     void getNewestBooks(int limit = 10);
