@@ -55,11 +55,18 @@ public:
     void moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId);
     void getNotifications();
     void markNotificationRead(int notificationId);
+    void getUnreadNotificationCount();
     void getAllUsers();
+    void getNormalUserDetails(int userId);
+    void getPublisherDetails(int userId);
     void blockUser(int userId);
+    void unblockUser(int userId);
     void setUserActiveStatus(int userId, bool active);
     void deleteUser(int userId);
+    void getAllBooksAdmin();
+    void getBookDetailsForReview(int bookId);
     void deleteBook(int bookId);
+    void getAllReviews();
     void deleteReviewByAdmin(int reviewId);
 signals:
     void connected();
@@ -83,4 +90,3 @@ private:
     void sendRequest(RequestType type, const QVariantMap &payload = QVariantMap());
 };
 #endif // NETWORKMANAGER_H
-

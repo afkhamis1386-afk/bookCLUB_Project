@@ -228,8 +228,37 @@ void NetworkManager::markNotificationRead(int notificationId) {
     p["notificationId"] = notificationId;
     sendRequest(RequestType::MarkNotificationRead, p);
 }
+void NetworkManager::getUnreadNotificationCount() {
+    sendRequest(RequestType::GetUnreadNotificationCount);
+}
 void NetworkManager::getAllUsers() {
     sendRequest(RequestType::GetAllUsers);
+}
+void NetworkManager::getNormalUserDetails(int userId) {
+    QVariantMap p;
+    p["userId"] = userId;
+    sendRequest(RequestType::GetNormalUserDetails, p);
+}
+void NetworkManager::getPublisherDetails(int userId) {
+    QVariantMap p;
+    p["userId"] = userId;
+    sendRequest(RequestType::GetPublisherDetails, p);
+}
+void NetworkManager::unblockUser(int userId) {
+    QVariantMap p;
+    p["userId"] = userId;
+    sendRequest(RequestType::UnblockUser, p);
+}
+void NetworkManager::getAllBooksAdmin() {
+    sendRequest(RequestType::GetAllBooksAdmin);
+}
+void NetworkManager::getBookDetailsForReview(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::GetBookDetailsForReview, p);
+}
+void NetworkManager::getAllReviews() {
+    sendRequest(RequestType::GetAllReviews);
 }
 void NetworkManager::blockUser(int userId) {
     QVariantMap p;
@@ -289,12 +318,4 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
         }
     }
     emit responseReceived(matchedType, response);
-}
-
-
-
-
-void NetworkManager::logout() {
-    currentUserId = -1;
-    loggedIn = false;
 }
