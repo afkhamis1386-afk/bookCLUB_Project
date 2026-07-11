@@ -45,6 +45,7 @@ SOURCES += \
     PublisherRepository.cpp \
     RatingManager.cpp \
     RatingRepository.cpp \
+    ReadingProgressRepository.cpp \
     ReviewManager.cpp \
     ReviewRepository.cpp \
     SavedBookManager.cpp \
@@ -103,6 +104,7 @@ HEADERS += \
     PublisherRepository.h \
     RatingManager.h \
     RatingRepository.h \
+    ReadingProgressRepository.h \
     ReviewManager.h \
     ReviewRepository.h \
     SavedBookManager.h \
