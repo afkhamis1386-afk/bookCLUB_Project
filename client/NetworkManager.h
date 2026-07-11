@@ -26,6 +26,11 @@ public:
     void getBooks();
     void searchBooks(const QString &query);
     void getBookDetails(int bookId);
+    void getBooksByGenre(int genreId);
+    void getBooksByCategory(int categoryId);
+    void getNewestBooks(int limit = 10);
+    void getFreeBooks();
+    void getRecommendedBooks();
     void addBook(const QString &bookName, const QString &description, double price,
                  const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
                  const QString &coverImagePath, const QString &pdfFilePath);
@@ -37,7 +42,11 @@ public:
     void getCart();
     void checkout();
     void submitReview(int bookId, const QString &commentText, int parentId = -1);
+    void editReview(int reviewId, const QString &newCommentText);
+    void deleteReview(int reviewId);
+    void getReviewsForBook(int bookId);
     void submitRating(int bookId, int ratingValue);
+    void getBookRatingSummary(int bookId);
     void getShelf();
     void createShelf(const QString &shelfName);
     void renameShelf(int shelfId, const QString &newName);
@@ -48,8 +57,10 @@ public:
     void markNotificationRead(int notificationId);
     void getAllUsers();
     void blockUser(int userId);
+    void setUserActiveStatus(int userId, bool active);
     void deleteUser(int userId);
     void deleteBook(int bookId);
+    void deleteReviewByAdmin(int reviewId);
 signals:
     void connected();
     void disconnected();
@@ -72,3 +83,4 @@ private:
     void sendRequest(RequestType type, const QVariantMap &payload = QVariantMap());
 };
 #endif // NETWORKMANAGER_H
+

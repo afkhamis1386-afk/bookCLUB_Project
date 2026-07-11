@@ -87,6 +87,27 @@ void NetworkManager::getBookDetails(int bookId) {
     p["bookId"] = bookId;
     sendRequest(RequestType::GetBookDetails, p);
 }
+void NetworkManager::getBooksByGenre(int genreId) {
+    QVariantMap p;
+    p["genreId"] = genreId;
+    sendRequest(RequestType::GetBooksByGenre, p);
+}
+void NetworkManager::getBooksByCategory(int categoryId) {
+    QVariantMap p;
+    p["categoryId"] = categoryId;
+    sendRequest(RequestType::GetBooksByCategory, p);
+}
+void NetworkManager::getNewestBooks(int limit) {
+    QVariantMap p;
+    p["limit"] = limit;
+    sendRequest(RequestType::GetNewestBooks, p);
+}
+void NetworkManager::getFreeBooks() {
+    sendRequest(RequestType::GetFreeBooks);
+}
+void NetworkManager::getRecommendedBooks() {
+    sendRequest(RequestType::GetRecommendedBooks);
+}
 void NetworkManager::addBook(const QString &bookName, const QString &description, double price,
                              const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
                              const QString &coverImagePath, const QString &pdfFilePath) {
@@ -140,11 +161,32 @@ void NetworkManager::submitReview(int bookId, const QString &commentText, int pa
     p["parentId"] = parentId;
     sendRequest(RequestType::SubmitReview, p);
 }
+void NetworkManager::editReview(int reviewId, const QString &newCommentText) {
+    QVariantMap p;
+    p["reviewId"] = reviewId;
+    p["commentText"] = newCommentText;
+    sendRequest(RequestType::EditReview, p);
+}
+void NetworkManager::deleteReview(int reviewId) {
+    QVariantMap p;
+    p["reviewId"] = reviewId;
+    sendRequest(RequestType::DeleteReview, p);
+}
+void NetworkManager::getReviewsForBook(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::GetReviewsForBook, p);
+}
 void NetworkManager::submitRating(int bookId, int ratingValue) {
     QVariantMap p;
     p["bookId"] = bookId;
     p["ratingValue"] = ratingValue;
     sendRequest(RequestType::SubmitRating, p);
+}
+void NetworkManager::getBookRatingSummary(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::GetBookRatingSummary, p);
 }
 void NetworkManager::getShelf() {
     sendRequest(RequestType::GetShelf);
@@ -194,6 +236,12 @@ void NetworkManager::blockUser(int userId) {
     p["userId"] = userId;
     sendRequest(RequestType::BlockUser, p);
 }
+void NetworkManager::setUserActiveStatus(int userId, bool active) {
+    QVariantMap p;
+    p["userId"] = userId;
+    p["active"] = active;
+    sendRequest(RequestType::SetUserActiveStatus, p);
+}
 void NetworkManager::deleteUser(int userId) {
     QVariantMap p;
     p["userId"] = userId;
@@ -203,6 +251,11 @@ void NetworkManager::deleteBook(int bookId) {
     QVariantMap p;
     p["bookId"] = bookId;
     sendRequest(RequestType::DeleteBook, p);
+}
+void NetworkManager::deleteReviewByAdmin(int reviewId) {
+    QVariantMap p;
+    p["reviewId"] = reviewId;
+    sendRequest(RequestType::DeleteReviewByAdmin, p);
 }
 void NetworkManager::onSocketConnected() {
     emit connected();
@@ -236,4 +289,12 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
         }
     }
     emit responseReceived(matchedType, response);
+}
+
+
+
+
+void NetworkManager::logout() {
+    currentUserId = -1;
+    loggedIn = false;
 }
