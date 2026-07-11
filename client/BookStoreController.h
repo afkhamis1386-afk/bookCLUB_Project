@@ -17,7 +17,7 @@ public:
     void loadNewestBooks(int limit = 10);
     void loadFreeBooks();
     void loadRecommendedBooks();
-
+    void loadCoverImage(int bookId);
 signals:
     void booksLoaded(const QVariantList &bookIds);
     void booksLoadFailed(const QString &message);
@@ -28,14 +28,14 @@ signals:
     void validationError(const QString &message);
     void recommendedBooksLoaded(const QVariantList &bookIds);
     void recommendedBooksLoadFailed(const QString &message);
+    void coverImageLoaded(int bookId, const QByteArray &imageData);
+    void coverImageLoadFailed(int bookId, const QString &message);
 private slots:
     void onResponseReceived(RequestType type, const Response &response);
 private:
     NetworkManager *networkManager;
+    QList<int> pendingCoverImageRequests;
     RequestType lastBookListRequest;
 };
 
 #endif // BOOKSTORECONTROLLER_H
-
-
-

@@ -109,6 +109,21 @@ void BookStoreController::onResponseReceived(RequestType type, const Response &r
         else
             emit bookDetailsFailed(response.getMessage());
         break;
+    case RequestType::GetBookCoverImage: {
+        int bookId = -1;
+        if (!pendingCoverImageRequests.isEmpty()) {
+            bookId = pendingCoverImageRequests.takeFirst();
+        }
+        if (response.isSuccess()) {
+            int actualId = response.getData().contains("bookId")
+            ? response.getData().value("bookId").toInt()
+            : bookId;
+            emit coverImageLoaded(actualId, response.getData().value("imageData").toByteArray());
+        }
+        else
+            emit coverImageLoadFailed(bookId, response.getMessage());
+        break;
+    }
     case RequestType::GetBooksByGenre:
     case RequestType::GetBooksByCategory:
     case RequestType::GetNewestBooks:
@@ -127,4 +142,16 @@ void BookStoreController::onResponseReceived(RequestType type, const Response &r
     default:
         break;
     }
+}
+void BookStoreController::loadCoverImage(int bookId) {
+    if (bookId <= 0) {
+        emit validationError("شناسه کتاب نامعتبر است");
+        return;
+    }
+    if (!networkManager->isConnected()) {
+        emit coverImageLoadFailed(bookId, "اتصال به سرور برقرار نیست");
+        return;
+    }
+    pendingCoverImageRequests.append(bookId);
+    networkManager->getBookCoverImage(bookId);
 }
