@@ -33,6 +33,7 @@ SOURCES += \
     LibraryController.cpp \
     LoginController.cpp \
     NetworkManager.cpp \
+    NotificationController.cpp \
     main.cpp \
     loginwindow_c.cpp
 
@@ -60,6 +61,7 @@ HEADERS += \
     LibraryController.h \
     LoginController.h \
     NetworkManager.h \
+    NotificationController.h \
     loginwindow_c.h
 
 FORMS += \
