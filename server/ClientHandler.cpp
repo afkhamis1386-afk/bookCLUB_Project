@@ -168,10 +168,13 @@ void ClientHandler::processRequest(const Request &req) {
             else
                 response = accessError;
             break;
-
         case RequestType::GetNotifications:
         case RequestType::MarkNotificationRead:
-            response = handleNotificationRequest(req);
+        case RequestType::GetUnreadNotificationCount:
+            if (checkRole({UserRole::NormalUser, UserRole::Publisher, UserRole::Admin}, accessError))
+                response = handleNotificationRequest(req);
+            else
+                response = accessError;
             break;
         case RequestType::GetAllUsers:
         case RequestType::BlockUser:
@@ -341,11 +344,16 @@ Response ClientHandler::handleShelfRequest(const Request &req) {
 Response ClientHandler::handleNotificationRequest(const Request &req) {
     NotificationManager notifManager;
     QVariantMap p = req.getPayload();
-    if (req.getType() == RequestType::GetNotifications)
+    switch (req.getType()) {
+    case RequestType::GetNotifications:
         return notifManager.getUserNotifications(authenticatedUserId);
-    if (req.getType() == RequestType::MarkNotificationRead)
+    case RequestType::MarkNotificationRead:
         return notifManager.markAsRead(authenticatedUserId, p.value("notificationId").toInt());
-    return Response(ResponseStatus::Error, "درخواست اعلان نامعتبر");
+    case RequestType::GetUnreadNotificationCount:
+        return notifManager.getUnreadCount(authenticatedUserId);
+    default:
+        return Response(ResponseStatus::Error, "درخواست اعلان نامعتبر");
+    }
 }
 Response ClientHandler::handleAdminRequest(const Request &req) {
     AdminManager adminManager;
@@ -353,18 +361,30 @@ Response ClientHandler::handleAdminRequest(const Request &req) {
     switch (req.getType()) {
     case RequestType::GetAllUsers:
         return adminManager.getAllUsers();
+    case RequestType::GetNormalUserDetails:
+        return adminManager.getNormalUserDetails(p.value("userId").toInt());
+    case RequestType::GetPublisherDetails:
+        return adminManager.getPublisherDetails(p.value("userId").toInt());
     case RequestType::BlockUser:
         return adminManager.blockUser(p.value("userId").toInt());
+    case RequestType::UnblockUser:
+        return adminManager.unblockUser(p.value("userId").toInt());
     case RequestType::DeleteUser:
         return adminManager.deleteUser(p.value("userId").toInt());
     case RequestType::SetUserActiveStatus:
         return adminManager.setUserActiveStatus(p.value("userId").toInt(), p.value("active").toBool());
+    case RequestType::GetAllBooksAdmin:
+        return adminManager.getAllBooks();
+    case RequestType::GetBookDetailsForReview:
+        return adminManager.getBookDetailsForReview(p.value("bookId").toInt());
+    case RequestType::DeleteBook:
+        return adminManager.removeInvalidBook(p.value("bookId").toInt());
+    case RequestType::GetAllReviews:
+        return adminManager.getAllReviews();
     case RequestType::DeleteReviewByAdmin: {
         ReviewManager reviewManager;
         return reviewManager.deleteReviewByAdmin(p.value("reviewId").toInt());
     }
-    case RequestType::DeleteBook:
-        return adminManager.removeInvalidBook(p.value("bookId").toInt());
     default:
         return Response(ResponseStatus::Error, "درخواست ادمین نامعتبر");
     }
