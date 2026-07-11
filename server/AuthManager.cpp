@@ -146,7 +146,7 @@ Response AuthManager::registerPublisher(const QString &username,
         }
         const QString cleanUsername = username.trimmed();
         const QString cleanAnswer = plainAnswer.trimmed();
-        const QString cleanFirstName = firstName.trimmed();
+        const QString cleanFirstName = firstName.trimmed();getIsBlocked
         const QString cleanLastName = lastName.trimmed();
         const QString cleanEmail = email.trimmed();
         const QString cleanPublicationName = publicationName.trimmed();
@@ -338,6 +338,9 @@ Response AuthManager::recoverPassword(const QString &username, const QString &se
             if (user->getIsBlocked()) {
                 return Response(ResponseStatus::Unauthorized,"حساب کاربری مسدود است");
             }
+            if (!user->getIsActive()) {
+                return Response(ResponseStatus::Unauthorized, "حساب کاربری شما غیرفعال شده است");
+            }
             if (!user->recoverPassword(cleanAnswer, newPassword)) {
                 return Response(ResponseStatus::Unauthorized, "اطلاعات وارد شده صحیح نیست");
             }
@@ -352,20 +355,19 @@ Response AuthManager::recoverPassword(const QString &username, const QString &se
         if (!publisher) {
             return Response(ResponseStatus::Error,"خطا در بارگذاری اطلاعات ناشر");
         }
-
         if (publisher->getIsBlocked()) {
             return Response(ResponseStatus::Unauthorized,"حساب کاربری مسدود است");
         }
-
+        if (!publisher->getIsActive()) {
+            return Response(ResponseStatus::Unauthorized, "حساب کاربری شما غیرفعال شده است");
+        }
         if (!publisher->recoverPassword(cleanAnswer, newPassword)) {
             return Response(ResponseStatus::Unauthorized, "اطلاعات وارد شده صحیح نیست");
         }
-
         const bool updated = userRepo.updatePasswordHash(userId, publisher->getPasswordHash());
         if (!updated) {
             return Response(ResponseStatus::Error,"خطا در به روزرسانی رمز عبور");
         }
-
         return Response(ResponseStatus::Success,"رمز عبور با موفقیت بازیابی شد");
     }
     catch (const std::exception &) {

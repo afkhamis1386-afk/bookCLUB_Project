@@ -38,17 +38,17 @@ bool User::isStrongPassword(const QString &password) {
 }
 User::User()
     : userId(-1), encryptedUsername(""), passwordHash(""), hashedSecurityAnswer(""),
-    isBlocked(false), isDeleted(false), registerDate(QDateTime::currentDateTime()) {}
+    isBlocked(false), isDeleted(false),isActive(false), registerDate(QDateTime::currentDateTime()) {}
 User::User(const QString &plainUsername, const QString &plainPassword, const QString &plainAnswer)
-    : userId(-1), isBlocked(false), isDeleted(false),
+    : userId(-1), isBlocked(false), isDeleted(false), isActive(false),
     registerDate(QDateTime::currentDateTime()) {
     encryptedUsername = encryptString(plainUsername.trimmed());
     passwordHash = hashString(plainPassword);
     hashedSecurityAnswer = hashString(plainAnswer.trimmed());
 }
-User::User(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool blocked, bool deleted, const QDateTime &regDate)
+User::User(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool blocked, bool deleted, bool active, const QDateTime &regDate)
     : userId(userId), encryptedUsername(encryptedUsername), passwordHash(passwordHash),
-    hashedSecurityAnswer(answerHash), isBlocked(blocked), isDeleted(deleted),
+    hashedSecurityAnswer(answerHash), isBlocked(blocked), isDeleted(deleted), isActive(active),
     registerDate(regDate) {}
 User::~User() {}
 int User::getUserId() const { return userId; }
@@ -58,6 +58,7 @@ QString User::getPasswordHash() const { return passwordHash; }
 QString User::getHashedSecurityAnswer() const { return hashedSecurityAnswer; }
 bool User::getIsBlocked() const { return isBlocked; }
 bool User::getIsDeleted() const { return isDeleted; }
+bool User::getIsActive() const {return isActive; }
 QDateTime User::getRegisterDate() const { return registerDate; }
 void User::setUserId(int _id) { userId = _id; }
 bool User::setUsername(const QString &newUsername) {
@@ -68,6 +69,7 @@ bool User::setUsername(const QString &newUsername) {
 }
 void User::setIsBlocked(bool blocked) { isBlocked = blocked; }
 void User::setIsDeleted(bool deleted) { isDeleted = deleted; }
+void User::setIsActive (bool active) {isActive = active; }
 void User::setRegisterDate(const QDateTime &date) { registerDate = date; }
 bool User::verifyPassword(const QString &inputPassword) const {
     return passwordHash == hashString(inputPassword);
@@ -90,9 +92,9 @@ bool User::recoverPassword(const QString &answer, const QString &newPassword) {
 }
 void User::serializeBase(QDataStream &out) const {
     out << userId << encryptedUsername << passwordHash << hashedSecurityAnswer
-        << isBlocked << isDeleted << registerDate;
+        << isBlocked << isDeleted << isActive << registerDate;
 }
 void User::deserializeBase(QDataStream &in) {
     in >> userId >> encryptedUsername >> passwordHash >> hashedSecurityAnswer
-        >> isBlocked >> isDeleted >> registerDate;
+        >> isBlocked >> isDeleted >> isActive >> registerDate;
 }

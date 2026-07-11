@@ -14,6 +14,7 @@ protected:
     QString hashedSecurityAnswer;
     bool isBlocked;
     bool isDeleted;
+    bool isActive;
     QDateTime registerDate;
     static const QString encryptionKey;
     void serializeBase(QDataStream &out) const;
@@ -24,7 +25,7 @@ public:
     static QString decryptString(const QString &encrypted);
     User();
     User(const QString &plainUsername, const QString &plainPassword, const QString &plainAnswer);
-    User(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool blocked, bool deleted, const QDateTime &regDate);
+    User(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool blocked, bool deleted, bool active, const QDateTime &regDate);
     virtual ~User();
     virtual QString getRole() const = 0;
     static bool isValidUsername(const QString &username);
@@ -36,11 +37,13 @@ public:
     QString getHashedSecurityAnswer() const;
     bool getIsBlocked() const;
     bool getIsDeleted() const;
+    bool getIsActive() const;
     QDateTime getRegisterDate() const;
     void setUserId(int _id);
     bool setUsername(const QString &newUsername);
     void setIsBlocked(bool blocked);
     void setIsDeleted(bool deleted);
+    void setIsActive (bool active);
     void setRegisterDate(const QDateTime &date);
     virtual bool verifyPassword(const QString &inputPassword) const;
     virtual bool changePassword(const QString &oldPassword, const QString &newPassword);
