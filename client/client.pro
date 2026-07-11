@@ -27,6 +27,7 @@ SOURCES += \
     ../common/TimedDiscount.cpp \
     ../common/Order.cpp \
     ../common/publisher.cpp \
+    AdminController.cpp \
     BookStoreController.cpp \
     CartController.cpp \
     ClientSocket.cpp \
@@ -35,6 +36,8 @@ SOURCES += \
     NetworkManager.cpp \
     NotificationController.cpp \
     PublisherDashboardController.cpp \
+    RatingController.cpp \
+    ReviewController.cpp \
     main.cpp \
     loginwindow_c.cpp
 
@@ -56,6 +59,7 @@ HEADERS += \
     ../common/TimedDiscount.h \
     ../common/Order.h \
     ../common/publisher.h \
+    AdminController.h \
     BookStoreController.h \
     CartController.h \
     ClientSocket.h \
@@ -64,6 +68,8 @@ HEADERS += \
     NetworkManager.h \
     NotificationController.h \
     PublisherDashboardController.h \
+    RatingController.h \
+    ReviewController.h \
     loginwindow_c.h
 
 FORMS += \

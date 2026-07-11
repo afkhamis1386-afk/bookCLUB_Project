@@ -2,6 +2,7 @@
 #include "ReviewRepository.h"
 #include "BookRepository.h"
 #include "NotificationManager.h"
+#include "ClientRegistry.h"
 #include "../common/Review.h"
 #include "../common/Book.h"
 #include <memory>
@@ -40,7 +41,11 @@ Response ReviewManager::submitReview(int userId, int bookId, const QString &comm
     data["reviewId"] = newReviewId;
     return Response(ResponseStatus::Success, "نظر با موفقیت ثبت شد", data);
 }
-Response ReviewManager::editReview(int userId, int reviewId, const QString &newCommentText){
+    QVariantMap liveData;
+    liveData["bookId"] = bookId;
+    liveData["reviewId"] = newReviewId;
+    ClientRegistry::getInstance()->broadcastLiveUpdate("newReview", liveData);
+    Response ReviewManager::editReview(int userId, int reviewId, const QString &newCommentText){
     if(newCommentText.trimmed().isEmpty() || newCommentText.length() > 1000) {
         return Response(ResponseStatus::ValidationFailed, "متن نظر نمی تواند خالی باشد و باید حداکثر ۱۰۰۰ کاراکتر باشد");
     }

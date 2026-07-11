@@ -2,6 +2,7 @@
 #include "RatingRepository.h"
 #include "BookRepository.h"
 #include "NotificationManager.h"
+#include "ClientRegistry.h"
 #include "../common/Rating.h"
 #include "../common/Book.h"
 #include <memory>
@@ -29,7 +30,11 @@ Response RatingManager::submitRating(int userId, int bookId, int ratingValue){
     data["ratingCount"] = ratingRepo.getRatingCount(bookId);
     return Response(ResponseStatus::Success, "امتیاز با موفقیت ثبت شد", data);
 }
-Response RatingManager::getBookRatingSummary(int bookId){
+    QVariantMap liveData;
+    liveData["bookId"] = bookId;
+    liveData["newAverage"] = newAverage;
+    ClientRegistry::getInstance()->broadcastLiveUpdate("newRating", liveData);
+    Response RatingManager::getBookRatingSummary(int bookId){
     RatingRepository ratingRepo;
     QVariantMap data;
     data["averageRating"] = ratingRepo.getAverageRating(bookId);

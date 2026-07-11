@@ -33,3 +33,17 @@ void ClientRegistry::pushToUser(int userId, const Notification &notification){
     }
     QMetaObject::invokeMethod(handler, "pushNotificationToClient", Qt::QueuedConnection, Q_ARG(Notification, notification));
 }
+void ClientRegistry::broadcastLiveUpdate(const QString &updateType, const QVariantMap &payload){
+    QVariantMap data = payload;
+    data["liveUpdateType"] = updateType;
+    Response liveUpdate(ResponseStatus::PushNotification, "به روزرسانی لحظه ای", data);
+    QMap<int, ClientHandler*> snapshot;
+    {
+        QMutexLocker locker(&mapMutex);
+        snapshot = onlineUsers;
+    }
+    for(auto it = snapshot.begin(); it != snapshot.end(); ++it){
+     QMetaObject::invokeMethod(it.value(), "sendLiveUpdateToClient",
+     Qt::QueuedConnection, Q_ARG(Response, liveUpdate));
+    }
+}
