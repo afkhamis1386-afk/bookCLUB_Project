@@ -35,6 +35,7 @@ SOURCES += \
     LoginController.cpp \
     NetworkManager.cpp \
     NotificationController.cpp \
+    PublisherBookController.cpp \
     PublisherDashboardController.cpp \
     RatingController.cpp \
     ReviewController.cpp \
@@ -67,6 +68,7 @@ HEADERS += \
     LoginController.h \
     NetworkManager.h \
     NotificationController.h \
+    PublisherBookController.h \
     PublisherDashboardController.h \
     RatingController.h \
     ReviewController.h \

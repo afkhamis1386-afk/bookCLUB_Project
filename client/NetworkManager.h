@@ -26,6 +26,7 @@ public:
     void getBooks();
     void searchBooks(const QString &query);
     void getBookDetails(int bookId);
+    void saveReadingProgress(int bookId, int lastPage);
     void getBooksByGenre(int genreId);
     void getBooksByCategory(int categoryId);
     void getNewestBooks(int limit = 10);
@@ -36,6 +37,8 @@ public:
                  const QString &coverImagePath, const QString &pdfFilePath);
     void updateBook(int bookId, const QString &bookName, const QString &description, double price);
     void deactivateBook(int bookId);
+    void reactivateBook(int bookId);
+    void applyDiscount(int bookId, double discountPercent, double discountAmount);
     void getPublisherStats();
     void addToCart(int bookId);
     void removeFromCart(int bookId);
@@ -52,6 +55,9 @@ public:
     void renameShelf(int shelfId, const QString &newName);
     void deleteShelf(int shelfId);
     void addBookToShelf(int shelfId, int bookId);
+    void saveBook(int bookId);
+    void unsaveBook(int bookId);
+    void getSavedBooks();
     void moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId);
     void getNotifications();
     void markNotificationRead(int notificationId);
@@ -76,6 +82,7 @@ signals:
     void loginSucceeded(int userId, UserRole role);
     void loginFailed(const QString &message);
     void pushNotificationReceived(const QVariantMap &notificationData);
+    void bookLiveUpdateReceived(const QString &updateType, const QVariantMap &data);
 private slots:
     void onSocketResponseReceived(const Response &response);
     void onSocketConnected();

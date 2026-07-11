@@ -18,6 +18,7 @@ public:
     QVector<int> getAllUserIds();
     QVector<int> getAllNormalUserIds();
     QVector<int> getFavoriteGenreIds(int userId);
+    QVector<int> getUserIdsByFavoriteGenre(int genreId);
     bool setFavoriteGenreIds(int userId, const QVector<int> &genreIds);
     QVector<int> getPurchasedBookIds(int userId);
     QVector<int> getSavedBookIds(int userId);

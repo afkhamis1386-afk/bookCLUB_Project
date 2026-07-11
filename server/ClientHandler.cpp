@@ -7,6 +7,7 @@
 #include "CartManager.h"
 #include "OrderManager.h"
 #include "ReviewManager.h"
+#include "SavedBookManager.h"
 #include "RatingManager.h"
 #include "ShelfManager.h"
 #include "AdminManager.h"
@@ -27,6 +28,9 @@ void ClientHandler::pushNotificationToClient(const Notification &notification) {
     data["targetId"] = notification.getTargetId();
     Response pushMsg(ResponseStatus::PushNotification, "اعلان جدید", data);
     sendResponse(pushMsg);
+}
+void ClientHandler::sendLiveUpdateToClient(const Response &liveUpdate) {
+    sendResponse(liveUpdate);
 }
 void ClientHandler::run() {
     socket = new QTcpSocket();
@@ -60,7 +64,7 @@ void ClientHandler::onReadyRead() {
     }
 }
 void ClientHandler::onDisconnected() {
-    qDebug() << "کلاینت قطع شد. Socket ID:" << socketDescriptor;
+    qDebug() << "کلاینت قطع شد Socket ID:" << socketDescriptor;
     if (isAuthenticated) {
         ClientRegistry::getInstance()->unregisterClient(authenticatedUserId);
     }
@@ -117,6 +121,8 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::AddBook:
         case RequestType::UpdateBook:
         case RequestType::DeactivateBook:
+        case RequestType::ReactivateBook:
+        case RequestType::ApplyDiscount:
             if (checkRole({UserRole::Publisher}, accessError))
                 response = handleBookRequest(req);
             else
@@ -156,7 +162,6 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::GetBookRatingSummary:
             response = handleRatingRequest(req);
             break;
-        case RequestType::SaveBook:
         case RequestType::GetShelf:
         case RequestType::CreateShelf:
         case RequestType::RenameShelf:
@@ -165,6 +170,20 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::MoveBookBetweenShelves:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleShelfRequest(req);
+            else
+                response = accessError;
+            break;
+        case RequestType::SaveReadingProgress:
+            if (checkRole({UserRole::NormalUser}, accessError))
+                response = handleBookRequest(req);
+            else
+                response = accessError;
+            break;
+        case RequestType::SaveBook:
+        case RequestType::UnsaveBook:
+        case RequestType::GetSavedBooks:
+            if (checkRole({UserRole::NormalUser}, accessError))
+                response = handleSavedBookRequest(req);
             else
                 response = accessError;
             break;
@@ -249,6 +268,12 @@ Response ClientHandler::handleBookRequest(const Request &req) {
         return bookManager.searchBooks(p.value("query").toString());
     case RequestType::GetBookDetails:
         return bookManager.getBookDetails(p.value("bookId").toInt());
+    case RequestType::SaveReadingProgress:
+        return bookManager.saveReadingProgress(
+            authenticatedUserId,
+            p.value("bookId").toInt(),
+            p.value("lastPage").toInt()
+            );
     case RequestType::AddBook:
         return bookManager.addBook(authenticatedUserId, p.value("bookName").toString(),
                                    p.value("description").toString(), p.value("price").toDouble(),
@@ -269,6 +294,14 @@ Response ClientHandler::handleBookRequest(const Request &req) {
         return bookManager.updateBook(authenticatedUserId, p.value("bookId").toInt(), p.value("bookName").toString(), p.value("description").toString(), p.value("price").toDouble());
     case RequestType::DeactivateBook:
         return bookManager.deactivateBook(authenticatedUserId, p.value("bookId").toInt());
+    case RequestType::ReactivateBook:
+        return bookManager.reactivateBook(authenticatedUserId, p.value("bookId").toInt());
+    case RequestType::ApplyDiscount:
+        return bookManager.applyDiscount(
+            authenticatedUserId,
+            p.value("bookId").toInt(),
+            p.value("discountPercent").toDouble(),
+            p.value("discountAmount").toDouble());
     default:
         return Response(ResponseStatus::Error, "درخواست کتاب نامعتبر");
     }
@@ -287,7 +320,6 @@ Response ClientHandler::handleCartRequest(const Request &req) {
         return Response(ResponseStatus::Error, "درخواست سبد خرید نامعتبر");
     }
 }
-
 Response ClientHandler::handleOrderRequest(const Request &req) {
     Q_UNUSED(req)
     OrderManager orderManager;
@@ -339,6 +371,20 @@ Response ClientHandler::handleShelfRequest(const Request &req) {
         return shelfManager.moveBookBetweenShelves(authenticatedUserId,p.value("sourceShelfId").toInt(), p.value("destShelfId").toInt(), p.value("bookId").toInt());
     default:
         return Response(ResponseStatus::Error, "درخواست قفسه نامعتبر");
+    }
+}
+Response ClientHandler::handleSavedBookRequest(const Request &req) {
+    SavedBookManager savedBookManager;
+    QVariantMap p = req.getPayload();
+    switch (req.getType()) {
+    case RequestType::SaveBook:
+        return savedBookManager.saveBook(authenticatedUserId, p.value("bookId").toInt());
+    case RequestType::UnsaveBook:
+        return savedBookManager.unsaveBook(authenticatedUserId, p.value("bookId").toInt());
+    case RequestType::GetSavedBooks:
+        return savedBookManager.getSavedBooks(authenticatedUserId);
+    default:
+        return Response(ResponseStatus::Error, "درخواست کتاب ذخیره شده نامعتبر");
     }
 }
 Response ClientHandler::handleNotificationRequest(const Request &req) {

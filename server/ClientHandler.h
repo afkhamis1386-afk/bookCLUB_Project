@@ -15,6 +15,7 @@ public:
     int getAuthenticatedUserId() const { return authenticatedUserId; }
 public slots:
     void run();
+    void sendLiveUpdateToClient(const Response &liveUpdate);
 signals:
     void clientDisconnected(qintptr socketDescriptor);
     void requestLogReceived(const QString &requestType, int statusCode);
@@ -38,6 +39,7 @@ private:
     Response handleReviewRequest(const Request &req);
     Response handleRatingRequest(const Request &req);
     Response handleShelfRequest(const Request &req);
+    Response handleSavedBookRequest(const Request &req);
     Response handleNotificationRequest(const Request &req);
     Response handleAdminRequest(const Request &req);
     Response handlePublisherRequest(const Request &req);
