@@ -21,5 +21,6 @@ public:
     void unregisterClient(int userId);
     bool isUserOnline(int userId) const;
     void pushToUser(int userId, const Notification &notification);
+    void broadcastLiveUpdate(const QString &updateType, const QVariantMap &payload);
 };
 #endif // CLIENTREGISTRY_H

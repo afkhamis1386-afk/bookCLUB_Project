@@ -5,6 +5,8 @@
 #include "AuthorRepository.h"
 #include "RatingRepository.h"
 #include "UserRepository.h"
+#include "SavedBookRepository.h"
+#include "NotificationManager.h"
 #include "TimedDiscountRepository.h"
 #include "DatabaseManager.h"
 #include "PriceCalculator.h"
@@ -72,6 +74,13 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     }
     QVariantMap data;
     data["bookId"] = newBookId;
+    UserRepository userRepoForNotif;
+    QVector<int> interestedUserIds = userRepoForNotif.getUserIdsByFavoriteGenre(genreId);
+    if (!interestedUserIds.isEmpty()) {
+        NotificationManager notifManager;
+        notifManager.broadcastNotification( interestedUserIds, NotificationType::NewBookInFavouriteGenre, "کتاب جدید در ژانر مورد علاقه شما",
+         QString("کتاب «%1» در ژانر مورد علاقه ی شما منتشر شد").arg(bookName.trimmed()), newBookId, publisherUserId );
+    }
     return Response(ResponseStatus::Success, "کتاب با موفقیت ثبت شد", data);
 }
 Response BookManager::updateBook(int publisherUserId, int bookId, const QString &bookName, const QString &description, double price){
@@ -117,6 +126,16 @@ Response BookManager::applyDiscount(int publisherUserId, int bookId, double disc
     }
     if(!bookRepo.updateDiscount(bookId, discountPercent, discountAmount)){
         return Response(ResponseStatus::Error, "خطا در اعمال تخفیف");
+    }
+    if(discountPercent > 0 || discountAmount > 0){
+        SavedBookRepository savedRepo;
+        QVector<int> interestedUserIds = savedRepo.getUserIdsWhoSavedBook(bookId);
+        if(!interestedUserIds.isEmpty()){
+            NotificationManager notifManager;
+            notifManager.broadcastNotification(
+            interestedUserIds,
+            NotificationType::DiscountOnSavedBook, "تخفیف روی کتاب ذخیره شده", QString("کتاب «%1» که ذخیره کرده اید تخفیف خورد").arg(book->getBookName()), bookId, publisherUserId );
+        }
     }
     return Response(ResponseStatus::Success, "تخفیف با موفقیت اعمال شد");
 }
