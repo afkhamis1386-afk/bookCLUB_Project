@@ -38,7 +38,7 @@ int UserRepository::insertNormalUser(const NormalUser &user) {
         return -1;
     }
     if (!db.commit()) {
-        qWarning() << "خطا در نهایی‌سازی تراکنش ثبت نام:" << db.lastError().text();
+        qWarning() << "خطا در نهایی سازی تراکنش ثبت نام:" << db.lastError().text();
         db.rollback();
         return -1;
     }
@@ -167,6 +167,18 @@ QVector<int> UserRepository::getFavoriteGenreIds(int userId) {
     }
     return ids;
 }
+QVector<int> UserRepository::getUserIdsByFavoriteGenre(int genreId) {
+    QVector<int> ids;
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare("SELECT UserID FROM FavouriteGenre WHERE GenreID = :genreId");
+    query.bindValue(":genreId", genreId);
+    if (query.exec()) {
+        while (query.next())
+            ids.append(query.value(0).toInt());
+    }
+    return ids;
+}
 bool UserRepository::setFavoriteGenreIds(int userId, const QVector<int> &genreIds) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery deleteQuery(db);
@@ -277,3 +289,4 @@ bool UserRepository::findRoleById(int userId, UserRole &outRole) {
     outRole = static_cast<UserRole>(roleId - 1);
     return true;
 }
+
