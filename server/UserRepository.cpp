@@ -49,7 +49,7 @@ NormalUser* UserRepository::loadNormalUserById(int userId) {
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID, u.Username, u.PasswordHash, nu.SecurityAnswerHash, "
-        "u.IsBlocked, u.IsDeleted, u.RegisterDate "
+        "u.IsBlocked, u.IsDeleted, u.IsActive, u.RegisterDate "
         "FROM Users u JOIN NormalUsers nu ON u.UserID = nu.UserID "
         "WHERE u.UserID = :userId"
         );
@@ -65,7 +65,8 @@ NormalUser* UserRepository::loadNormalUserById(int userId) {
         query.value(3).toString(),
         query.value(4).toBool(),
         query.value(5).toBool(),
-        query.value(6).toDateTime()
+        query.value(6).toBool(),
+        query.value(7).toDateTime()
         );
     user->setFavoriteGenres(getFavoriteGenreIds(userId));
     user->setPurchasedBooks(getPurchasedBookIds(userId));
@@ -109,6 +110,13 @@ bool UserRepository::updateDeletedStatus(int userId, bool isDeleted) {
         return false;
     }
     return true;
+}
+bool UserRepository::updateActiveStatus(int userId, bool active) {
+    QSqlQuery query(DatabaseManager::getInstance()->getConnection());
+    query.prepare("UPDATE Users SET IsActive = :active WHERE UserID = :userId");
+    query.bindValue(":active", active);
+    query.bindValue(":userId", userId);
+    return query.exec();
 }
 bool UserRepository::updatePasswordHash(int userId, const QString &newPasswordHash) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();

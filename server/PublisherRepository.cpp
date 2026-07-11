@@ -62,7 +62,7 @@ Publisher* PublisherRepository::loadPublisherById(int userId) {
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID, u.Username, u.PasswordHash, p.SecurityAnswerHash, "
-        "u.IsBlocked, u.IsDeleted, u.RegisterDate, "
+        "u.IsBlocked, u.IsDeleted, u.IsActive, u.RegisterDate, "
         "p.FirstName, p.LastName, p.Email, p.PublicationName, "
         "p.PublisherLicenseNumber, p.ShortDescription "
         "FROM Users u JOIN Publishers p ON u.UserID = p.UserID "
@@ -80,13 +80,14 @@ Publisher* PublisherRepository::loadPublisherById(int userId) {
         query.value(3).toString(),
         query.value(4).toBool(),
         query.value(5).toBool(),
-        query.value(6).toDateTime(),
-        query.value(7).toString(),
+        query.value(6).toBool(),
+        query.value(7).toDateTime(),
         query.value(8).toString(),
         query.value(9).toString(),
         query.value(10).toString(),
         query.value(11).toString(),
-        query.value(12).toString()
+        query.value(12).toString(),
+        query.value(13).toString()
         );
     QSqlQuery bookQuery(db);
     bookQuery.prepare("SELECT BookID FROM Books WHERE PublisherUserID = :userId AND IsDeleted = 0");

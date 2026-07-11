@@ -107,6 +107,13 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::GetBookDetails:
             response = handleBookRequest(req);
             break;
+        case RequestType::GetBooksByGenre:
+        case RequestType::GetBooksByCategory:
+        case RequestType::GetNewestBooks:
+        case RequestType::GetFreeBooks:
+        case RequestType::GetRecommendedBooks:
+            response = handleBookRequest(req);
+            break;
         case RequestType::AddBook:
         case RequestType::UpdateBook:
         case RequestType::DeactivateBook:
@@ -130,16 +137,24 @@ void ClientHandler::processRequest(const Request &req) {
                 response = accessError;
             break;
         case RequestType::SubmitReview:
+        case RequestType::EditReview:
+        case RequestType::DeleteReview:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleReviewRequest(req);
             else
                 response = accessError;
+            break;
+        case RequestType::GetReviewsForBook:
+            response = handleReviewRequest(req);
             break;
         case RequestType::SubmitRating:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleRatingRequest(req);
             else
                 response = accessError;
+            break;
+        case RequestType::GetBookRatingSummary:
+            response = handleRatingRequest(req);
             break;
         case RequestType::SaveBook:
         case RequestType::GetShelf:
@@ -153,15 +168,20 @@ void ClientHandler::processRequest(const Request &req) {
             else
                 response = accessError;
             break;
-
         case RequestType::GetNotifications:
         case RequestType::MarkNotificationRead:
-            response = handleNotificationRequest(req);
+        case RequestType::GetUnreadNotificationCount:
+            if (checkRole({UserRole::NormalUser, UserRole::Publisher, UserRole::Admin}, accessError))
+                response = handleNotificationRequest(req);
+            else
+                response = accessError;
             break;
         case RequestType::GetAllUsers:
         case RequestType::BlockUser:
         case RequestType::DeleteUser:
+        case RequestType::SetUserActiveStatus:
         case RequestType::DeleteBook:
+        case RequestType::DeleteReviewByAdmin:
             if (checkRole({UserRole::Admin}, accessError))
                 response = handleAdminRequest(req);
             else
@@ -235,6 +255,16 @@ Response ClientHandler::handleBookRequest(const Request &req) {
                                    p.value("genreTitle").toString(), p.value("categoryTitle").toString(),
                                    p.value("authorName").toString(), p.value("coverImagePath").toString(),
                                    p.value("pdfFilePath").toString());
+    case RequestType::GetBooksByGenre:
+        return bookManager.getBooksByGenre(p.value("genreId").toInt());
+    case RequestType::GetBooksByCategory:
+        return bookManager.getBooksByCategory(p.value("categoryId").toInt());
+    case RequestType::GetNewestBooks:
+        return bookManager.getNewestBooks(p.value("limit").toInt() > 0 ? p.value("limit").toInt() : 10);
+    case RequestType::GetFreeBooks:
+        return bookManager.getFreeBooks();
+    case RequestType::GetRecommendedBooks:
+        return bookManager.getRecommendedBooks(authenticatedUserId);
     case RequestType::UpdateBook:
         return bookManager.updateBook(authenticatedUserId, p.value("bookId").toInt(), p.value("bookName").toString(), p.value("description").toString(), p.value("price").toDouble());
     case RequestType::DeactivateBook:
@@ -266,12 +296,30 @@ Response ClientHandler::handleOrderRequest(const Request &req) {
 Response ClientHandler::handleReviewRequest(const Request &req) {
     ReviewManager reviewManager;
     QVariantMap p = req.getPayload();
-    return reviewManager.submitReview(authenticatedUserId, p.value("bookId").toInt(), p.value("commentText").toString(), p.value("parentId").toInt());
+    switch (req.getType()) {
+    case RequestType::SubmitReview:
+        return reviewManager.submitReview(authenticatedUserId, p.value("bookId").toInt(), p.value("commentText").toString(), p.value("parentId").toInt());
+    case RequestType::EditReview:
+        return reviewManager.editReview(authenticatedUserId, p.value("reviewId").toInt(), p.value("commentText").toString());
+    case RequestType::DeleteReview:
+        return reviewManager.deleteReview(authenticatedUserId, p.value("reviewId").toInt());
+    case RequestType::GetReviewsForBook:
+        return reviewManager.getReviewsForBook(p.value("bookId").toInt());
+    default:
+        return Response(ResponseStatus::Error, "درخواست نظر نامعتبر");
+    }
 }
 Response ClientHandler::handleRatingRequest(const Request &req) {
     RatingManager ratingManager;
     QVariantMap p = req.getPayload();
-    return ratingManager.submitRating(authenticatedUserId, p.value("bookId").toInt(), p.value("ratingValue").toInt());
+    switch (req.getType()) {
+    case RequestType::SubmitRating:
+        return ratingManager.submitRating(authenticatedUserId, p.value("bookId").toInt(), p.value("ratingValue").toInt());
+    case RequestType::GetBookRatingSummary:
+        return ratingManager.getBookRatingSummary(p.value("bookId").toInt());
+    default:
+        return Response(ResponseStatus::Error, "درخواست امتیاز نامعتبر");
+    }
 }
 Response ClientHandler::handleShelfRequest(const Request &req) {
     ShelfManager shelfManager;
@@ -296,11 +344,16 @@ Response ClientHandler::handleShelfRequest(const Request &req) {
 Response ClientHandler::handleNotificationRequest(const Request &req) {
     NotificationManager notifManager;
     QVariantMap p = req.getPayload();
-    if (req.getType() == RequestType::GetNotifications)
+    switch (req.getType()) {
+    case RequestType::GetNotifications:
         return notifManager.getUserNotifications(authenticatedUserId);
-    if (req.getType() == RequestType::MarkNotificationRead)
+    case RequestType::MarkNotificationRead:
         return notifManager.markAsRead(authenticatedUserId, p.value("notificationId").toInt());
-    return Response(ResponseStatus::Error, "درخواست اعلان نامعتبر");
+    case RequestType::GetUnreadNotificationCount:
+        return notifManager.getUnreadCount(authenticatedUserId);
+    default:
+        return Response(ResponseStatus::Error, "درخواست اعلان نامعتبر");
+    }
 }
 Response ClientHandler::handleAdminRequest(const Request &req) {
     AdminManager adminManager;
@@ -308,12 +361,30 @@ Response ClientHandler::handleAdminRequest(const Request &req) {
     switch (req.getType()) {
     case RequestType::GetAllUsers:
         return adminManager.getAllUsers();
+    case RequestType::GetNormalUserDetails:
+        return adminManager.getNormalUserDetails(p.value("userId").toInt());
+    case RequestType::GetPublisherDetails:
+        return adminManager.getPublisherDetails(p.value("userId").toInt());
     case RequestType::BlockUser:
         return adminManager.blockUser(p.value("userId").toInt());
+    case RequestType::UnblockUser:
+        return adminManager.unblockUser(p.value("userId").toInt());
     case RequestType::DeleteUser:
         return adminManager.deleteUser(p.value("userId").toInt());
+    case RequestType::SetUserActiveStatus:
+        return adminManager.setUserActiveStatus(p.value("userId").toInt(), p.value("active").toBool());
+    case RequestType::GetAllBooksAdmin:
+        return adminManager.getAllBooks();
+    case RequestType::GetBookDetailsForReview:
+        return adminManager.getBookDetailsForReview(p.value("bookId").toInt());
     case RequestType::DeleteBook:
         return adminManager.removeInvalidBook(p.value("bookId").toInt());
+    case RequestType::GetAllReviews:
+        return adminManager.getAllReviews();
+    case RequestType::DeleteReviewByAdmin: {
+        ReviewManager reviewManager;
+        return reviewManager.deleteReviewByAdmin(p.value("reviewId").toInt());
+    }
     default:
         return Response(ResponseStatus::Error, "درخواست ادمین نامعتبر");
     }

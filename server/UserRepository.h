@@ -13,6 +13,7 @@ public:
     bool findUserRoleAndId(const QString &encryptedUsername, int &outUserId, UserRole &outRole);
     bool updateBlockedStatus(int userId, bool isBlocked);
     bool updateDeletedStatus(int userId, bool isDeleted);
+    bool updateActiveStatus(int userId, bool isActive);
     bool updatePasswordHash(int userId, const QString &newPasswordHash);
     QVector<int> getAllUserIds();
     QVector<int> getAllNormalUserIds();

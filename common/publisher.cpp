@@ -16,11 +16,11 @@ Publisher::Publisher(const QString &username, const QString &plainPassword, cons
     publicationName(publicationName.trimmed()),
     publisherLicenseNumber(publisherLicenseNumber.trimmed()) {}
 Publisher::Publisher(int userId, const QString &encryptedUsername, const QString &passwordHash,
-                     const QString &answerHash, bool isBlocked, bool isDeleted,
+                     const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive,
                      const QDateTime &registerDate, const QString &firstName, const QString &lastName,
                      const QString &email, const QString &publicationName,
                      const QString &publisherLicenseNumber, const QString &shortDescription)
-    : User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, registerDate),
+    : User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, isActive, registerDate),
     firstName(firstName),
     lastName(lastName),
     email(email),

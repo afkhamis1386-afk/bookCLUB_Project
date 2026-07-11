@@ -23,7 +23,7 @@ public:
               const QString &publicationName, const QString &publisherLicenseNumber,
               const QString &shortDescription = QString());
     Publisher(int userId, const QString &encryptedUsername, const QString &passwordHash,
-              const QString &answerHash, bool isBlocked, bool isDeleted,
+              const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive,
               const QDateTime &registerDate, const QString &firstName, const QString &lastName,
               const QString &email, const QString &publicationName,
               const QString &publisherLicenseNumber, const QString &shortDescription);
