@@ -135,6 +135,18 @@ void NetworkManager::deactivateBook(int bookId) {
     p["bookId"] = bookId;
     sendRequest(RequestType::DeactivateBook, p);
 }
+    void NetworkManager::reactivateBook(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::ReactivateBook, p);
+}
+void NetworkManager::applyDiscount(int bookId, double discountPercent, double discountAmount) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    p["discountPercent"] = discountPercent;
+    p["discountAmount"] = discountAmount;
+    sendRequest(RequestType::ApplyDiscount, p);
+}
 void NetworkManager::getPublisherStats() {
     sendRequest(RequestType::GetPublisherStats);
 }
@@ -212,6 +224,19 @@ void NetworkManager::addBookToShelf(int shelfId, int bookId) {
     p["shelfId"] = shelfId;
     p["bookId"] = bookId;
     sendRequest(RequestType::AddBookToShelf, p);
+}
+void NetworkManager::saveBook(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::SaveBook, p);
+}
+void NetworkManager::unsaveBook(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::UnsaveBook, p);
+}
+void NetworkManager::getSavedBooks() {
+    sendRequest(RequestType::GetSavedBooks);
 }
 void NetworkManager::moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId) {
     QVariantMap p;
@@ -299,7 +324,12 @@ void NetworkManager::onSocketError(const QString &errorMessage) {
 }
 void NetworkManager::onSocketResponseReceived(const Response &response) {
     if (response.getStatus() == ResponseStatus::PushNotification) {
-        emit pushNotificationReceived(response.getData());
+        QVariantMap data = response.getData();
+        if (data.contains("liveUpdateType")) {
+            emit bookLiveUpdateReceived(data.value("liveUpdateType").toString(), data);
+        } else {
+            emit pushNotificationReceived(data);
+        }
         return;
     }
     if (pendingRequestQueue.isEmpty()) {
