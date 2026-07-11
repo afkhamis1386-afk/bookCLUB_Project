@@ -48,6 +48,7 @@ SOURCES += \
     ReviewManager.cpp \
     ReviewRepository.cpp \
     SavedBookManager.cpp \
+    SavedBookRepository.cpp \
     ServerApplication.cpp \
     ServerMonitorManager.cpp \
     serverdashboardwindow.cpp \
@@ -105,6 +106,7 @@ HEADERS += \
     ReviewManager.h \
     ReviewRepository.h \
     SavedBookManager.h \
+    SavedBookRepository.h \
     ServerApplication.h \
     ServerMonitorManager.h \
     serverdashboardwindow.h \
