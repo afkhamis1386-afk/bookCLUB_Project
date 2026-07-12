@@ -9,7 +9,7 @@ public:
     explicit PublisherBookController(NetworkManager *networkManager, QObject *parent = nullptr);
     void addBook(const QString &bookName, const QString &description, double price,
                  const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-                 const QString &coverImagePath, const QString &pdfFilePath);
+                 const QString &coverImageFilePath, const QString &pdfFilePath);
     void updateBook(int bookId, const QString &bookName, const QString &description, double price);
     void deactivateBook(int bookId);
     void reactivateBook(int bookId);
@@ -17,6 +17,7 @@ public:
 signals:
     void bookAdded(int bookId, const QString &message);
     void bookAddFailed(const QString &message);
+    void bookFileReadFailed(const QString &message);
     void bookUpdated(const QString &message);
     void bookUpdateFailed(const QString &message);
     void bookDeactivated(const QString &message);
