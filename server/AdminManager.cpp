@@ -86,6 +86,40 @@ Response AdminManager::getPublisherDetails(int userId){
     data["publishedBooksCount"] = publisher->getPublishedBooksCount();
     return Response(ResponseStatus::Success, "اطلاعات ناشر بازیابی شد", data);
 }
+Response AdminManager::blockUser(int userId){
+    UserRepository userRepo;
+    if(!userRepo.updateBlockedStatus(userId, true)){
+        return Response(ResponseStatus::Error, "خطا در مسدودسازی کاربر");
+    }
+    return Response(ResponseStatus::Success, "کاربر با موفقیت مسدود شد");
+}
+
+Response AdminManager::unblockUser(int userId){
+    UserRepository userRepo;
+    if(!userRepo.updateBlockedStatus(userId, false)){
+        return Response(ResponseStatus::Error, "خطا در رفع مسدودیت کاربر");
+    }
+    return Response(ResponseStatus::Success, "مسدودیت کاربر با موفقیت رفع شد");
+}
+
+Response AdminManager::deleteUser(int userId){
+    UserRepository userRepo;
+    if(!userRepo.updateDeletedStatus(userId, true)){
+        return Response(ResponseStatus::Error, "خطا در حذف کاربر");
+    }
+    return Response(ResponseStatus::Success, "حساب کاربری با موفقیت حذف شد");
+}
+
+Response AdminManager::setUserActiveStatus(int targetUserId, bool active){
+    UserRepository userRepo;
+    if(!userRepo.updateActiveStatus(targetUserId, active)){
+        return Response(ResponseStatus::Error, "خطا در تغییر وضعیت فعال سازی کاربر");
+    }
+    return Response(ResponseStatus::Success, active ? "کاربر فعال شد" : "کاربر غیرفعال شد");
+}
+
+// 🆕🆕🆕 پایان بخش جدید
+
 Response AdminManager::getAllBooks(){
     BookRepository bookRepo;
     QVector<int> bookIds = bookRepo.getAllBookIdsForAdmin();

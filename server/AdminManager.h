@@ -11,6 +11,7 @@ public:
     Response blockUser(int userId);
     Response unblockUser(int userId);
     Response deleteUser(int userId);
+    Response setUserActiveStatus(int targetUserId, bool active);
     Response getAllBooks();
     Response getBookDetailsForReview(int bookId);
     Response removeInvalidBook(int bookId);

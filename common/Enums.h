@@ -62,6 +62,9 @@ enum class RequestType {
     GetNotifications,
     MarkNotificationRead,
     GetUnreadNotificationCount,
+    GetAllGenres,
+    GetAllCategories,
+    SetFavoriteGenres,
     SetUserActiveStatus
 };
 enum class ResponseStatus {
