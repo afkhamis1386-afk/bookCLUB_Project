@@ -28,6 +28,7 @@ SOURCES += \
     ../common/Order.cpp \
     ../common/publisher.cpp \
     AdminController.cpp \
+    BookReaderController.cpp \
     BookStoreController.cpp \
     CartController.cpp \
     ClientSocket.cpp \
@@ -61,6 +62,7 @@ HEADERS += \
     ../common/Order.h \
     ../common/publisher.h \
     AdminController.h \
+    BookReaderController.h \
     BookStoreController.h \
     CartController.h \
     ClientSocket.h \

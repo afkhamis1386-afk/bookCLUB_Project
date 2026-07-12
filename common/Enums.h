@@ -13,8 +13,11 @@ enum class RequestType {
     ChangePassword,
     RecoverPassword,
     GetBooks,
+    GetBookFile,
+    SaveReadingProgress,
     SearchBooks,
     GetBookDetails,
+    GetBookCoverImage,
     GetBooksByGenre,
     GetBooksByCategory,
     GetNewestBooks,
@@ -59,7 +62,6 @@ enum class RequestType {
     GetNotifications,
     MarkNotificationRead,
     GetUnreadNotificationCount,
-    GetPublisherDashboard,
     SetUserActiveStatus
 };
 enum class ResponseStatus {

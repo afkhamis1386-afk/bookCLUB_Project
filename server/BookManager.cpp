@@ -5,9 +5,12 @@
 #include "AuthorRepository.h"
 #include "RatingRepository.h"
 #include "UserRepository.h"
+#include "ReadingProgressRepository.h"
 #include "SavedBookRepository.h"
 #include "NotificationManager.h"
 #include "TimedDiscountRepository.h"
+#include <QFile>
+#include <QIODevice>
 #include "DatabaseManager.h"
 #include "PriceCalculator.h"
 #include "../common/Book.h"
@@ -279,6 +282,28 @@ Response BookManager::getBookDetails(int bookId){
     data["isActive"] = book->getIsActive();
     return Response(ResponseStatus::Success, "جزئیات کتاب بازیابی شد", data);
 }
+Response BookManager::getBookFileData(int userId, int bookId){
+    UserRepository userRepo;
+    std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
+    if(!user || !user->hasPurchased(bookId)){
+        return Response(ResponseStatus::Unauthorized, "شما این کتاب را خریداری نکرده اید");
+    }
+    BookRepository bookRepo;
+    std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
+    if(!book){
+        return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
+    }
+    QFile file(storageRootPath() + "/" + book->getPdfFilePath());
+    if(!file.open(QIODevice::ReadOnly)){
+        return Response(ResponseStatus::Error, "خطا در خواندن فایل کتاب از سرور");
+    }
+    QVariantMap data;
+    data["pdfData"] = file.readAll();
+    file.close();
+    ReadingProgressRepository progressRepo;
+    data["lastPage"] = progressRepo.getLastPage(userId, bookId);
+    return Response(ResponseStatus::Success, "فایل کتاب بازیابی شد", data);
+}
 Response BookManager::getPublisherDashboard(int publisherUserId){
     BookRepository bookRepo;
     int totalBooks = bookRepo.getTotalBooksCountByPublisher(publisherUserId);
@@ -318,4 +343,19 @@ Response BookManager::getRecommendedBooks(int userId){
     QVariantMap data;
     data["bookIds"] = bookList;
     return Response(ResponseStatus::Success, "کتاب های پیشنهادی بازیابی شد", data);
+}
+Response BookManager::saveReadingProgress(int userId, int bookId, int lastPage){
+    if(lastPage < 1){
+        return Response(ResponseStatus::ValidationFailed, "شماره صفحه نامعتبر است");
+    }
+    UserRepository userRepo;
+    std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
+    if(!user || !user->hasPurchased(bookId)){
+        return Response(ResponseStatus::Unauthorized, "شما این کتاب را خریداری نکرده اید");
+    }
+    ReadingProgressRepository progressRepo;
+    if(!progressRepo.upsertProgress(userId, bookId, lastPage)){
+        return Response(ResponseStatus::Error, "خطا در ذخیره پیشرفت مطالعه");
+    }
+    return Response(ResponseStatus::Success, "پیشرفت مطالعه ذخیره شد");
 }
