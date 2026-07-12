@@ -21,11 +21,7 @@ public:
     QVector<int> getUserIdsByFavoriteGenre(int genreId);
     bool setFavoriteGenreIds(int userId, const QVector<int> &genreIds);
     QVector<int> getPurchasedBookIds(int userId);
-    QVector<int> getSavedBookIds(int userId);
-    bool addSavedBook(int userId, int bookId);
-    bool removeSavedBook(int userId, int bookId);
     QMap<int, int> getReadingProgress(int userId);
-    bool setLastReadPage(int userId, int bookId, int pageNumber);
     bool findRoleById(int userId, UserRole &outRole);
 };
 

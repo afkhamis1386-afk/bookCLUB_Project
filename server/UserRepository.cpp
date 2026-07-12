@@ -70,7 +70,6 @@ NormalUser* UserRepository::loadNormalUserById(int userId) {
         );
     user->setFavoriteGenres(getFavoriteGenreIds(userId));
     user->setPurchasedBooks(getPurchasedBookIds(userId));
-    user->setSavedBooks(getSavedBookIds(userId));
     user->setReadingProgress(getReadingProgress(userId));
     return user;
 }
@@ -212,42 +211,6 @@ QVector<int> UserRepository::getPurchasedBookIds(int userId) {
     }
     return ids;
 }
-QVector<int> UserRepository::getSavedBookIds(int userId) {
-    QVector<int> ids;
-    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
-    QSqlQuery query(db);
-    query.prepare("SELECT BookID FROM SavedBooks WHERE UserID = :userId");
-    query.bindValue(":userId", userId);
-    if (query.exec()) {
-        while (query.next())
-            ids.append(query.value(0).toInt());
-    }
-    return ids;
-}
-bool UserRepository::addSavedBook(int userId, int bookId) {
-    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
-    QSqlQuery query(db);
-    query.prepare("INSERT INTO SavedBooks (UserID, BookID) VALUES (:userId, :bookId)");
-    query.bindValue(":userId", userId);
-    query.bindValue(":bookId", bookId);
-    if (!query.exec()) {
-        qWarning() << "خطا در ذخیره کتاب:" << query.lastError().text();
-        return false;
-    }
-    return true;
-}
-bool UserRepository::removeSavedBook(int userId, int bookId) {
-    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
-    QSqlQuery query(db);
-    query.prepare("DELETE FROM SavedBooks WHERE UserID = :userId AND BookID = :bookId");
-    query.bindValue(":userId", userId);
-    query.bindValue(":bookId", bookId);
-    if (!query.exec()) {
-        qWarning() << "خطا در حذف کتاب ذخیره شده:" << query.lastError().text();
-        return false;
-    }
-    return true;
-}
 QMap<int, int> UserRepository::getReadingProgress(int userId) {
     QMap<int, int> progress;
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
@@ -259,25 +222,6 @@ QMap<int, int> UserRepository::getReadingProgress(int userId) {
             progress[query.value(0).toInt()] = query.value(1).toInt();
     }
     return progress;
-}
-bool UserRepository::setLastReadPage(int userId, int bookId, int pageNumber) {
-    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
-    QSqlQuery query(db);
-    query.prepare(
-        "MERGE INTO ReadingProgress AS target "
-        "USING (SELECT :userId AS UserID, :bookId AS BookID) AS src "
-        "ON target.UserID = src.UserID AND target.BookID = src.BookID "
-        "WHEN MATCHED THEN UPDATE SET LastPage = :page "
-        "WHEN NOT MATCHED THEN INSERT (UserID, BookID, LastPage) VALUES (:userId, :bookId, :page);"
-        );
-    query.bindValue(":userId", userId);
-    query.bindValue(":bookId", bookId);
-    query.bindValue(":page", pageNumber);
-    if (!query.exec()) {
-        qWarning() << "خطا در ذخیره پیشرفت مطالعه:" << query.lastError().text();
-        return false;
-    }
-    return true;
 }
 bool UserRepository::findRoleById(int userId, UserRole &outRole) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();

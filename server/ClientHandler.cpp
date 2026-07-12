@@ -88,7 +88,7 @@ bool ClientHandler::checkRole(const QVector<UserRole> &allowedRoles, Response &o
 void ClientHandler::processRequest(const Request &req) {
     Response response;
     RequestType type = req.getType();
-    if (type == RequestType::Register || type == RequestType::Login || type == RequestType::RecoverPassword) {
+    if (type == RequestType::Register || type == RequestType::Login || type == RequestType::RecoverPassword || type == RequestType::GetAllGenres || type == RequestType::GetAllCategories) {
         response = handleAuthRequest(req);
         if (type == RequestType::Login && response.isSuccess()) {
             authenticatedUserId = response.getData().value("userId").toInt();
@@ -105,6 +105,16 @@ void ClientHandler::processRequest(const Request &req) {
         switch (type) {
         case RequestType::ChangePassword:
             response = handleAuthRequest(req);
+            break;
+        case RequestType::GetAllGenres:
+        case RequestType::GetAllCategories:
+            response = handleAuthRequest(req);
+            break;
+        case RequestType::SetFavoriteGenres:
+            if (checkRole({UserRole::NormalUser}, accessError))
+                response = handleAuthRequest(req);
+            else
+                response = accessError;
             break;
         case RequestType::GetBooks:
         case RequestType::SearchBooks:
@@ -256,6 +266,19 @@ Response ClientHandler::handleAuthRequest(const Request &req) {
         return authManager.changePassword(authenticatedUserId, authenticatedRole, p.value("oldPassword").toString(), p.value("newPassword").toString());
     case RequestType::RecoverPassword:
         return authManager.recoverPassword(p.value("username").toString(), p.value("securityAnswer").toString(), p.value("newPassword").toString());
+    case RequestType::GetAllGenres:
+        return authManager.getAllGenres();
+    case RequestType::GetAllCategories:
+        return authManager.getAllCategories();
+    case RequestType::SetFavoriteGenres: {
+        QVariantList genreList = p.value("genreIds").toList();
+        QVector<int> genreIds;
+        genreIds.reserve(genreList.size());
+        for (const QVariant &v : genreList) {
+            genreIds.append(v.toInt());
+        }
+        return authManager.setFavoriteGenres(authenticatedUserId, genreIds);
+    }
     default:
         return Response(ResponseStatus::Error, "درخواست احراز هویت نامعتبر");
     }
