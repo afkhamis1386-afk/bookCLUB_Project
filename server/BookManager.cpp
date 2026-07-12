@@ -17,10 +17,25 @@
 #include "../common/Genre.h"
 #include "../common/Category.h"
 #include "../common/TimedDiscount.h"
+#include "../common/normaluser.h"
 #include <memory>
+#include <QDir>
+#include <QUuid>
+#include <QCoreApplication>
 BookManager::BookManager(){}
-Response BookManager::addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName, const QString &coverImagePath,
-    const QString &pdfFilePath){
+static QString storageRootPath(){
+    QString path = QCoreApplication::applicationDirPath() + "/BookClubStorage";
+    QDir dir(path);
+    if(!dir.exists()) dir.mkpath(".");
+    QDir covers(path + "/covers");
+    if(!covers.exists()) covers.mkpath(".");
+    QDir pdfs(path + "/pdfs");
+    if(!pdfs.exists()) pdfs.mkpath(".");
+    return path;
+}
+Response BookManager::addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+    const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData)
+{
     if(bookName.trimmed().isEmpty() || bookName.length() > 60){
         return Response(ResponseStatus::ValidationFailed, "نام کتاب نامعتبر است (حداکثر ۶۰ کاراکتر)");
     }
@@ -29,6 +44,17 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     }
     if(price < 0){
         return Response(ResponseStatus::ValidationFailed, "قیمت کتاب نمی تواند منفی باشد");
+    }
+    if(pdfData.isEmpty()){
+        return Response(ResponseStatus::ValidationFailed, "فایل PDF کتاب الزامی است");
+    }
+    static const qint64 MAX_PDF_SIZE = 100 * 1024 * 1024;
+    static const qint64 MAX_COVER_SIZE = 10 * 1024 * 1024;
+    if(pdfData.size() > MAX_PDF_SIZE){
+        return Response(ResponseStatus::ValidationFailed, "حجم فایل PDF بیش از حد مجاز است");
+    }
+    if(!coverImageData.isEmpty() && coverImageData.size() > MAX_COVER_SIZE){
+        return Response(ResponseStatus::ValidationFailed, "حجم عکس جلد بیش از حد مجاز است");
     }
     GenreRepository genreRepo;
     QVector<Genre> allGenres = genreRepo.getAllGenres();
@@ -54,6 +80,7 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     if(categoryId == -1){
         return Response(ResponseStatus::ValidationFailed, "دسته بندی انتخاب شده معتبر نیست");
     }
+
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if(!db.transaction()){
         return Response(ResponseStatus::Error, "خطا در شروع تراکنش ثبت کتاب");
@@ -64,11 +91,36 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
         db.rollback();
         return Response(ResponseStatus::Error, "خطا در ثبت نویسنده");
     }
-    Book newBook(bookName.trimmed(), description.trimmed(), price, genreId, categoryId, authorId, publisherUserId, coverImagePath, pdfFilePath);
+    QString uniqueId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    QString root = storageRootPath();
+    QString coverRelativePath;
+    if(!coverImageData.isEmpty()){
+        QString ext = coverImageExtension.trimmed().isEmpty() ? "jpg" : coverImageExtension.trimmed();
+        coverRelativePath = QString("covers/%1.%2").arg(uniqueId, ext);
+        QFile coverFile(root + "/" + coverRelativePath);
+        if(!coverFile.open(QIODevice::WriteOnly)){
+            db.rollback();
+            return Response(ResponseStatus::Error, "خطا در ذخیره عکس جلد روی سرور");
+        }
+        coverFile.write(coverImageData);
+        coverFile.close();
+    }
+    QString pdfRelativePath = QString("pdfs/%1.pdf").arg(uniqueId);
+    QFile pdfFile(root + "/" + pdfRelativePath);
+    if(!pdfFile.open(QIODevice::WriteOnly)){
+        db.rollback();
+        if(!coverRelativePath.isEmpty()) QFile::remove(root + "/" + coverRelativePath);
+        return Response(ResponseStatus::Error, "خطا در ذخیره فایل PDF روی سرور");
+    }
+    pdfFile.write(pdfData);
+    pdfFile.close();
+    Book newBook(bookName.trimmed(), description.trimmed(), price, genreId, categoryId, authorId, publisherUserId, coverRelativePath, pdfRelativePath);
     BookRepository bookRepo;
     int newBookId = bookRepo.insertBook(newBook);
     if(newBookId == -1){
         db.rollback();
+        QFile::remove(root + "/" + pdfRelativePath);
+        if(!coverRelativePath.isEmpty()) QFile::remove(root + "/" + coverRelativePath);
         return Response(ResponseStatus::Error, "خطا در ثبت کتاب");
     }
     if(!db.commit()){
@@ -79,35 +131,31 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     data["bookId"] = newBookId;
     UserRepository userRepoForNotif;
     QVector<int> interestedUserIds = userRepoForNotif.getUserIdsByFavoriteGenre(genreId);
-    if (!interestedUserIds.isEmpty()) {
+    if(!interestedUserIds.isEmpty()){
         NotificationManager notifManager;
         notifManager.broadcastNotification( interestedUserIds, NotificationType::NewBookInFavouriteGenre, "کتاب جدید در ژانر مورد علاقه شما",
          QString("کتاب «%1» در ژانر مورد علاقه ی شما منتشر شد").arg(bookName.trimmed()), newBookId, publisherUserId );
     }
     return Response(ResponseStatus::Success, "کتاب با موفقیت ثبت شد", data);
 }
-Response BookManager::updateBook(int publisherUserId, int bookId, const QString &bookName, const QString &description, double price){
+Response BookManager::getCoverImageData(int bookId){
     BookRepository bookRepo;
     std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
     if(!book){
         return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
     }
-    if(book->getPublisherUserId() != publisherUserId){
-        return Response(ResponseStatus::Unauthorized, "شما اجازه ویرایش این کتاب را ندارید");
+    if(book->getCoverImagePath().isEmpty()){
+        return Response(ResponseStatus::NotFound, "این کتاب عکس جلد ندارد");
     }
-    if(!book->setBookName(bookName)){
-        return Response(ResponseStatus::ValidationFailed, "نام کتاب نامعتبر است");
+    QFile file(storageRootPath() + "/" + book->getCoverImagePath());
+    if(!file.open(QIODevice::ReadOnly)){
+        return Response(ResponseStatus::Error, "خطا در خواندن عکس جلد از سرور");
     }
-    if(!book->setBookDescription(description)){
-        return Response(ResponseStatus::ValidationFailed, "توضیحات کتاب نامعتبر است");
-    }
-    if(!book->setBookPrice(price)){
-        return Response(ResponseStatus::ValidationFailed, "قیمت کتاب نامعتبر است");
-    }
-    if(!bookRepo.updateBook(*book)){
-        return Response(ResponseStatus::Error, "خطا در به روزرسانی کتاب");
-    }
-    return Response(ResponseStatus::Success, "کتاب با موفقیت ویرایش شد");
+    QVariantMap data;
+    data["bookId"] = bookId;
+    data["imageData"] = file.readAll();
+    file.close();
+    return Response(ResponseStatus::Success, "عکس جلد بازیابی شد", data);
 }
 Response BookManager::applyDiscount(int publisherUserId, int bookId, double discountPercent, double discountAmount){
     BookRepository bookRepo;
@@ -169,17 +217,6 @@ Response BookManager::reactivateBook(int publisherUserId, int bookId){
         return Response(ResponseStatus::Error, "خطا در فعال سازی کتاب");
     }
     return Response(ResponseStatus::Success, "کتاب با موفقیت فعال شد");
-}
-Response BookManager::deleteBookByAdmin(int bookId){
-    BookRepository bookRepo;
-    std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
-    if(!book){
-        return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
-    }
-    if(!bookRepo.setDeletedStatus(bookId, true)){
-        return Response(ResponseStatus::Error, "خطا در حذف کتاب");
-    }
-    return Response(ResponseStatus::Success, "کتاب با موفقیت حذف شد");
 }
 Response BookManager::getStorefrontBooks(){
     BookRepository bookRepo;
@@ -303,24 +340,6 @@ Response BookManager::getBookFileData(int userId, int bookId){
     ReadingProgressRepository progressRepo;
     data["lastPage"] = progressRepo.getLastPage(userId, bookId);
     return Response(ResponseStatus::Success, "فایل کتاب بازیابی شد", data);
-}
-Response BookManager::getPublisherDashboard(int publisherUserId){
-    BookRepository bookRepo;
-    int totalBooks = bookRepo.getTotalBooksCountByPublisher(publisherUserId);
-    QVector<int> bookIds = bookRepo.getBooksByPublisher(publisherUserId);
-    RatingRepository ratingRepo;
-    QVariantList bookStats;
-    for(int bookId : qAsConst(bookIds)){
-        double avgRating = ratingRepo.getAverageRating(bookId);
-        QVariantMap bookStat;
-        bookStat["bookId"] = bookId;
-        bookStat["averageRating"] = avgRating;
-        bookStats.append(bookStat);
-    }
-    QVariantMap data;
-    data["totalBooksCount"] = totalBooks;
-    data["books"] = bookStats;
-    return Response(ResponseStatus::Success, "داشبورد ناشر بازیابی شد", data);
 }
 Response BookManager::getRecommendedBooks(int userId){
     UserRepository userRepo;

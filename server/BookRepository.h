@@ -21,6 +21,7 @@ public:
     QVector<int> getNewestBooks(int limit);
     QVector<int> getFreeBooks();
     QVector<int> getBooksByPublisher(int publisherUserId);
+    QVector<int> getAllBookIdsForAdmin();
     int getTotalBooksCountByPublisher(int publisherUserId);
     int getSoldCopiesCount(int bookId);
     QVector<int> getTopSellingBooksByPublisher(int publisherUserId, int limit);

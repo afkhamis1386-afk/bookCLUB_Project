@@ -3,6 +3,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QDataStream>
+#include <QMetaType>
 enum class NotificationType {
     NewBookInFavouriteGenre = 1,
     DiscountOnSavedBook     = 2,
@@ -46,6 +47,5 @@ public:
     friend QDataStream &operator<<(QDataStream &out, const Notification &n);
     friend QDataStream &operator>>(QDataStream &in, Notification &n);
 };
-#include <QMetaType>
 Q_DECLARE_METATYPE(Notification)
 #endif // NOTIFICATION_H

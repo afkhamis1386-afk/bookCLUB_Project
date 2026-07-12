@@ -24,6 +24,7 @@ Response AdminManager::getAllUsers(){
         userData["role"] = "NormalUser";
         userData["isBlocked"] = user->getIsBlocked();
         userData["isDeleted"] = user->getIsDeleted();
+        userData["isActive"] = user->getIsActive();
         userData["registerDate"] = user->getRegisterDate();
         userList.append(userData);
     }
@@ -36,6 +37,7 @@ Response AdminManager::getAllUsers(){
         userData["role"] = "Publisher";
         userData["isBlocked"] = publisher->getIsBlocked();
         userData["isDeleted"] = publisher->getIsDeleted();
+        userData["isActive"] = publisher->getIsActive();
         userData["registerDate"] = publisher->getRegisterDate();
         userData["publicationName"] = publisher->getPublicationName();
         userList.append(userData);
@@ -55,6 +57,7 @@ Response AdminManager::getNormalUserDetails(int userId){
     data["username"] = user->getUsername();
     data["isBlocked"] = user->getIsBlocked();
     data["isDeleted"] = user->getIsDeleted();
+    data["isActive"] = user->getIsActive();
     data["registerDate"] = user->getRegisterDate();
     data["purchasedCount"] = user->getPurchasedCount();
     QVariantList genreList;
@@ -78,41 +81,14 @@ Response AdminManager::getPublisherDetails(int userId){
     data["publicationName"] = publisher->getPublicationName();
     data["isBlocked"] = publisher->getIsBlocked();
     data["isDeleted"] = publisher->getIsDeleted();
+    data["isActive"] = publisher->getIsActive();
     data["registerDate"] = publisher->getRegisterDate();
     data["publishedBooksCount"] = publisher->getPublishedBooksCount();
     return Response(ResponseStatus::Success, "اطلاعات ناشر بازیابی شد", data);
 }
-Response AdminManager::blockUser(int userId){
-    UserRepository userRepo;
-    if(!userRepo.updateBlockedStatus(userId, true)){
-        return Response(ResponseStatus::Error, "خطا در مسدودسازی کاربر");
-    }
-    return Response(ResponseStatus::Success, "کاربر با موفقیت مسدود شد");
-}
-Response AdminManager::unblockUser(int userId){
-    UserRepository userRepo;
-    if(!userRepo.updateBlockedStatus(userId, false)){
-        return Response(ResponseStatus::Error, "خطا در رفع مسدودیت کاربر");
-    }
-    return Response(ResponseStatus::Success, "مسدودیت کاربر با موفقیت رفع شد");
-}
-Response AdminManager::deleteUser(int userId){
-    UserRepository userRepo;
-    if(!userRepo.updateDeletedStatus(userId, true)){
-        return Response(ResponseStatus::Error, "خطا در حذف کاربر");
-    }
-    return Response(ResponseStatus::Success, "حساب کاربری با موفقیت حذف شد");
-}
-Response AdminManager::setUserActiveStatus(int targetUserId, bool active) {
-    UserRepository userRepo;
-    if(!userRepo.updateActiveStatus(targetUserId, active)){
-        return Response(ResponseStatus::Error, "خطا در تغییر وضعیت فعال سازی کاربر");
-    }
-    return Response(ResponseStatus::Success, active ? "کاربر فعال شد" : "کاربر غیرفعال شد");
-}
 Response AdminManager::getAllBooks(){
     BookRepository bookRepo;
-    QVector<int> bookIds = bookRepo.getAllActiveBookIds();
+    QVector<int> bookIds = bookRepo.getAllBookIdsForAdmin();
     QVariantList bookList;
     for(int bookId : qAsConst(bookIds)){
         std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
@@ -176,15 +152,4 @@ Response AdminManager::getAllReviews(){
     QVariantMap data;
     data["reviews"] = reviewList;
     return Response(ResponseStatus::Success, "لیست تمامی نظرات بازیابی شد", data);
-}
-Response AdminManager::removeInappropriateReview(int reviewId){
-    ReviewRepository reviewRepo;
-    std::unique_ptr<Review> review(reviewRepo.loadReviewById(reviewId));
-    if(!review){
-        return Response(ResponseStatus::NotFound, "نظر یافت نشد");
-    }
-    if(!reviewRepo.setDeletedStatus(reviewId, true)){
-        return Response(ResponseStatus::Error, "خطا در حذف نظر نامناسب");
-    }
-    return Response(ResponseStatus::Success, "نظر نامناسب با موفقیت حذف شد");
 }

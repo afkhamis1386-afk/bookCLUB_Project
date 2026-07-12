@@ -37,15 +37,15 @@ Response ReviewManager::submitReview(int userId, int bookId, const QString &comm
             book->getPublisherUserId(),
             NotificationType::NewReviewForPublisher, "نظر جدید", QString("یک نظر جدید برای کتاب «%1» ثبت شد").arg(book->getBookName()), bookId, userId );
     }
-    QVariantMap data;
-    data["reviewId"] = newReviewId;
-    return Response(ResponseStatus::Success, "نظر با موفقیت ثبت شد", data);
-}
     QVariantMap liveData;
     liveData["bookId"] = bookId;
     liveData["reviewId"] = newReviewId;
     ClientRegistry::getInstance()->broadcastLiveUpdate("newReview", liveData);
-    Response ReviewManager::editReview(int userId, int reviewId, const QString &newCommentText){
+    QVariantMap data;
+    data["reviewId"] = newReviewId;
+    return Response(ResponseStatus::Success, "نظر با موفقیت ثبت شد", data);
+}
+Response ReviewManager::editReview(int userId, int reviewId, const QString &newCommentText){
     if(newCommentText.trimmed().isEmpty() || newCommentText.length() > 1000) {
         return Response(ResponseStatus::ValidationFailed, "متن نظر نمی تواند خالی باشد و باید حداکثر ۱۰۰۰ کاراکتر باشد");
     }
@@ -65,6 +65,7 @@ Response ReviewManager::submitReview(int userId, int bookId, const QString &comm
     }
     return Response(ResponseStatus::Success, "نظر با موفقیت ویرایش شد");
 }
+
 Response ReviewManager::deleteReview(int userId, int reviewId){
     ReviewRepository reviewRepo;
     std::unique_ptr<Review> review(reviewRepo.loadReviewById(reviewId));
@@ -79,6 +80,7 @@ Response ReviewManager::deleteReview(int userId, int reviewId){
     }
     return Response(ResponseStatus::Success, "نظر با موفقیت حذف شد");
 }
+
 Response ReviewManager::deleteReviewByAdmin(int reviewId){
     ReviewRepository reviewRepo;
     std::unique_ptr<Review> review(reviewRepo.loadReviewById(reviewId));
@@ -90,6 +92,7 @@ Response ReviewManager::deleteReviewByAdmin(int reviewId){
     }
     return Response(ResponseStatus::Success, "نظر با موفقیت حذف شد");
 }
+
 Response ReviewManager::getReviewsForBook(int bookId){
     ReviewRepository reviewRepo;
     QVector<int> reviewIds = reviewRepo.getReviewIdsByBook(bookId);
@@ -121,4 +124,3 @@ Response ReviewManager::getReviewsForBook(int bookId){
     data["reviews"] = reviewList;
     return Response(ResponseStatus::Success, "نظرات بازیابی شد", data);
 }
-

@@ -21,20 +21,23 @@ Response RatingManager::submitRating(int userId, int bookId, int ratingValue){
     if(!ratingRepo.upsertRating(newRating)){
         return Response(ResponseStatus::Error, "خطا در ثبت امتیاز");
     }
+    double newAverage = ratingRepo.getAverageRating(bookId);
+    int ratingCount = ratingRepo.getRatingCount(bookId);
     NotificationManager notifManager;
     notifManager.sendNotification(
         book->getPublisherUserId(),
-        NotificationType::NewReviewForPublisher, "امتیاز جدید", QString("کتاب «%1» یک امتیاز جدید دریافت کرد").arg(book->getBookName()), bookId, userId);
-    QVariantMap data;
-    data["newAverage"] = ratingRepo.getAverageRating(bookId);
-    data["ratingCount"] = ratingRepo.getRatingCount(bookId);
-    return Response(ResponseStatus::Success, "امتیاز با موفقیت ثبت شد", data);
-}
+        NotificationType::NewReviewForPublisher, "امتیاز جدید",
+        QString("کتاب «%1» یک امتیاز جدید دریافت کرد").arg(book->getBookName()), bookId, userId);
     QVariantMap liveData;
     liveData["bookId"] = bookId;
     liveData["newAverage"] = newAverage;
     ClientRegistry::getInstance()->broadcastLiveUpdate("newRating", liveData);
-    Response RatingManager::getBookRatingSummary(int bookId){
+    QVariantMap data;
+    data["newAverage"] = newAverage;
+    data["ratingCount"] = ratingCount;
+    return Response(ResponseStatus::Success, "امتیاز با موفقیت ثبت شد", data);
+}
+Response RatingManager::getBookRatingSummary(int bookId){
     RatingRepository ratingRepo;
     QVariantMap data;
     data["averageRating"] = ratingRepo.getAverageRating(bookId);

@@ -5,13 +5,13 @@
 class BookManager {
 public:
     BookManager();
-    Response addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName, const QString &coverImagePath,
-     const QString &pdfFilePath);
+    Response addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+    const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData);
+    Response getCoverImageData(int bookId);
     Response updateBook(int publisherUserId, int bookId, const QString &bookName, const QString &description, double price);
     Response applyDiscount(int publisherUserId, int bookId, double discountPercent, double discountAmount);
     Response deactivateBook(int publisherUserId, int bookId);
     Response reactivateBook(int publisherUserId, int bookId);
-    Response deleteBookByAdmin(int bookId);
     Response getStorefrontBooks();
     Response getBooksByGenre(int genreId);
     Response getBooksByCategory(int categoryId);
@@ -20,7 +20,6 @@ public:
     Response searchBooks(const QString &query);
     Response getBookDetails(int bookId);
     Response getBookFileData(int userId, int bookId);
-    Response getPublisherDashboard(int publisherUserId);
     Response getRecommendedBooks(int userId);
     Response saveReadingProgress(int userId, int bookId, int lastPage);
 };

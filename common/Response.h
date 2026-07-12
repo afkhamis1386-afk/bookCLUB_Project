@@ -4,6 +4,7 @@
 #include <QString>
 #include <QVariantMap>
 #include <QDataStream>
+#include <QMetaType>
 class Response {
 private:
     ResponseStatus status;
@@ -19,4 +20,5 @@ public:
     friend QDataStream &operator<<(QDataStream &out, const Response &res);
     friend QDataStream &operator>>(QDataStream &in, Response &res);
 };
+Q_DECLARE_METATYPE(Response)
 #endif // RESPONSE_H
