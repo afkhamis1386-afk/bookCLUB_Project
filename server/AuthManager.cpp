@@ -24,8 +24,7 @@ Response AuthManager::validateNormalUserRegistration(const QString &username, co
     }
     return Response(ResponseStatus::Success, "");
 }
-Response AuthManager::validatePublisherRegistration(const QString &username,
-                                                    const QString &plainPassword, const QString &plainAnswer, const QString &firstName,
+Response AuthManager::validatePublisherRegistration(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName,
                                                     const QString &lastName, const QString &email, const QString &publicationName,
                                                     const QString &licenseNumber) const {
     const QString cleanUsername = username.trimmed();
@@ -134,19 +133,17 @@ Response AuthManager::registerNormalUser(const QString &username, const QString 
         return Response(ResponseStatus::Error, "خطای ناشناخته در ثبت نام کاربر");
     }
 }
-Response AuthManager::registerPublisher(const QString &username,
-                                        const QString &plainPassword, const QString &plainAnswer,const QString &firstName,
+Response AuthManager::registerPublisher(const QString &username,const QString &plainPassword, const QString &plainAnswer,const QString &firstName,
                                         const QString &lastName, const QString &email, const QString &publicationName, const QString &licenseNumber, const QString &shortDescription)
 {
     try {
-        Response validation = validatePublisherRegistration(username, plainPassword,plainAnswer, firstName,
-                                                            lastName, email, publicationName, licenseNumber);
+        Response validation = validatePublisherRegistration(username, plainPassword,plainAnswer, firstName, lastName, email, publicationName, licenseNumber);
         if (validation.getStatus() != ResponseStatus::Success) {
             return validation;
         }
         const QString cleanUsername = username.trimmed();
         const QString cleanAnswer = plainAnswer.trimmed();
-        const QString cleanFirstName = firstName.trimmed();getIsBlocked
+        const QString cleanFirstName = firstName.trimmed();
         const QString cleanLastName = lastName.trimmed();
         const QString cleanEmail = email.trimmed();
         const QString cleanPublicationName = publicationName.trimmed();
@@ -208,7 +205,10 @@ Response AuthManager::login(const QString &username, const QString &plainPasswor
             if (user->getIsBlocked()) {
                 return Response(ResponseStatus::Unauthorized, "حساب کاربری شما مسدود شده است");
             }
-            return buildLoginSuccessResponse(user->getUserId(), user->getUsername(), UserRole::NormalUser);
+            if (!user->getIsActive()) {
+                return Response(ResponseStatus::Unauthorized, "حساب کاربری شما غیرفعال شده است");
+            }
+            return buildLoginSuccessResponse( user->getUserId(), user->getUsername(), UserRole::NormalUser);
         }
         if (role == UserRole::Publisher) {
             PublisherRepository publisherRepo;
@@ -222,7 +222,10 @@ Response AuthManager::login(const QString &username, const QString &plainPasswor
             if (publisher->getIsBlocked()) {
                 return Response(ResponseStatus::Unauthorized, "حساب کاربری شما مسدود شده است");
             }
-            return buildLoginSuccessResponse(publisher->getUserId(),publisher->getUsername(), UserRole::Publisher, publisher->getPublicationName());
+            if (!publisher->getIsActive()) {
+                return Response(ResponseStatus::Unauthorized, "حساب کاربری شما غیرفعال شده است");
+            }
+            return buildLoginSuccessResponse( publisher->getUserId(), publisher->getUsername(), UserRole::Publisher, publisher->getPublicationName());
         }
         AdminRepository adminRepo;
         std::unique_ptr<Admin> admin(adminRepo.loadAdminById(userId));
