@@ -33,7 +33,7 @@ Response SavedBookManager::getSavedBooks(int userId){
     SavedBookRepository savedRepo;
     QVector<int> ids = savedRepo.getSavedBookIds(userId);
     QVariantList bookList;
-    for(int id : ids)
+    for(int id : qAsConst(ids))
         bookList.append(id);
     QVariantMap data;
     data["bookIds"] = bookList;

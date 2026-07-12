@@ -15,6 +15,5 @@ public:
     Response getBookDetailsForReview(int bookId);
     Response removeInvalidBook(int bookId);
     Response getAllReviews();
-    Response removeInappropriateReview(int reviewId);
 };
 #endif // ADMINMANAGER_H

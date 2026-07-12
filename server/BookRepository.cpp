@@ -252,6 +252,17 @@ QVector<int> BookRepository::getBooksByPublisher(int publisherUserId){
     }
     return ids;
 }
+QVector<int> BookRepository::getAllBookIdsForAdmin(){
+    QVector<int> ids;
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare("SELECT BookID FROM Books WHERE IsDeleted = 0");
+    if(query.exec()){
+        while(query.next())
+            ids.append(query.value(0).toInt());
+    }
+    return ids;
+}
 int BookRepository::getTotalBooksCountByPublisher(int publisherUserId){
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
