@@ -19,8 +19,10 @@ public:
     Response getFreeBooks();
     Response searchBooks(const QString &query);
     Response getBookDetails(int bookId);
+    Response getBookFileData(int userId, int bookId);
     Response getPublisherDashboard(int publisherUserId);
     Response getRecommendedBooks(int userId);
+    Response saveReadingProgress(int userId, int bookId, int lastPage);
 };
 
 #endif // BOOKMANAGER_H
