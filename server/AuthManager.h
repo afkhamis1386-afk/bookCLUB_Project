@@ -4,6 +4,7 @@
 #include "../common/Enums.h"
 #include <QString>
 #include <QVariantMap>
+#include <QVector>
 class UserRepository;
 class PublisherRepository;
 class AdminRepository;
@@ -21,6 +22,9 @@ public:
     Response login(const QString &username, const QString &plainPassword);
     Response changePassword(int userId, UserRole role, const QString &oldPassword, const QString &newPassword);
     Response recoverPassword(const QString &username, const QString &securityAnswer, const QString &newPassword);
+    Response getAllGenres();
+    Response getAllCategories();
+    Response setFavoriteGenres(int userId, const QVector<int> &genreIds);
 private:
     Response validateNormalUserRegistration(const QString &username, const QString &plainPassword, const QString &plainAnswer) const;
     Response validatePublisherRegistration(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName,

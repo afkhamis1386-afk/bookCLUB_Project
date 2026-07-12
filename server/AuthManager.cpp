@@ -6,6 +6,10 @@
 #include "../common/normaluser.h"
 #include "../common/publisher.h"
 #include "../common/Admin.h"
+#include "GenreRepository.h"
+#include "CategoryRepository.h"
+#include "../common/Genre.h"
+#include "../common/Category.h"
 #include <QRegularExpression>
 #include <memory>
 #include <exception>
@@ -378,5 +382,70 @@ Response AuthManager::recoverPassword(const QString &username, const QString &se
     }
     catch (...) {
         return Response(ResponseStatus::Error,"خطای ناشناخته در بازیابی رمز عبور");
+    }
+}
+Response AuthManager::getAllGenres() {
+    try {
+        GenreRepository genreRepo;
+        QVector<Genre> genres = genreRepo.getAllGenres();
+        QVariantList list;
+        for (const Genre &g : qAsConst(genres)) {
+            QVariantMap item;
+            item["genreId"] = g.getGenreId();
+            item["genreTitle"] = g.getGenreTitle();
+            list.append(item);
+        }
+        QVariantMap data;
+        data["genres"] = list;
+        return Response(ResponseStatus::Success, "لیست ژانرها بازیابی شد", data);
+    } catch (...) {
+        return Response(ResponseStatus::Error, "خطا در دریافت لیست ژانرها");
+    }
+}
+Response AuthManager::getAllCategories() {
+    try {
+        CategoryRepository categoryRepo;
+        QVector<Category> categories = categoryRepo.getAllCategories();
+        QVariantList list;
+        for (const Category &c : qAsConst(categories)) {
+            QVariantMap item;
+            item["categoryId"] = c.getCategoryId();
+            item["categoryTitle"] = c.getCategoryTitle();
+            list.append(item);
+        }
+        QVariantMap data;
+        data["categories"] = list;
+        return Response(ResponseStatus::Success, "لیست دسته بندی ها بازیابی شد", data);
+    } catch (...) {
+        return Response(ResponseStatus::Error, "خطا در دریافت لیست دسته بندی ها");
+    }
+}
+Response AuthManager::setFavoriteGenres(int userId, const QVector<int> &genreIds) {
+    try {
+        QVector<int> unique;
+        for (int id : genreIds) {
+            if (!unique.contains(id)) unique.append(id);
+        }
+        if (unique.size() < 1 || unique.size() > 3) {
+            return Response(ResponseStatus::ValidationFailed, "باید بین ۱ تا ۳ ژانر انتخاب کنید");
+        }
+        GenreRepository genreRepo;
+        QVector<Genre> allGenres = genreRepo.getAllGenres();
+        for (int id : unique) {
+            bool found = false;
+            for (const Genre &g : qAsConst(allGenres)) {
+                if (g.getGenreId() == id) { found = true; break; }
+            }
+            if (!found) {
+                return Response(ResponseStatus::ValidationFailed, "یکی از ژانرهای انتخاب شده معتبر نیست");
+            }
+        }
+        UserRepository userRepo;
+        if (!userRepo.setFavoriteGenreIds(userId, unique)) {
+            return Response(ResponseStatus::Error, "خطا در ذخیره ژانرهای مورد علاقه");
+        }
+        return Response(ResponseStatus::Success, "ژانرهای مورد علاقه با موفقیت ثبت شد");
+    } catch (...) {
+        return Response(ResponseStatus::Error, "خطای داخلی سیستم در ثبت ژانرهای مورد علاقه");
     }
 }
