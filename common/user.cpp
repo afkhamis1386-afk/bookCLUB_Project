@@ -38,9 +38,9 @@ bool User::isStrongPassword(const QString &password) {
 }
 User::User()
     : userId(-1), encryptedUsername(""), passwordHash(""), hashedSecurityAnswer(""),
-    isBlocked(false), isDeleted(false),isActive(false), registerDate(QDateTime::currentDateTime()) {}
+    isBlocked(false), isDeleted(false),isActive(true), registerDate(QDateTime::currentDateTime()) {}
 User::User(const QString &plainUsername, const QString &plainPassword, const QString &plainAnswer)
-    : userId(-1), isBlocked(false), isDeleted(false), isActive(false),
+    : userId(-1), isBlocked(false), isDeleted(false), isActive(true),
     registerDate(QDateTime::currentDateTime()) {
     encryptedUsername = encryptString(plainUsername.trimmed());
     passwordHash = hashString(plainPassword);
