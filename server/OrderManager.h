@@ -8,6 +8,6 @@ public:
     Response checkout(int userId);
     Response getOrderHistory(int userId);
     Response getOrderDetails(int userId, int orderId);
-    Response cancelOrder(int userId, int orderId);
+    Response cancelorder(int userId, int orderId);
 };
 #endif // ORDERMANAGER_H

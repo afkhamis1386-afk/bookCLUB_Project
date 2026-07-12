@@ -109,6 +109,7 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::GetBooks:
         case RequestType::SearchBooks:
         case RequestType::GetBookDetails:
+        case RequestType::GetBookCoverImage:
             response = handleBookRequest(req);
             break;
         case RequestType::GetBooksByGenre:
@@ -173,6 +174,7 @@ void ClientHandler::processRequest(const Request &req) {
             else
                 response = accessError;
             break;
+        case RequestType::GetBookFile:
         case RequestType::SaveReadingProgress:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleBookRequest(req);
@@ -268,6 +270,10 @@ Response ClientHandler::handleBookRequest(const Request &req) {
         return bookManager.searchBooks(p.value("query").toString());
     case RequestType::GetBookDetails:
         return bookManager.getBookDetails(p.value("bookId").toInt());
+    case RequestType::GetBookCoverImage:
+        return bookManager.getCoverImageData(p.value("bookId").toInt());
+    case RequestType::GetBookFile:
+        return bookManager.getBookFileData(authenticatedUserId, p.value("bookId").toInt());
     case RequestType::SaveReadingProgress:
         return bookManager.saveReadingProgress(
             authenticatedUserId,
@@ -275,11 +281,17 @@ Response ClientHandler::handleBookRequest(const Request &req) {
             p.value("lastPage").toInt()
             );
     case RequestType::AddBook:
-        return bookManager.addBook(authenticatedUserId, p.value("bookName").toString(),
-                                   p.value("description").toString(), p.value("price").toDouble(),
-                                   p.value("genreTitle").toString(), p.value("categoryTitle").toString(),
-                                   p.value("authorName").toString(), p.value("coverImagePath").toString(),
-                                   p.value("pdfFilePath").toString());
+        return bookManager.addBook(
+            authenticatedUserId,
+            p.value("bookName").toString(),
+            p.value("description").toString(),
+            p.value("price").toDouble(),
+            p.value("genreTitle").toString(),
+            p.value("categoryTitle").toString(),
+            p.value("authorName").toString(),
+            p.value("coverImageData").toByteArray(),
+            p.value("coverImageExtension").toString(),
+            p.value("pdfData").toByteArray());
     case RequestType::GetBooksByGenre:
         return bookManager.getBooksByGenre(p.value("genreId").toInt());
     case RequestType::GetBooksByCategory:

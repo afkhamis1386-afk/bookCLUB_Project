@@ -32,9 +32,9 @@ public:
     void setPaymentDate(const QDateTime& date);
     void setPaymentStatusId(int statusId);
     QString getStatusTitle() const;
-    bool isSuccessful() const { return paymentStatusId == static_cast<int>(PaymentStatus::Successful); }
-    bool isPending() const { return paymentStatusId == static_cast<int>(PaymentStatus::Pending); }
-    bool isFailed() const { return paymentStatusId == static_cast<int>(PaymentStatus::Failed); }
+    bool isSuccessful() const;
+    bool isPending() const;
+    bool isFailed() const;
     friend QDataStream& operator<<(QDataStream& out, const Payment& payment);
     friend QDataStream& operator>>(QDataStream& in, Payment& payment);
 };

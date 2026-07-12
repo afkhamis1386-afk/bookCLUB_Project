@@ -1,5 +1,6 @@
 #include "OrderManager.h"
 #include "CartRepository.h"
+#include "PaymentManager.h"
 #include "OrderRepository.h"
 #include "BookRepository.h"
 #include "TimedDiscountRepository.h"
@@ -72,6 +73,8 @@ Response OrderManager::checkout(int userId) {
         db.rollback();
         return Response(ResponseStatus::Error, "خطا در نهایی سازی تراکنش خرید");
     }
+    PaymentManager paymentManager;
+    paymentManager.recordPayment(newOrderId, finalPrice);
     QVariantMap data;
     data["orderId"] = newOrderId;
     data["finalPrice"] = finalPrice;
@@ -127,7 +130,7 @@ Response OrderManager::getOrderDetails(int userId, int orderId) {
     data["items"] = itemList;
     return Response(ResponseStatus::Success, "جزئیات سفارش بازیابی شد", data);
 }
-Response OrderManager::cancelOrder(int userId, int orderId) {
+Response OrderManager::cancelorder(int userId, int orderId) {
     OrderRepository orderRepo;
     std::unique_ptr<Order> order(orderRepo.loadOrderById(orderId));
     if (!order) {

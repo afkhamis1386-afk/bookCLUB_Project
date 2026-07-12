@@ -52,6 +52,9 @@ QString Payment::getStatusTitle() const {
         return "نامشخص";
     }
 }
+bool Payment::isSuccessful() const { return paymentStatusId == static_cast<int>(PaymentStatus::Successful); }
+bool Payment::isPending() const { return paymentStatusId == static_cast<int>(PaymentStatus::Pending); }
+bool Payment::isFailed() const { return paymentStatusId == static_cast<int>(PaymentStatus::Failed); }
 QDataStream& operator<<(QDataStream& out, const Payment& payment) {
     out << payment.paymentId
         << payment.orderId
