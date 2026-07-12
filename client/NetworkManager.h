@@ -23,6 +23,9 @@ public:
     void login(const QString &username, const QString &password);
     void changePassword(const QString &oldPassword, const QString &newPassword);
     void recoverPassword(const QString &username, const QString &securityAnswer, const QString &newPassword);
+    void getAllGenres();
+    void getAllCategories();
+    void setFavoriteGenres(const QVector<int> &genreIds);
     void getBooks();
     void searchBooks(const QString &query);
     void getBookDetails(int bookId);

@@ -74,6 +74,22 @@ void NetworkManager::recoverPassword(const QString &username, const QString &sec
     p["newPassword"] = newPassword;
     sendRequest(RequestType::RecoverPassword, p);
 }
+void NetworkManager::getAllGenres() {
+    sendRequest(RequestType::GetAllGenres);
+}
+void NetworkManager::getAllCategories() {
+    sendRequest(RequestType::GetAllCategories);
+}
+void NetworkManager::setFavoriteGenres(const QVector<int> &genreIds) {
+    QVariantMap p;
+    QVariantList list;
+    list.reserve(genreIds.size());
+    for (int id : genreIds) {
+        list.append(id);
+    }
+    p["genreIds"] = list;
+    sendRequest(RequestType::SetFavoriteGenres, p);
+}
 void NetworkManager::getBooks() {
     sendRequest(RequestType::GetBooks);
 }
