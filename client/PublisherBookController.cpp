@@ -1,11 +1,12 @@
 #include "PublisherBookController.h"
-
+#include <QFile>
+#include <QFileInfo>
 PublisherBookController::PublisherBookController(NetworkManager *networkManager, QObject *parent)
     : QObject(parent), networkManager(networkManager){
     connect(networkManager, &NetworkManager::responseReceived, this, &PublisherBookController::onResponseReceived);
 }
 void PublisherBookController::addBook(const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle,
-                                      const QString &authorName, const QString &coverImagePath,
+                                      const QString &authorName, const QString &coverImageFilePath,
                                       const QString &pdfFilePath) {
     if (bookName.trimmed().isEmpty() || bookName.length() > 60) {
         emit validationError("نام کتاب نامعتبر است (حداکثر ۶۰ کاراکتر)");
@@ -23,12 +24,36 @@ void PublisherBookController::addBook(const QString &bookName, const QString &de
         emit validationError("ژانر، دسته بندی و نام نویسنده الزامی هستند");
         return;
     }
+    if (pdfFilePath.trimmed().isEmpty()) {
+        emit validationError("انتخاب فایل PDF الزامی است");
+        return;
+    }
+    QFile pdfFile(pdfFilePath);
+    if (!pdfFile.open(QIODevice::ReadOnly)) {
+        emit bookFileReadFailed("امکان باز کردن فایل PDF انتخاب شده وجود ندارد");
+        return;
+    }
+    QByteArray pdfData = pdfFile.readAll();
+    pdfFile.close();
+    QByteArray coverData;
+    QString coverExtension;
+    if (!coverImageFilePath.trimmed().isEmpty()) {
+        QFile coverFile(coverImageFilePath);
+        if (!coverFile.open(QIODevice::ReadOnly)) {
+            emit bookFileReadFailed("امکان باز کردن عکس جلد انتخاب شده وجود ندارد");
+            return;
+        }
+        coverData = coverFile.readAll();
+        coverFile.close();
+        coverExtension = QFileInfo(coverImageFilePath).suffix();
+    }
     if (!networkManager->isConnected()) {
         emit bookAddFailed("اتصال به سرور برقرار نیست");
         return;
     }
-    networkManager->addBook(bookName.trimmed(), description.trimmed(), price,genreTitle.trimmed(), categoryTitle.trimmed(), authorName.trimmed(),
-                            coverImagePath, pdfFilePath);
+    networkManager->addBook(bookName.trimmed(), description.trimmed(), price,
+                            genreTitle.trimmed(), categoryTitle.trimmed(), authorName.trimmed(),
+                            coverData, coverExtension, pdfData);
 }
 void PublisherBookController::updateBook(int bookId, const QString &bookName, const QString &description, double price) {
     if (bookId <= 0) {

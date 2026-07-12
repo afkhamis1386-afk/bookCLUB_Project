@@ -87,6 +87,16 @@ void NetworkManager::getBookDetails(int bookId) {
     p["bookId"] = bookId;
     sendRequest(RequestType::GetBookDetails, p);
 }
+void NetworkManager::getBookCoverImage(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::GetBookCoverImage, p);
+}
+void NetworkManager::getBookFile(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::GetBookFile, p);
+}
 void NetworkManager::saveReadingProgress(int bookId, int lastPage) {
     QVariantMap p;
     p["bookId"] = bookId;
@@ -116,7 +126,8 @@ void NetworkManager::getRecommendedBooks() {
 }
 void NetworkManager::addBook(const QString &bookName, const QString &description, double price,
                              const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-                             const QString &coverImagePath, const QString &pdfFilePath) {
+                             const QByteArray &coverImageData, const QString &coverImageExtension,
+                             const QByteArray &pdfData) {
     QVariantMap p;
     p["bookName"] = bookName;
     p["description"] = description;
@@ -124,8 +135,9 @@ void NetworkManager::addBook(const QString &bookName, const QString &description
     p["genreTitle"] = genreTitle;
     p["categoryTitle"] = categoryTitle;
     p["authorName"] = authorName;
-    p["coverImagePath"] = coverImagePath;
-    p["pdfFilePath"] = pdfFilePath;
+    p["coverImageData"] = coverImageData;
+    p["coverImageExtension"] = coverImageExtension;
+    p["pdfData"] = pdfData;
     sendRequest(RequestType::AddBook, p);
 }
 void NetworkManager::updateBook(int bookId, const QString &bookName, const QString &description, double price) {

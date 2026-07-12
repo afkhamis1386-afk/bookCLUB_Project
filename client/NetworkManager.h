@@ -34,7 +34,8 @@ public:
     void getRecommendedBooks();
     void addBook(const QString &bookName, const QString &description, double price,
                  const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-                 const QString &coverImagePath, const QString &pdfFilePath);
+                 const QByteArray &coverImageData, const QString &coverImageExtension,
+                 const QByteArray &pdfData);
     void updateBook(int bookId, const QString &bookName, const QString &description, double price);
     void deactivateBook(int bookId);
     void reactivateBook(int bookId);
@@ -74,6 +75,8 @@ public:
     void deleteBook(int bookId);
     void getAllReviews();
     void deleteReviewByAdmin(int reviewId);
+    void getBookCoverImage(int bookId);
+    void getBookFile(int bookId);
 signals:
     void connected();
     void disconnected();
