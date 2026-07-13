@@ -41,8 +41,10 @@ SOURCES += \
     PublisherDashboardController.cpp \
     RatingController.cpp \
     ReviewController.cpp \
+    forgotpasswordwindow_c.cpp \
     main.cpp \
-    loginwindow_c.cpp
+    loginwindow_c.cpp \
+    registerwindow_c.cpp
 
 HEADERS += \
     ../common/Admin.h \
@@ -76,10 +78,14 @@ HEADERS += \
     PublisherDashboardController.h \
     RatingController.h \
     ReviewController.h \
-    loginwindow_c.h
+    forgotpasswordwindow_c.h \
+    loginwindow_c.h \
+    registerwindow_c.h
 
 FORMS += \
-    loginwindow_c.ui
+    forgotpasswordwindow_c.ui \
+    loginwindow_c.ui \
+    registerwindow_c.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -92,3 +98,6 @@ HEADERS += \
 SOURCES += \
     ../common/user.cpp \
     ../common/normaluser.cpp
+
+RESOURCES += \
+    resources.qrc

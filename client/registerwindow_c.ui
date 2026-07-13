@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RegisterWindow_c</class>
+ <widget class="QMainWindow" name="RegisterWindow_c">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1172</width>
+    <height>772</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+#RegisterWindow_c, #centralwidget {
+    border-image: url(:/wallhaven-49kq3d.jpg) 0 0 0 0 stretch stretch;
+}
+
+QFrame#mainFrame {
+    background-color: rgba(255, 255, 255, 120);
+    border: 1px solid rgba(255, 255, 255, 180);
+    border-radius: 20px;
+}
+
+
+QStackedWidget#publisherFieldsStack, 
+#publisherFieldsStack QWidget, 
+#publisherFieldsStack #page, 
+#publisherFieldsStack #page_2, 
+#publisherFieldsStack #page_3 {
+    background: transparent;
+    border: none;
+}
+
+
+QLineEdit, 
+#publisherFieldsStack QLineEdit {
+    background-color: rgba(255, 255, 255, 200); 
+    border: 1px solid rgba(44, 62, 80, 60);    
+    border-radius: 8px;                       
+    padding: 6px 10px;
+    color: #2c3e50;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 11pt;
+}
+
+
+QLineEdit:focus, 
+#publisherFieldsStack QLineEdit:focus {
+    border: 2px solid #2c3e50;
+    background-color: #ffffff;
+}
+
+
+QTextEdit#shortDescriptionTextEdit {
+    background-color: rgba(255, 255, 255, 200);
+    border: 1px solid rgba(44, 62, 80, 60);
+    border-radius: 8px;
+    color: #2c3e50;
+}
+QTextEdit#shortDescriptionTextEdit:focus {
+    border: 2px solid #2c3e50;
+    background-color: #ffffff;
+}
+
+
+QGroupBox#roleGroupBox {
+    background-color: rgba(255, 255, 255, 80);
+    border: 1px solid rgba(44, 62, 80, 40);
+    border-radius: 10px;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-weight: bold;
+    color: #2c3e50;
+}
+QGroupBox#roleGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top right;
+    padding: 0 10px;
+}
+QRadioButton {
+    color: #2c3e50;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-weight: bold;
+    background: transparent;
+}
+
+
+QPushButton#registerButton {
+    background-color: #2c3e50;
+    color: #ffffff;
+    border-radius: 8px;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 11pt;
+    font-weight: bold;
+    padding: 8px;
+    min-height: 35px;
+}
+QPushButton#registerButton:hover {
+    background-color: #34495e;
+}
+
+
+QPushButton#backToLoginButton {
+    background-color: transparent;
+    color: #2c3e50;
+    border: none;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 10pt;
+    text-decoration: underline;
+    min-height: 30px;
+}
+QPushButton#backToLoginButton:hover {
+    color: #d4af37;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QFrame" name="mainFrame">
+      <property name="maximumSize">
+       <size>
+        <width>600</width>
+        <height>700</height>
+       </size>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QGroupBox" name="roleGroupBox">
+         <property name="title">
+          <string>                         نوع حساب  </string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QRadioButton" name="normalUserRadio">
+            <property name="text">
+             <string>کاربر عادی</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="publisherRadio">
+            <property name="text">
+             <string>ناشر</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="passwordLineEdit">
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
+         </property>
+         <property name="placeholderText">
+          <string>رمز عبور</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="usernameLineEdit">
+         <property name="placeholderText">
+          <string>نام کاربری</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="confirmPasswordLineEdit">
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
+         </property>
+         <property name="placeholderText">
+          <string>تکرار رمز عبور</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="securityAnswerLineEdit">
+         <property name="placeholderText">
+          <string>کتاب یا نویسنده ی مورد علاقه تان(برای بازیابی رمز عبور)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QStackedWidget" name="publisherFieldsStack">
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <widget class="QWidget" name="page"/>
+         <widget class="QWidget" name="page_2">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QLineEdit" name="firstNameLineEdit">
+             <property name="placeholderText">
+              <string>نام</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lastNameLineEdit">
+             <property name="placeholderText">
+              <string>نام خانوادگی</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="emailLineEdit">
+             <property name="placeholderText">
+              <string>ایمیل</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="publicationNameLineEdit">
+             <property name="placeholderText">
+              <string>نام انتشارات</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="licenseNumberLineEdit">
+             <property name="placeholderText">
+              <string>شماره پروانه نشر</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="shortDescriptionTextEdit"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="statusLabel">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="registerButton">
+         <property name="text">
+          <string>ثبت نام</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="backToLoginButton">
+         <property name="text">
+          <string>قبلا حساب دارید؟ وارد شوید</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1172</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
