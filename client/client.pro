@@ -43,7 +43,9 @@ SOURCES += \
     RatingController.cpp \
     ReviewController.cpp \
     SavedBookController.cpp \
+    bookcardwidget.cpp \
     forgotpasswordwindow_c.cpp \
+    homewindow_c.cpp \
     main.cpp \
     loginwindow_c.cpp \
     registerwindow_c.cpp
@@ -82,13 +84,16 @@ HEADERS += \
     RatingController.h \
     ReviewController.h \
     SavedBookController.h \
+    bookcardwidget.h \
     forgotpasswordwindow_c.h \
+    homewindow_c.h \
     loginwindow_c.h \
     registerwindow_c.h
 
 FORMS += \
     GenreSelectionWindow_c.ui \
     forgotpasswordwindow_c.ui \
+    homewindow_c.ui \
     loginwindow_c.ui \
     registerwindow_c.ui
 
