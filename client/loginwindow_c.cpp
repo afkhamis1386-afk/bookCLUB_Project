@@ -65,3 +65,12 @@ void LoginWindow_c::onLoginSucceeded(UserRole role)
         QMessageBox::information(this, "ورود موفق", "خوش آمدید! نقش شما: " + roleName + " (پنل مربوطه به زودی ساخته می شود)");
     }
 }
+void LoginWindow_c::onLoginFailed(const QString &message)
+{
+    ui->statusLabel->setText(message);
+}
+
+void LoginWindow_c::onValidationError(const QString &message)
+{
+    ui->statusLabel->setText(message);
+}
