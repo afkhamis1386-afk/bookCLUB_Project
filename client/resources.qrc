@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>wallhaven-o567pm.png</file>
         <file>wallhaven-49kq3d.jpg</file>
+        <file>back.im.jpg</file>
     </qresource>
 </RCC>

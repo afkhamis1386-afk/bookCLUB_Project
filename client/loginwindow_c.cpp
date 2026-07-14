@@ -51,19 +51,17 @@ void LoginWindow_c::onForgotPasswordButtonClicked()
 }
 void LoginWindow_c::onLoginSucceeded(UserRole role)
 {
-    QString roleName;
-    switch (role) {
-    case UserRole::NormalUser: roleName = "کاربر عادی"; break;
-    case UserRole::Publisher:  roleName = "ناشر"; break;
-    case UserRole::Admin:      roleName = "مدیر سیستم"; break;
+    if (role == UserRole::NormalUser) {
+        if (!genreSelectionWindow) {
+            genreSelectionWindow = new GenreSelectionWindow_c(networkManager);
+            connect(genreSelectionWindow, &GenreSelectionWindow_c::genresConfirmed, this, [this]() {
+                QMessageBox::information(this, "خوش آمدید", "به بوک کلاب خوش آمدید! (صفحه ی اصلی به زودی ساخته می شود)");
+            });
+        }
+        genreSelectionWindow->show();
+        this->hide();
+    } else {
+        QString roleName = (role == UserRole::Publisher) ? "ناشر" : "مدیر سیستم";
+        QMessageBox::information(this, "ورود موفق", "خوش آمدید! نقش شما: " + roleName + " (پنل مربوطه به زودی ساخته می شود)");
     }
-    QMessageBox::information(this, "ورود موفق", "خوش آمدید! نقش شما: " + roleName);
-}
-void LoginWindow_c::onLoginFailed(const QString &message)
-{
-    ui->statusLabel->setText(message);
-}
-void LoginWindow_c::onValidationError(const QString &message)
-{
-    ui->statusLabel->setText(message);
 }

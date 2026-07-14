@@ -32,6 +32,7 @@ SOURCES += \
     BookStoreController.cpp \
     CartController.cpp \
     ClientSocket.cpp \
+    GenreSelectionWindow_c.cpp \
     LibraryController.cpp \
     LoginController.cpp \
     NetworkManager.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
     PublisherDashboardController.cpp \
     RatingController.cpp \
     ReviewController.cpp \
+    SavedBookController.cpp \
     forgotpasswordwindow_c.cpp \
     main.cpp \
     loginwindow_c.cpp \
@@ -69,6 +71,7 @@ HEADERS += \
     BookStoreController.h \
     CartController.h \
     ClientSocket.h \
+    GenreSelectionWindow_c.h \
     LibraryController.h \
     LoginController.h \
     NetworkManager.h \
@@ -78,11 +81,13 @@ HEADERS += \
     PublisherDashboardController.h \
     RatingController.h \
     ReviewController.h \
+    SavedBookController.h \
     forgotpasswordwindow_c.h \
     loginwindow_c.h \
     registerwindow_c.h
 
 FORMS += \
+    GenreSelectionWindow_c.ui \
     forgotpasswordwindow_c.ui \
     loginwindow_c.ui \
     registerwindow_c.ui
