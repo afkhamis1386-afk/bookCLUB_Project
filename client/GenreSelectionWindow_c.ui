@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GenreSelectionWindow_c</class>
+ <widget class="QMainWindow" name="GenreSelectionWindow_c">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>923</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#GenreSelectionWindow {
+    border-image: url(:/back.im.jpg); 
+}
+QPushButton#confirmButton {
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 15px;
+    font-family: &quot;Vazirmatn&quot;, &quot;B Yekan&quot;, Tahoma;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+}
+QPushButton#confirmButton:hover {
+    background-color: #2563eb;
+}
+QListWidget#genresListWidget {
+    background-color: rgba(255, 255, 255, 180);
+    border-radius: 10px;
+    padding: 5px;
+    font-family: &quot;Vazirmatn&quot;, &quot;B Yekan&quot;, Tahoma;
+}
+QLabel {
+    color: white;
+    font-family: &quot;Vazirmatn&quot;, &quot;B Yekan&quot;, Tahoma;
+    font-size: 18px;
+    font-weight: bold;
+}
+QLabel#instructionLabel {
+    font-size: 14px;
+    font-weight: normal;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">#centralwidget {
+    border-image: url(:/back.im.jpg);
+}</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="1">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="4">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>165</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="3" colspan="2">
+     <widget class="QLabel" name="statusLabel">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>166</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1" colspan="3">
+     <widget class="QWidget" name="widget" native="true">
+      <property name="styleSheet">
+       <string notr="true">#widget {
+    background-color: rgba(0, 0, 0, 150);
+    border-radius: 20px;
+    min-width: 550px; 
+    min-height: 420px;
+}</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="titleLabel">
+         <property name="text">
+          <string>لطفا ژانر مورد علاقه خود را انتخاب کنید :</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="instructionLabel">
+         <property name="font">
+          <font>
+           <family>Vazirmatn</family>
+           <pointsize>-1</pointsize>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: white;
+font-family: &quot;Vazirmatn&quot;, &quot;B Yekan&quot;, Tahoma;
+font-size: 19px; </string>
+         </property>
+         <property name="text">
+          <string>بین 1 تا 3 مورد انتخاب کنید !</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="genresListWidget"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QPushButton" name="confirmButton">
+      <property name="styleSheet">
+       <string notr="true">QPushButton#confirmButton {
+    background-color: #34495e; 
+    color: white;
+    border-radius: 10px; 
+    padding: 10px;
+    font-size: 10pt;
+    font-weight: bold;
+}
+QPushButton#confirmButton:hover {
+    font-weight: bold;      
+    background-color:#2c3e50;  
+}</string>
+      </property>
+      <property name="text">
+       <string>تایید و ادامه </string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>923</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

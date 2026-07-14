@@ -5,6 +5,7 @@
 #include "LoginController.h"
 #include "registerwindow_c.h"
 #include "forgotpasswordwindow_c.h"
+#include "genreselectionwindow_c.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class LoginWindow_c;
@@ -33,6 +34,7 @@ private:
     LoginController *loginController;
     RegisterWindow_c *registerWindow = nullptr;
     ForgotPasswordWindow_c *forgotPasswordWindow = nullptr;
+    GenreSelectionWindow_c *genreSelectionWindow = nullptr;
 };
 
 #endif // LOGINWINDOW_C_H
