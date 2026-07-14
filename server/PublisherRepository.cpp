@@ -157,14 +157,20 @@ bool PublisherRepository::isLicenseNumberTaken(const QString &licenseNumber) {
 double PublisherRepository::getTotalRevenue(int publisherUserId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
-    query.prepare(
-        "SELECT ISNULL(SUM(oi.UnitPrice * (1 - oi.DiscountPercent / 100.0)), 0) "
-        "FROM OrderItems oi "
-        "JOIN Books b ON oi.BookID = b.BookID "
-        "JOIN Orders o ON oi.OrderID = o.OrderID "
-        "JOIN Statuses s ON o.StatusID = s.StatusID "
-        "WHERE b.PublisherUserID = :publisherId "
-        "AND s.StatusTitle IN ('Paid', 'Completed')"
+        query.prepare(
+            "SELECT ISNULL(SUM( "
+            "    CASE "
+            "        WHEN (oi.UnitPrice * (1 - oi.DiscountPercent / 100.0) - oi.DiscountAmount) < 0 "
+            "            THEN 0 "
+            "        ELSE (oi.UnitPrice * (1 - oi.DiscountPercent / 100.0) - oi.DiscountAmount) "
+            "    END "
+            "), 0) "
+            "FROM OrderItems oi "
+            "JOIN Books b ON oi.BookID = b.BookID "
+            "JOIN Orders o ON oi.OrderID = o.OrderID "
+            "JOIN Statuses s ON o.StatusID = s.StatusID "
+            "WHERE b.PublisherUserID = :publisherId "
+            "AND s.StatusTitle IN ('Paid', 'Completed')"
         );
     query.bindValue(":publisherId", publisherUserId);
     if (query.exec() && query.next())
