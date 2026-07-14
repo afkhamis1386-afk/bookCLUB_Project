@@ -91,6 +91,9 @@ void ClientHandler::processRequest(const Request &req) {
     if (type == RequestType::Register || type == RequestType::Login || type == RequestType::RecoverPassword || type == RequestType::GetAllGenres || type == RequestType::GetAllCategories) {
         response = handleAuthRequest(req);
         if (type == RequestType::Login && response.isSuccess()) {
+            if (isAuthenticated) {
+                ClientRegistry::getInstance()->unregisterClient(authenticatedUserId);
+            }
             authenticatedUserId = response.getData().value("userId").toInt();
             authenticatedRole = static_cast<UserRole>(response.getData().value("role").toInt());
             isAuthenticated = true;
@@ -207,11 +210,20 @@ void ClientHandler::processRequest(const Request &req) {
             else
                 response = accessError;
             break;
+        case RequestType::Logout:
+            response = handleLogoutRequest();
+            break;
         case RequestType::GetAllUsers:
+        case RequestType::GetNormalUserDetails:
+        case RequestType::GetPublisherDetails:
         case RequestType::BlockUser:
+        case RequestType::UnblockUser:
         case RequestType::DeleteUser:
         case RequestType::SetUserActiveStatus:
+        case RequestType::GetAllBooksAdmin:
+        case RequestType::GetBookDetailsForReview:
         case RequestType::DeleteBook:
+        case RequestType::GetAllReviews:
         case RequestType::DeleteReviewByAdmin:
             if (checkRole({UserRole::Admin}, accessError))
                 response = handleAdminRequest(req);
@@ -274,7 +286,7 @@ Response ClientHandler::handleAuthRequest(const Request &req) {
         QVariantList genreList = p.value("genreIds").toList();
         QVector<int> genreIds;
         genreIds.reserve(genreList.size());
-        for (const QVariant &v : genreList) {
+        for (const QVariant &v : qAsConst(genreList)) {
             genreIds.append(v.toInt());
         }
         return authManager.setFavoriteGenres(authenticatedUserId, genreIds);
@@ -301,8 +313,7 @@ Response ClientHandler::handleBookRequest(const Request &req) {
         return bookManager.saveReadingProgress(
             authenticatedUserId,
             p.value("bookId").toInt(),
-            p.value("lastPage").toInt()
-            );
+            p.value("lastPage").toInt() );
     case RequestType::AddBook:
         return bookManager.addBook(
             authenticatedUserId,
@@ -474,4 +485,14 @@ Response ClientHandler::handlePublisherRequest(const Request &req) {
     Q_UNUSED(req)
     PublisherManager publisherManager;
     return publisherManager.getFullDashboard(authenticatedUserId);
+}
+Response ClientHandler::handleLogoutRequest() {
+    if (!isAuthenticated) {
+        return Response(ResponseStatus::Unauthorized, "کاربری وارد نشده است");
+    }
+    ClientRegistry::getInstance()->unregisterClient(authenticatedUserId);
+    authenticatedUserId = -1;
+    authenticatedRole = UserRole::NormalUser;
+    isAuthenticated = false;
+    return Response(ResponseStatus::Success, "خروج با موفقیت انجام شد");
 }

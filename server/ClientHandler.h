@@ -32,6 +32,7 @@ private:
     void processRequest(const Request &req);
     void sendResponse(const Response &res);
     bool checkRole(const QVector<UserRole> &allowedRoles, Response &outErrorResponse);
+    Response handleLogoutRequest();
     Response handleAuthRequest(const Request &req);
     Response handleBookRequest(const Request &req);
     Response handleCartRequest(const Request &req);

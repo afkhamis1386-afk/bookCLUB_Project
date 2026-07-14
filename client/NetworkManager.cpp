@@ -20,8 +20,10 @@ int NetworkManager::getCurrentUserId() const { return currentUserId; }
 UserRole NetworkManager::getCurrentUserRole() const { return currentUserRole; }
 bool NetworkManager::isLoggedIn() const { return loggedIn; }
 void NetworkManager::logout() {
-    currentUserId = -1;
-    loggedIn = false;
+    if (!loggedIn) {
+        return;
+    }
+    sendRequest(RequestType::Logout);
 }
 void NetworkManager::sendRequest(RequestType type, const QVariantMap &payload) {
     Request req(type, payload, currentUserId);
@@ -169,7 +171,7 @@ void NetworkManager::deactivateBook(int bookId) {
     p["bookId"] = bookId;
     sendRequest(RequestType::DeactivateBook, p);
 }
-    void NetworkManager::reactivateBook(int bookId) {
+void NetworkManager::reactivateBook(int bookId) {
     QVariantMap p;
     p["bookId"] = bookId;
     sendRequest(RequestType::ReactivateBook, p);
@@ -351,6 +353,7 @@ void NetworkManager::onSocketConnected() {
 void NetworkManager::onSocketDisconnected() {
     loggedIn = false;
     currentUserId = -1;
+    currentUserRole = UserRole::NormalUser;
     emit disconnected();
 }
 void NetworkManager::onSocketError(const QString &errorMessage) {
@@ -379,6 +382,13 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
             emit loginSucceeded(currentUserId, currentUserRole);
         } else {
             emit loginFailed(response.getMessage());
+        }
+    }
+    if (matchedType == RequestType::Logout) {
+        if (response.isSuccess()) {
+            currentUserId = -1;
+            currentUserRole = UserRole::NormalUser;
+            loggedIn = false;
         }
     }
     emit responseReceived(matchedType, response);
