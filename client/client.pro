@@ -5,6 +5,7 @@ QT +=network
 CONFIG += c++17
 
 INCLUDEPATH += ../common
+QT += pdf pdfwidgets
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -111,3 +112,7 @@ SOURCES += \
 
 RESOURCES += \
     resources.qrc
+
+
+win32-msvc*: QMAKE_CXXFLAGS += /utf-8
+
