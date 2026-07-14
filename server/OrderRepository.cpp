@@ -13,10 +13,6 @@ int OrderRepository::insertOrder(const Order &order) {
         return -1;
     }
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
-    if (!db.transaction()) {
-        qWarning() << "خطا در شروع تراکنش ثبت سفارش:" << db.lastError().text();
-        return -1;
-    }
     QSqlQuery insertOrderQuery(db);
     insertOrderQuery.prepare(
         "INSERT INTO Orders "
@@ -30,19 +26,22 @@ int OrderRepository::insertOrder(const Order &order) {
     insertOrderQuery.bindValue(":totalPrice", order.getTotalPrice());
     insertOrderQuery.bindValue(":discountAmount", order.getDiscountAmount());
     insertOrderQuery.bindValue(":finalPrice", order.getFinalPrice());
-    insertOrderQuery.bindValue(":statusId", static_cast<int>(order.getStatus()));
+    insertOrderQuery.bindValue(
+        ":statusId",
+        static_cast<int>(order.getStatus())
+        );
     if (!insertOrderQuery.exec()) {
-        qWarning() << "خطا در ثبت سفارش:" << insertOrderQuery.lastError().text();
-        db.rollback();
+        qWarning() << "خطا در ثبت سفارش:"
+                   << insertOrderQuery.lastError().text();
         return -1;
     }
     if (!insertOrderQuery.next()) {
-        qWarning() << "شناسه سفارش جدید دریافت نشد.";
-        db.rollback();
+        qWarning() << "شناسه سفارش جدید دریافت نشد:"
+                   << insertOrderQuery.lastError().text();
         return -1;
     }
-    int newOrderId = insertOrderQuery.value(0).toInt();
-    QVector<OrderItem> items = order.getItems();
+    const int newOrderId = insertOrderQuery.value(0).toInt();
+    const QVector<OrderItem> items = order.getItems();
     for (const OrderItem &item : qAsConst(items)) {
         QSqlQuery insertItemQuery(db);
         insertItemQuery.prepare(
@@ -54,46 +53,55 @@ int OrderRepository::insertOrder(const Order &order) {
         insertItemQuery.bindValue(":orderId", newOrderId);
         insertItemQuery.bindValue(":bookId", item.getBookId());
         insertItemQuery.bindValue(":unitPrice", item.getUnitPrice());
-        insertItemQuery.bindValue(":discountPercent", item.getDiscountPercent());
-        insertItemQuery.bindValue(":discountAmount", item.getDiscountAmount());
+        insertItemQuery.bindValue(
+            ":discountPercent",
+            item.getDiscountPercent()
+            );
+        insertItemQuery.bindValue(
+            ":discountAmount",
+            item.getDiscountAmount()
+            );
         if (!insertItemQuery.exec()) {
-            qWarning() << "خطا در ثبت آیتم سفارش:" << insertItemQuery.lastError().text();
-            db.rollback();
+            qWarning() << "خطا در ثبت آیتم سفارش:"
+                       << insertItemQuery.lastError().text();
             return -1;
         }
         QSqlQuery checkLibraryQuery(db);
         checkLibraryQuery.prepare(
-            "SELECT COUNT(*) FROM UserLibrary WHERE UserID = :userId AND BookID = :bookId"
+            "SELECT COUNT(*) "
+            "FROM UserLibrary "
+            "WHERE UserID = :userId AND BookID = :bookId"
             );
         checkLibraryQuery.bindValue(":userId", order.getUserId());
         checkLibraryQuery.bindValue(":bookId", item.getBookId());
-        if (!checkLibraryQuery.exec() || !checkLibraryQuery.next()) {
-            qWarning() << "خطا در بررسی کتابخانه شخصی:" << checkLibraryQuery.lastError().text();
-            db.rollback();
+        if (!checkLibraryQuery.exec()) {
+            qWarning() << "خطا در اجرای بررسی کتابخانه شخصی:"
+                       << checkLibraryQuery.lastError().text();
             return -1;
         }
-        bool alreadyOwned = checkLibraryQuery.value(0).toInt() > 0;
+        if (!checkLibraryQuery.next()) {
+            qWarning() << "نتیجه بررسی کتابخانه شخصی دریافت نشد:"
+                       << checkLibraryQuery.lastError().text();
+            return -1;
+        }
+        const bool alreadyOwned =
+            checkLibraryQuery.value(0).toInt() > 0;
         if (!alreadyOwned) {
             QSqlQuery insertLibraryQuery(db);
             insertLibraryQuery.prepare(
-                "INSERT INTO UserLibrary (UserID, BookID) VALUES (:userId, :bookId)"
+                "INSERT INTO UserLibrary (UserID, BookID) "
+                "VALUES (:userId, :bookId)"
                 );
             insertLibraryQuery.bindValue(":userId", order.getUserId());
             insertLibraryQuery.bindValue(":bookId", item.getBookId());
             if (!insertLibraryQuery.exec()) {
-                qWarning() << "خطا در انتقال کتاب به کتابخانه شخصی:" << insertLibraryQuery.lastError().text();
-                db.rollback();
+                qWarning() << "خطا در انتقال کتاب به کتابخانه شخصی:"
+                           << insertLibraryQuery.lastError().text();
                 return -1;
             }
         }
     }
-    if (!db.commit()) {
-        qWarning() << "خطا در تایید نهایی تراکنش ثبت سفارش:" << db.lastError().text();
-        db.rollback();
-        return -1;
-
-    }
-return newOrderId;
+    return newOrderId;
 }
 Order* OrderRepository::loadOrderById(int orderId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();

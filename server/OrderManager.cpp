@@ -1,6 +1,8 @@
 #include "OrderManager.h"
 #include "CartRepository.h"
-#include "PaymentManager.h"
+#include "NotificationManager.h"
+#include "PaymentRepository.h"
+#include "../common/Payment.h"
 #include "OrderRepository.h"
 #include "BookRepository.h"
 #include "TimedDiscountRepository.h"
@@ -26,15 +28,19 @@ Response OrderManager::checkout(int userId) {
     Order newOrder(userId);
     double totalPrice = 0;
     double totalDiscountAmount = 0;
+    struct SoldBookInfo {
+        int publisherUserId;
+        int bookId;
+        QString bookName;
+    };
+    QVector<SoldBookInfo> soldBooks;
     for (const CartItem &cartItem : qAsConst(cartItems)) {
         std::unique_ptr<Book> book(bookRepo.loadBookById(cartItem.getBookId()));
         if (!book || !book->isAvailableForPurchase()) {
             return Response(ResponseStatus::Error, QString("کتاب با شناسه %1 دیگر برای خرید موجود نیست").arg(cartItem.getBookId()));
         }
-        std::unique_ptr<TimedDiscount> activeDiscount(
-            timedDiscountRepo.getActiveDiscountForBook(cartItem.getBookId())
-            );
-        double timedPercent = activeDiscount ? activeDiscount->getDiscountPercent() : 0.0;
+        std::unique_ptr<TimedDiscount> activeDiscount( timedDiscountRepo.getActiveDiscountForBook(cartItem.getBookId()) );
+        double timedPercent = activeDiscount ? activeDiscount->getDiscountPercent() : 0;
         double effectivePercent = PriceCalculator::calculateEffectivePercent(
             book->getDiscountPercent(), timedPercent
             );
@@ -45,6 +51,11 @@ Response OrderManager::checkout(int userId) {
         double itemDiscountTotal = itemPrice - itemFinalPrice;
         OrderItem orderItem(book->getBookId(), itemPrice, effectivePercent, book->getDiscountAmount());
         newOrder.addItem(orderItem);
+        soldBooks.push_back(SoldBookInfo{
+            book->getPublisherUserId(),
+            book->getBookId(),
+            book->getBookName()
+        });
         totalPrice += itemPrice;
         totalDiscountAmount += itemDiscountTotal;
     }
@@ -64,6 +75,14 @@ Response OrderManager::checkout(int userId) {
         db.rollback();
         return Response(ResponseStatus::Error, "خطا در ثبت سفارش. لطفاً دوباره تلاش کنید");
     }
+    Payment newPayment(newOrderId, finalPrice);
+    newPayment.setPaymentStatusId(static_cast<int>(PaymentStatus::Successful));
+    PaymentRepository paymentRepo;
+    int newPaymentId = paymentRepo.insertPayment(newPayment);
+    if (newPaymentId == -1) {
+        db.rollback();
+        return Response(ResponseStatus::Error, "خطا در ثبت پرداخت. لطفاً دوباره تلاش کنید");
+    }
     int cartId = cartRepo.getOrCreateCartId(userId);
     if (!cartRepo.clearCart(cartId)) {
         db.rollback();
@@ -73,13 +92,18 @@ Response OrderManager::checkout(int userId) {
         db.rollback();
         return Response(ResponseStatus::Error, "خطا در نهایی سازی تراکنش خرید");
     }
-    PaymentManager paymentManager;
-    paymentManager.recordPayment(newOrderId, finalPrice);
+    NotificationManager notifManager;
+    for (const SoldBookInfo &sold : qAsConst(soldBooks)) {
+        notifManager.sendNotification( sold.publisherUserId, NotificationType::NewSaleForPublisher,
+            "فروش جدید",
+            QString("کتاب «%1» شما به فروش رسید").arg(sold.bookName), sold.bookId, userId );
+    }
     QVariantMap data;
     data["orderId"] = newOrderId;
     data["finalPrice"] = finalPrice;
     data["totalPrice"] = totalPrice;
     data["discountAmount"] = totalDiscountAmount;
+    data["paymentId"] = newPaymentId;
     return Response(ResponseStatus::Success, "خرید با موفقیت انجام شد", data);
 }
 Response OrderManager::getOrderHistory(int userId) {
