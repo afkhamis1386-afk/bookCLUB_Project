@@ -45,6 +45,8 @@ SOURCES += \
     ReviewController.cpp \
     SavedBookController.cpp \
     bookcardwidget.cpp \
+    bookdetailswindow_c.cpp \
+    cartwindow_c.cpp \
     forgotpasswordwindow_c.cpp \
     homewindow_c.cpp \
     main.cpp \
@@ -86,6 +88,8 @@ HEADERS += \
     ReviewController.h \
     SavedBookController.h \
     bookcardwidget.h \
+    bookdetailswindow_c.h \
+    cartwindow_c.h \
     forgotpasswordwindow_c.h \
     homewindow_c.h \
     loginwindow_c.h \
@@ -93,6 +97,8 @@ HEADERS += \
 
 FORMS += \
     GenreSelectionWindow_c.ui \
+    bookdetailswindow_c.ui \
+    cartwindow_c.ui \
     forgotpasswordwindow_c.ui \
     homewindow_c.ui \
     loginwindow_c.ui \
