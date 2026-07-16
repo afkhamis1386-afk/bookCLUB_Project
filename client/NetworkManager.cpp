@@ -114,6 +114,10 @@ void NetworkManager::getBookFile(int bookId) {
     QVariantMap p;
     p["bookId"] = bookId;
     sendRequest(RequestType::GetBookFile, p);
+
+}
+void NetworkManager::getPurchasedBooks() {
+    sendRequest(RequestType::GetPurchasedBooks);
 }
 void NetworkManager::saveReadingProgress(int bookId, int lastPage) {
     QVariantMap p;

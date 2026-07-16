@@ -2,6 +2,8 @@ QT += widgets
 
 QT +=network
 
+QT += pdf pdfwidgets
+
 CONFIG += c++17
 
 INCLUDEPATH += ../common
@@ -46,11 +48,14 @@ SOURCES += \
     SavedBookController.cpp \
     bookcardwidget.cpp \
     bookdetailswindow_c.cpp \
+    bookreaderwindow_c.cpp \
     cartwindow_c.cpp \
     forgotpasswordwindow_c.cpp \
     homewindow_c.cpp \
+    librarywindow_c.cpp \
     main.cpp \
     loginwindow_c.cpp \
+    notificationwindow_c.cpp \
     registerwindow_c.cpp
 
 HEADERS += \
@@ -89,19 +94,25 @@ HEADERS += \
     SavedBookController.h \
     bookcardwidget.h \
     bookdetailswindow_c.h \
+    bookreaderwindow_c.h \
     cartwindow_c.h \
     forgotpasswordwindow_c.h \
     homewindow_c.h \
+    librarywindow_c.h \
     loginwindow_c.h \
+    notificationwindow_c.h \
     registerwindow_c.h
 
 FORMS += \
     GenreSelectionWindow_c.ui \
     bookdetailswindow_c.ui \
+    bookreaderwindow_c.ui \
     cartwindow_c.ui \
     forgotpasswordwindow_c.ui \
     homewindow_c.ui \
+    librarywindow_c.ui \
     loginwindow_c.ui \
+    notificationwindow_c.ui \
     registerwindow_c.ui
 
 # Default rules for deployment.

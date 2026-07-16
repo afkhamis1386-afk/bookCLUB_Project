@@ -151,7 +151,15 @@ void HomeWindow_c::onCartButtonClicked()
 
 void HomeWindow_c::onNotificationsButtonClicked()
 {
-    QMessageBox::information(this, "اعلان ها", "صفحه ی اعلان ها در قدم بعدی ساخته می شود.");
+    NotificationWindow_c *notificationWindow = new NotificationWindow_c(networkManager);
+    notificationWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(notificationWindow, &NotificationWindow_c::backRequested, this, [this, notificationWindow]() {
+        notificationWindow->close();
+        notificationController->refreshUnreadCount();
+        this->show();
+    });
+    notificationWindow->show();
+    this->hide();
 }
 
 void HomeWindow_c::onLibraryButtonClicked()

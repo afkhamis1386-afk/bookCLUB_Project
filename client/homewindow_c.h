@@ -9,6 +9,7 @@
 #include "NotificationController.h"
 #include "bookcardwidget.h"
 #include "bookdetailswindow_c.h"
+#include "notificationwindow_c.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
