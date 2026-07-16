@@ -1,6 +1,8 @@
 #include "loginwindow_c.h"
 #include "ui_loginwindow_c.h"
 #include "homewindow_c.h"
+#include "adminmainwindow.h"
+
 #include <QMessageBox>
 LoginWindow_c::LoginWindow_c(NetworkManager *networkManager, QWidget *parent)
     : QMainWindow(parent)

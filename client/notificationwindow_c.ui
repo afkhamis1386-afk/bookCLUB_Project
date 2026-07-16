@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1012</width>
-    <height>632</height>
+    <width>1730</width>
+    <height>1283</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,58 +16,71 @@
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
     <string notr="true">#centralwidget {
-    border-image: url(:/wallhaven-49kq3d.jpg);
+    border-image: url(:/wallhaven-49kq3d.jpg) 0 0 0 0 stretch stretch;
 }
 QPushButton {
-    background-color:  #34495e; 
-    color: white;
+    background-color: #2c3e50; 
+    color: #ffffff;
+    border: none;
     border-radius: 10px;
     padding: 10px;
-    font-size: 14px;
-}
-
-QPushButton:hover {
-    background-color: #2c3e50; 
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 11pt;
     font-weight: bold;
 }
 
+QPushButton:hover {
+    background-color: #34495e; 
+    color: #d4af37; 
+}
+
+QPushButton:pressed {
+    background-color: #1a252f;
+}
 QLabel {
-    background-color: white;
-    color: black;
-    border-radius: 6px;
-    padding: 4px;
+    background-color: rgba(255, 255, 255, 150);
+    color: #2c3e50;
+    border: 1px solid rgba(44, 62, 80, 60);
+    border-radius: 8px;
+    padding: 6px;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 10pt;
     qproperty-alignment: AlignCenter;
 }
 QListWidget {
-    background-color: rgba(40, 40, 40, 0.7);
-    color: white; 
-    border: 1px solid rgba(80, 80, 80, 0.6); 
+    background-color: rgba(255, 255, 255, 120);
+    color: #2c3e50; 
+    border: 1px solid rgba(255, 255, 255, 180); 
+    border-radius: 12px;
+    padding: 5px;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 10pt;
+}
+QListWidget::item {
+    padding: 8px;
+    color: #2c3e50;
+    border-bottom: 1px solid rgba(44, 62, 80, 20);
     border-radius: 6px;
+}
+QListWidget::item:hover {
+    background-color: rgba(44, 62, 80, 30); 
+}
+
+QListWidget::item:selected {
+    background-color: #2c3e50;
+    color: #ffffff;
 }</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1">
-     <spacer name="verticalSpacer">
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_2">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>5</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>212</width>
-        <height>20</height>
+        <height>15</height>
        </size>
       </property>
      </spacer>
@@ -118,6 +131,19 @@ QListWidget {
       </item>
      </layout>
     </item>
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>5</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
     <item row="1" column="2">
      <spacer name="horizontalSpacer_2">
       <property name="orientation">
@@ -131,15 +157,15 @@ QListWidget {
       </property>
      </spacer>
     </item>
-    <item row="2" column="1">
-     <spacer name="verticalSpacer_2">
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Horizontal</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>20</width>
-        <height>15</height>
+        <width>212</width>
+        <height>20</height>
        </size>
       </property>
      </spacer>
@@ -151,7 +177,7 @@ QListWidget {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1012</width>
+     <width>1730</width>
      <height>25</height>
     </rect>
    </property>

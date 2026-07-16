@@ -14,36 +14,70 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">#GenreSelectionWindow {
-    border-image: url(:/back.im.jpg); 
+   <string notr="true">#GenreSelectionWindow, #centralwidget {
+    border-image: url(:/wallhaven-49kq3d.jpg) 0 0 0 0 stretch stretch;
+}
+#widget {
+    background-color: rgba(255, 255, 255, 120);  
+    border: 1px solid rgba(255, 255, 255, 180);
+    border-radius: 20px;
+    min-width: 550px; 
+    min-height: 420px;
 }
 QPushButton#confirmButton {
-    background-color: #3b82f6;
-    color: white;
+    background-color: #2c3e50;
+    color: #ffffff;
+    border: none;
     border-radius: 15px;
-    font-family: &quot;Vazirmatn&quot;, &quot;B Yekan&quot;, Tahoma;
-    font-size: 16px;
+    font-family: &quot;Vazirmatn&quot;, &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 14px;
     font-weight: bold;
     padding: 10px;
 }
+
 QPushButton#confirmButton:hover {
-    background-color: #2563eb;
+    background-color: #34495e;
+    color: #d4af37;
+}
+
+QPushButton#confirmButton:pressed {
+    background-color: #1a252f;
 }
 QListWidget#genresListWidget {
-    background-color: rgba(255, 255, 255, 180);
+    background-color: rgba(255, 255, 255, 160);
+    color: #2c3e50;
+    border: 1px solid rgba(44, 62, 80, 50);
     border-radius: 10px;
     padding: 5px;
-    font-family: &quot;Vazirmatn&quot;, &quot;B Yekan&quot;, Tahoma;
+    font-family: &quot;Vazirmatn&quot;, &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+}
+QListWidget#genresListWidget::item {
+    padding: 10px;
+    color: #2c3e50;
+    border-bottom: 1px solid rgba(44, 62, 80, 15);
+    border-radius: 6px;
+}
+
+QListWidget#genresListWidget::item:hover {
+    background-color: rgba(44, 62, 80, 25);
+}
+
+QListWidget#genresListWidget::item:selected {
+    background-color: #2c3e50; 
+    color: #ffffff;
 }
 QLabel {
-    color: white;
-    font-family: &quot;Vazirmatn&quot;, &quot;B Yekan&quot;, Tahoma;
+    color: #2c3e50;
+    font-family: &quot;Vazirmatn&quot;, &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-size: 18px;
     font-weight: bold;
+    background: transparent;
 }
 QLabel#instructionLabel {
+    color: #2c3e50;
     font-size: 14px;
     font-weight: normal;
+    background: transparent;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -115,12 +149,7 @@ QLabel#instructionLabel {
     <item row="1" column="1" colspan="3">
      <widget class="QWidget" name="widget" native="true">
       <property name="styleSheet">
-       <string notr="true">#widget {
-    background-color: rgba(0, 0, 0, 150);
-    border-radius: 20px;
-    min-width: 550px; 
-    min-height: 420px;
-}</string>
+       <string notr="true"/>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
@@ -140,9 +169,7 @@ QLabel#instructionLabel {
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: white;
-font-family: &quot;Vazirmatn&quot;, &quot;B Yekan&quot;, Tahoma;
-font-size: 19px; </string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string>بین 1 تا 3 مورد انتخاب کنید !</string>
@@ -159,16 +186,22 @@ font-size: 19px; </string>
      <widget class="QPushButton" name="confirmButton">
       <property name="styleSheet">
        <string notr="true">QPushButton#confirmButton {
-    background-color: #34495e; 
-    color: white;
+    background-color: #2c3e50; 
+    color: #ffffff;
+    border: none;
     border-radius: 10px; 
     padding: 10px;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-size: 10pt;
     font-weight: bold;
 }
 QPushButton#confirmButton:hover {
+    background-color: #34495e;  
+    color: #d4af37; 
     font-weight: bold;      
-    background-color:#2c3e50;  
+}
+QPushButton#confirmButton:pressed {
+    background-color: #1a252f; 
 }</string>
       </property>
       <property name="text">

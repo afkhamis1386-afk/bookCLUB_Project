@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "NetworkManager.h"
 #include "NotificationController.h"
+#include <QListWidgetItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

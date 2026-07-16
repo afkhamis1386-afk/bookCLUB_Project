@@ -2,6 +2,10 @@
 #include "ui_bookreaderwindow_c.h"
 #include <QMessageBox>
 #include <QVBoxLayout>
+#include <QPushButton>
+#include <QPointF>
+#include <QPdfPageNavigator>
+
 
 BookReaderWindow_c::BookReaderWindow_c(NetworkManager *networkManager, int bookId, QWidget *parent)
     : QMainWindow(parent)

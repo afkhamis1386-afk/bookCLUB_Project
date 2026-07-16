@@ -1,6 +1,5 @@
 #include "notificationwindow_c.h"
 #include "ui_notificationwindow_c.h"
-#include <QListWidgetItem>
 #include <QFont>
 
 NotificationWindow_c::NotificationWindow_c(NetworkManager *networkManager, QWidget *parent)
@@ -33,8 +32,7 @@ void NotificationWindow_c::addNotificationToList(int notificationId, const QStri
     QFont font = item->font();
     font.setBold(!isRead);
     item->setFont(font);
-    item->setForeground(isRead ? QColor("#7f8c8d") : QColor("#2c3e50"));
-
+    item->setForeground(isRead ? QColor(0x7f, 0x8c, 0x8d) : QColor(0x2c, 0x3e, 0x50));
     if (prepend)
         ui->notificationsListWidget->insertItem(0, item);
     else
@@ -88,7 +86,7 @@ void NotificationWindow_c::onNotificationMarkedRead(const QString &message)
     QFont font = item->font();
     font.setBold(false);
     item->setFont(font);
-    item->setForeground(QColor("#7f8c8d"));
+    item->setForeground(QColor(0x7f, 0x8c, 0x8d));
 }
 
 void NotificationWindow_c::onNotificationMarkReadFailed(const QString &message)
