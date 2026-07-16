@@ -14,6 +14,7 @@ public:
     void deleteShelf(int shelfId);
     void addBookToShelf(int shelfId, int bookId);
     void moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId);
+    void refreshPurchasedBooks();
 
 signals:
     void shelvesLoaded(const QVariantList &shelves);
@@ -29,6 +30,8 @@ signals:
     void bookMoved(const QString &message);
     void bookMoveFailed(const QString &message);
     void validationError(const QString &message);
+    void purchasedBooksLoaded(const QVariantList &bookIds);
+    void purchasedBooksLoadFailed(const QString &message);
 
 private slots:
     void onResponseReceived(RequestType type, const Response &response);

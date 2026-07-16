@@ -8,6 +8,8 @@
 #include "CartController.h"
 #include "NotificationController.h"
 #include "bookcardwidget.h"
+#include "bookdetailswindow_c.h"
+#include "notificationwindow_c.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -57,6 +59,7 @@ private:
     void clearBookGrid();
     void displayBooks(const QVariantList &bookIds);
     void loadBookNameFromDetails(int bookId, BookCardWidget *card);
+    BookDetailsWindow_c *bookDetailsWindow = nullptr;
 };
 
 #endif // HOMEWINDOW_C_H

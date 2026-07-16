@@ -68,6 +68,13 @@ void LibraryController::moveBookBetweenShelves(int sourceShelfId, int destShelfI
     }
     networkManager->moveBookBetweenShelves(sourceShelfId, destShelfId, bookId);
 }
+void LibraryController::refreshPurchasedBooks() {
+    if (!networkManager->isConnected()) {
+        emit purchasedBooksLoadFailed("اتصال به سرور برقرار نیست");
+        return;
+    }
+    networkManager->getPurchasedBooks();
+}
 void LibraryController::onResponseReceived(RequestType type, const Response &response){
     switch(type){
     case RequestType::GetShelf:
@@ -105,6 +112,12 @@ void LibraryController::onResponseReceived(RequestType type, const Response &res
             emit bookMoved(response.getMessage());
         else
             emit bookMoveFailed(response.getMessage());
+        break;
+    case RequestType::GetPurchasedBooks:
+        if (response.isSuccess())
+            emit purchasedBooksLoaded(response.getData().value("bookIds").toList());
+        else
+            emit purchasedBooksLoadFailed(response.getMessage());
         break;
     default:
         break;

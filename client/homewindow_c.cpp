@@ -1,5 +1,6 @@
 #include "homewindow_c.h"
 #include "ui_homewindow_c.h"
+#include "cartwindow_c.h"
 #include <QMessageBox>
 #include <QScrollArea>
 
@@ -121,20 +122,44 @@ void HomeWindow_c::onRecommendedTabClicked() { bookStoreController->loadRecommen
 void HomeWindow_c::onNewestTabClicked() { bookStoreController->loadNewestBooks(20); }
 void HomeWindow_c::onFreeTabClicked() { bookStoreController->loadFreeBooks(); }
 void HomeWindow_c::onAllTabClicked() { bookStoreController->loadAllBooks(); }
-
 void HomeWindow_c::onCardClicked(int bookId)
 {
-    QMessageBox::information(this, "جزئیات کتاب", QString("صفحه ی جزئیات کتاب #%1 در قدم بعدی ساخته می شود.").arg(bookId));
+    if (bookDetailsWindow) {
+        bookDetailsWindow->close();
+        delete bookDetailsWindow;
+    }
+    bookDetailsWindow = new BookDetailsWindow_c(networkManager, bookId);
+    connect(bookDetailsWindow, &BookDetailsWindow_c::backRequested, this, [this]() {
+        bookDetailsWindow->close();
+        this->show();
+    });
+    bookDetailsWindow->show();
+    this->hide();
 }
-
 void HomeWindow_c::onCartButtonClicked()
 {
-    QMessageBox::information(this, "سبد خرید", "صفحه ی سبد خرید در قدم بعدی ساخته می شود.");
+    CartWindow_c *cartWindow = new CartWindow_c(networkManager);
+    cartWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(cartWindow, &CartWindow_c::backRequested, this, [this, cartWindow]() {
+        cartWindow->close();
+        cartController->refreshCart();
+        this->show();
+    });
+    cartWindow->show();
+    this->hide();
 }
 
 void HomeWindow_c::onNotificationsButtonClicked()
 {
-    QMessageBox::information(this, "اعلان ها", "صفحه ی اعلان ها در قدم بعدی ساخته می شود.");
+    NotificationWindow_c *notificationWindow = new NotificationWindow_c(networkManager);
+    notificationWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(notificationWindow, &NotificationWindow_c::backRequested, this, [this, notificationWindow]() {
+        notificationWindow->close();
+        notificationController->refreshUnreadCount();
+        this->show();
+    });
+    notificationWindow->show();
+    this->hide();
 }
 
 void HomeWindow_c::onLibraryButtonClicked()

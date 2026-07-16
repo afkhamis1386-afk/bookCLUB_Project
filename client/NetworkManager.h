@@ -80,6 +80,7 @@ public:
     void deleteReviewByAdmin(int reviewId);
     void getBookCoverImage(int bookId);
     void getBookFile(int bookId);
+    void getPurchasedBooks();
 signals:
     void connected();
     void disconnected();
