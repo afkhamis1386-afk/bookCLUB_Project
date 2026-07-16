@@ -46,6 +46,7 @@ SOURCES += \
     RatingController.cpp \
     ReviewController.cpp \
     SavedBookController.cpp \
+    adminmainwindow.cpp \
     bookcardwidget.cpp \
     bookdetailswindow_c.cpp \
     bookreaderwindow_c.cpp \
@@ -57,6 +58,7 @@ SOURCES += \
     loginwindow_c.cpp \
     notificationwindow_c.cpp \
     profilewindow_c.cpp \
+    publisheraddbookwindow_c.cpp \
     registerwindow_c.cpp
 
 HEADERS += \
@@ -93,6 +95,7 @@ HEADERS += \
     RatingController.h \
     ReviewController.h \
     SavedBookController.h \
+    adminmainwindow.h \
     bookcardwidget.h \
     bookdetailswindow_c.h \
     bookreaderwindow_c.h \
@@ -103,10 +106,12 @@ HEADERS += \
     loginwindow_c.h \
     notificationwindow_c.h \
     profilewindow_c.h \
+    publisheraddbookwindow_c.h \
     registerwindow_c.h
 
 FORMS += \
     GenreSelectionWindow_c.ui \
+    adminmainwindow.ui \
     bookdetailswindow_c.ui \
     bookreaderwindow_c.ui \
     cartwindow_c.ui \
@@ -116,6 +121,7 @@ FORMS += \
     loginwindow_c.ui \
     notificationwindow_c.ui \
     profilewindow_c.ui \
+    publisheraddbookwindow_c.ui \
     registerwindow_c.ui
 
 # Default rules for deployment.
