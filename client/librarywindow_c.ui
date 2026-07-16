@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LibraryWindow_c</class>
+ <widget class="QMainWindow" name="LibraryWindow_c">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1395</width>
+    <height>833</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">#centralwidget {
+    border-image: url(:/back.im.jpg);
+}
+QFrame {
+    background-color: rgba(0, 0, 0, 160);
+    border-radius: 20px;
+}
+
+QTabWidget::pane {
+    border: 1px solid rgba(255, 255, 255, 50);
+    background: rgba(0, 0, 0, 100);
+    border-radius: 10px;
+    margin-top: -1px;
+}
+
+QTabBar::tab {
+    background: rgba(45, 95, 139, 150);
+    color: white;
+    padding: 10px 20px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 2px;
+	width: 457px; 
+    text-align: center;
+}
+QTabBar::tab:selected {
+    background: #2d5f8b;
+    border: 1px solid rgba(255, 255, 255, 50);
+    border-bottom: none;
+}
+QListWidget {
+    background-color: rgba(0, 0, 0, 120);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 30);
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 14px;
+}
+
+QListWidget::item:selected {
+    background-color: rgba(45, 95, 139, 200);
+    border-radius: 5px;
+}
+QLineEdit {
+    background-color: rgba(255, 255, 255, 200);
+    color: black;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton {
+    background-color:  #34495e; 
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+QPushButton:hover {
+    background-color: #2c3e50; 
+    font-weight: bold;
+}
+QLabel#shelfBooksLabel, 
+QLabel#statusLabel {
+    background-color: rgba(255, 255, 255, 170);
+    color: black;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: bold;
+}</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="3" column="0">
+     <widget class="QPushButton" name="backButton">
+      <property name="text">
+       <string>بازگشت</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QLabel" name="statusLabel">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>250</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>170</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>305</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="2">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1" rowspan="2">
+     <widget class="QTabWidget" name="mainTabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>1000</width>
+        <height>400</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QTabBar::tab {
+    width: 250px; 
+    height: 35px; 
+}</string>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="shelvesTab">
+       <attribute name="title">
+        <string>قفسه های من </string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QFrame" name="frame">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QGridLayout" name="gridLayout" columnstretch="1,0,1">
+           <item row="0" column="0" rowspan="2">
+            <widget class="QComboBox" name="moveToShelfComboBox">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QComboBox {
+    background-color: rgba(0, 0, 0, 100);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 30);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+QComboBox::drop-down {
+    border: none;
+}
+QComboBox::down-arrow {
+    image: url(:/icons/arrow_down.png); 
+    width: 15px;
+    height: 15px;
+}
+QComboBox QAbstractItemView {
+    background-color: rgba(0, 0, 0, 200);
+    color: white;
+    selection-background-color: rgba(45, 95, 139, 150);
+}</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="shelfBooksLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>کتاب های این قفسه :</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2" rowspan="7">
+            <widget class="QListWidget" name="shelvesListWidget"/>
+           </item>
+           <item row="1" column="1" rowspan="6">
+            <widget class="QListWidget" name="shelfBookListWidget"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="moveBookButton">
+             <property name="text">
+              <string>انتقال کتاب به قفسه بالا </string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QPushButton" name="createShelfButton">
+             <property name="text">
+              <string>ساخت قفسه</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLineEdit" name="newShelfNameLineEdit">
+             <property name="placeholderText">
+              <string>نام قفسه جدید </string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QPushButton" name="renameShelfButton">
+             <property name="text">
+              <string>تغییر نام قفسه</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QPushButton" name="deleteShelfButton">
+             <property name="text">
+              <string>حذف قفسه</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="savedBooksTab">
+       <attribute name="title">
+        <string>کتاب های ذخیره شده </string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QListWidget" name="saveBooksListWidget"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="removeSavedBookButton">
+          <property name="text">
+           <string>حذف از لیست ذخیره ها</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="viewSavedBookButton">
+          <property name="text">
+           <string>مشاهده جزئیات</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1395</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
