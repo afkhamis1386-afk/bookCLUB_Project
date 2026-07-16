@@ -2,6 +2,7 @@
 #define HOMEWINDOW_C_H
 #include <QMainWindow>
 #include <QGridLayout>
+#include <QListWidgetItem>
 #include <QWidget>
 #include "NetworkManager.h"
 #include "BookStoreController.h"

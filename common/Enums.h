@@ -38,6 +38,7 @@ enum class RequestType {
     UnsaveBook,
     GetSavedBooks,
     GetShelf,
+    GetPurchasedBooks,
     CreateShelf,
     RenameShelf,
     DeleteShelf,
@@ -65,7 +66,9 @@ enum class RequestType {
     GetAllGenres,
     GetAllCategories,
     SetFavoriteGenres,
-    SetUserActiveStatus
+    SetUserActiveStatus,
+    GetAccountInfo,
+    GetOrderHistory
 };
 enum class ResponseStatus {
     Success,

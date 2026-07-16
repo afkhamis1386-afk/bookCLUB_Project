@@ -21,6 +21,7 @@ public:
     Response getBookDetails(int bookId);
     Response getBookFileData(int userId, int bookId);
     Response getRecommendedBooks(int userId);
+    Response getPurchasedBooks(int userId);
     Response saveReadingProgress(int userId, int bookId, int lastPage);
 };
 
