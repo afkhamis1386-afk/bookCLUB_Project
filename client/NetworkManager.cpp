@@ -76,6 +76,9 @@ void NetworkManager::recoverPassword(const QString &username, const QString &sec
     p["newPassword"] = newPassword;
     sendRequest(RequestType::RecoverPassword, p);
 }
+void NetworkManager::getAccountInfo() {
+    sendRequest(RequestType::GetAccountInfo);
+}
 void NetworkManager::getAllGenres() {
     sendRequest(RequestType::GetAllGenres);
 }
@@ -205,6 +208,9 @@ void NetworkManager::getCart(){
 }
 void NetworkManager::checkout() {
     sendRequest(RequestType::Checkout);
+}
+void NetworkManager::getOrderHistory() {
+    sendRequest(RequestType::GetOrderHistory);
 }
 void NetworkManager::submitReview(int bookId, const QString &commentText, int parentId) {
     QVariantMap p;

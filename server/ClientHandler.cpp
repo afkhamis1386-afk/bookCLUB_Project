@@ -107,6 +107,7 @@ void ClientHandler::processRequest(const Request &req) {
         Response accessError;
         switch (type) {
         case RequestType::ChangePassword:
+        case RequestType::GetAccountInfo:
             response = handleAuthRequest(req);
             break;
         case RequestType::GetAllGenres:
@@ -151,6 +152,7 @@ void ClientHandler::processRequest(const Request &req) {
                 response = accessError;
             break;
         case RequestType::Checkout:
+        case RequestType::GetOrderHistory:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleOrderRequest(req);
             else
@@ -277,6 +279,8 @@ Response ClientHandler::handleAuthRequest(const Request &req) {
         return authManager.login(p.value("username").toString(), p.value("password").toString());
     case RequestType::ChangePassword:
         return authManager.changePassword(authenticatedUserId, authenticatedRole, p.value("oldPassword").toString(), p.value("newPassword").toString());
+    case RequestType::GetAccountInfo:
+        return authManager.getAccountInfo(authenticatedUserId, authenticatedRole);
     case RequestType::RecoverPassword:
         return authManager.recoverPassword(p.value("username").toString(), p.value("securityAnswer").toString(), p.value("newPassword").toString());
     case RequestType::GetAllGenres:
@@ -370,9 +374,15 @@ Response ClientHandler::handleCartRequest(const Request &req) {
     }
 }
 Response ClientHandler::handleOrderRequest(const Request &req) {
-    Q_UNUSED(req)
     OrderManager orderManager;
-    return orderManager.checkout(authenticatedUserId);
+    switch (req.getType()) {
+    case RequestType::Checkout:
+        return orderManager.checkout(authenticatedUserId);
+    case RequestType::GetOrderHistory:
+        return orderManager.getOrderHistory(authenticatedUserId);
+    default:
+        return Response(ResponseStatus::Error, "درخواست سفارش نامعتبر");
+    }
 }
 Response ClientHandler::handleReviewRequest(const Request &req) {
     ReviewManager reviewManager;

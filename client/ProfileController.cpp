@@ -28,6 +28,20 @@ void ProfileController::changePassword(const QString &oldPassword, const QString
     if (!networkManager->isConnected()) { emit passwordChangeFailed("اتصال به سرور برقرار نیست"); return; }
     networkManager->changePassword(oldPassword, newPassword);
 }
+void ProfileController::loadAccountInfo() {
+    if (!networkManager->isConnected()) {
+        emit accountInfoLoadFailed("اتصال به سرور برقرار نیست");
+        return;
+    }
+    networkManager->getAccountInfo();
+}
+void ProfileController::loadOrderHistory() {
+    if (!networkManager->isConnected()) {
+        emit orderHistoryLoadFailed("اتصال به سرور برقرار نیست");
+        return;
+    }
+    networkManager->getOrderHistory();
+}
 void ProfileController::onResponseReceived(RequestType type, const Response &response) {
     switch (type) {
     case RequestType::GetAllGenres:
@@ -45,6 +59,14 @@ void ProfileController::onResponseReceived(RequestType type, const Response &res
     case RequestType::ChangePassword:
         if (response.isSuccess()) emit passwordChanged(response.getMessage());
         else emit passwordChangeFailed(response.getMessage());
+        break;
+    case RequestType::GetAccountInfo:
+        if (response.isSuccess()) emit accountInfoLoaded(response.getData());
+        else emit accountInfoLoadFailed(response.getMessage());
+        break;
+    case RequestType::GetOrderHistory:
+        if (response.isSuccess()) emit orderHistoryLoaded(response.getData().value("orders").toList());
+        else emit orderHistoryLoadFailed(response.getMessage());
         break;
     default:
         break;

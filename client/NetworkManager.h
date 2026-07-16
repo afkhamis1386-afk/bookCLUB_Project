@@ -23,6 +23,7 @@ public:
     void login(const QString &username, const QString &password);
     void changePassword(const QString &oldPassword, const QString &newPassword);
     void recoverPassword(const QString &username, const QString &securityAnswer, const QString &newPassword);
+    void getAccountInfo();
     void getAllGenres();
     void getAllCategories();
     void setFavoriteGenres(const QVector<int> &genreIds);
@@ -48,6 +49,7 @@ public:
     void removeFromCart(int bookId);
     void getCart();
     void checkout();
+    void getOrderHistory();
     void submitReview(int bookId, const QString &commentText, int parentId = -1);
     void editReview(int reviewId, const QString &newCommentText);
     void deleteReview(int reviewId);
@@ -102,5 +104,6 @@ private:
     bool loggedIn;
     QVector<RequestType> pendingRequestQueue;
     void sendRequest(RequestType type, const QVariantMap &payload = QVariantMap());
+
 };
 #endif // NETWORKMANAGER_H

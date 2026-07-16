@@ -449,3 +449,60 @@ Response AuthManager::setFavoriteGenres(int userId, const QVector<int> &genreIds
         return Response(ResponseStatus::Error, "خطای داخلی سیستم در ثبت ژانرهای مورد علاقه");
     }
 }
+Response AuthManager::getAccountInfo(int userId, UserRole role) {
+    try {
+        if (role == UserRole::NormalUser) {
+            UserRepository userRepo;
+            std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
+            if (!user) {
+                return Response(ResponseStatus::NotFound, "کاربر یافت نشد");
+            }
+            QVariantMap data;
+            data["userId"] = user->getUserId();
+            data["username"] = user->getUsername();
+            data["registerDate"] = user->getRegisterDate();
+            data["purchasedCount"] = user->getPurchasedCount();
+            QVariantList genreList;
+            for (int genreId : user->getFavoriteGenres())
+                genreList.append(genreId);
+            data["favoriteGenres"] = genreList;
+            return Response(ResponseStatus::Success, "اطلاعات حساب بازیابی شد", data);
+        }
+        if (role == UserRole::Publisher) {
+            PublisherRepository publisherRepo;
+            std::unique_ptr<Publisher> publisher(publisherRepo.loadPublisherById(userId));
+            if (!publisher) {
+                return Response(ResponseStatus::NotFound, "ناشر یافت نشد");
+            }
+            QVariantMap data;
+            data["userId"] = publisher->getUserId();
+            data["username"] = publisher->getUsername();
+            data["firstName"] = publisher->getFirstName();
+            data["lastName"] = publisher->getLastName();
+            data["email"] = publisher->getEmail();
+            data["shortDescription"] = publisher->getShortDescription();
+            data["publicationName"] = publisher->getPublicationName();
+            data["publisherLicenseNumber"] = publisher->getPublisherLicenseNumber();
+            data["registerDate"] = publisher->getRegisterDate();
+            return Response(ResponseStatus::Success, "اطلاعات حساب بازیابی شد", data);
+        }
+        AdminRepository adminRepo;
+        std::unique_ptr<Admin> admin(adminRepo.loadAdminById(userId));
+        if (!admin) {
+            return Response(ResponseStatus::NotFound, "ادمین یافت نشد");
+        }
+        QVariantMap data;
+        data["userId"] = admin->getUserId();
+        data["username"] = admin->getUsername();
+        data["firstName"] = admin->getFirstName();
+        data["lastName"] = admin->getLastName();
+        data["registerDate"] = admin->getRegisterDate();
+        return Response(ResponseStatus::Success, "اطلاعات حساب بازیابی شد", data);
+    }
+    catch (const std::exception &) {
+        return Response(ResponseStatus::Error, "خطای داخلی در بازیابی اطلاعات حساب");
+    }
+    catch (...) {
+        return Response(ResponseStatus::Error, "خطای ناشناخته در بازیابی اطلاعات حساب");
+    }
+}

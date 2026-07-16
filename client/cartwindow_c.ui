@@ -94,46 +94,78 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QWidget#glasswidget {
-    background-color: rgba(0, 0, 0, 100); 
+    background-color: rgba(255, 255, 255, 80); 
+    border: 1px solid rgba(255, 255, 255, 180);
     border-radius: 20px; 
-    border: 1px solid rgba(255, 255, 255, 40);
 }
 QLabel {
-background-color: rgba(255, 255, 255, 170);
-    color: black; 
+    background-color: rgba(255, 255, 255, 170);
+    color: #2c3e50; 
+    border: 1px solid rgba(44, 62, 80, 50);
     border-radius: 12px;
     padding: 8px 12px; 
-    font-size: 16px; 
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 14px; 
     font-weight: bold;
 }
 QPushButton {
-    background-color:  #34495e;
-    color: white;
+    background-color: #2c3e50;
+    color: #ffffff;
+    border: none;
     border-radius: 12px;
     padding: 10px;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-size: 14px;
+    font-weight: bold;
 }
+
 QPushButton:hover {
-    background-color: #2c3e50; 
-    font-weight: bold; 
+    background-color: #34495e; 
+    color: #d4af37;
+}
+
+QPushButton:pressed {
+    background-color: #1a252f;
 }
 QTableWidget {
-    background-color: rgba(0, 0, 0, 80);
-    color: white;
+    background-color: rgba(255, 255, 255, 100);
+    color: #2c3e50;
     border-radius: 15px; 
-    border: 1px solid rgba(255, 255, 255, 30);
-    gridline-color: rgba(255, 255, 255, 40);
+    border: 1px solid rgba(255, 255, 255, 150);
+    gridline-color: rgba(44, 62, 80, 30); 
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 13px;
 }
+
 QTableWidget::viewport {
     background-color: transparent;
 }
+QTableWidget::item {
+    padding: 6px;
+}
+
+QTableWidget::item:hover {
+    background-color: rgba(44, 62, 80, 20); 
+}
+
+QTableWidget::item:selected {
+    background-color: #2c3e50;
+    color: #ffffff;
+}
 QHeaderView::section {
-    background-color: rgba(0, 0, 0, 180);
-    color: white;
+    background-color: #2c3e50;
+    color: #ffffff;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-weight: bold;
-    border-radius: 4px;
-    padding: 5px;
-    border: 1px solid rgba(255, 255, 255, 20);
+    font-size: 13px;
+    padding: 6px;
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 40);
+    border-bottom: 1px solid rgba(255, 255, 255, 40);
+}
+QTableCornerButton::section {
+    background-color: #2c3e50;
+    border: none;
 }</string>
       </property>
       <widget class="QTableWidget" name="cartTableWidget">
@@ -208,9 +240,9 @@ QHeaderView::section {
       <widget class="QLabel" name="statusLabel">
        <property name="geometry">
         <rect>
-         <x>630</x>
+         <x>490</x>
          <y>560</y>
-         <width>63</width>
+         <width>201</width>
          <height>31</height>
         </rect>
        </property>
@@ -229,6 +261,7 @@ QHeaderView::section {
        </property>
        <property name="font">
         <font>
+         <family>Segoe UI</family>
          <pointsize>-1</pointsize>
          <bold>true</bold>
         </font>
