@@ -1,9 +1,9 @@
 #include "homewindow_c.h"
 #include "ui_homewindow_c.h"
 #include "cartwindow_c.h"
+#include "profilewindow_c.h"
 #include <QMessageBox>
 #include <QScrollArea>
-
 HomeWindow_c::HomeWindow_c(NetworkManager *networkManager, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::HomeWindow_c)
@@ -169,9 +169,15 @@ void HomeWindow_c::onLibraryButtonClicked()
 
 void HomeWindow_c::onProfileButtonClicked()
 {
-    QMessageBox::information(this, "پروفایل", "صفحه ی پروفایل در قدم بعدی ساخته می شود.");
+    ProfileWindow_c *profileWindow = new ProfileWindow_c(networkManager);
+    profileWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(profileWindow, &ProfileWindow_c::backRequested, this, [this, profileWindow]() {
+        profileWindow->close();
+        this->show();
+    });
+    profileWindow->show();
+    this->hide();
 }
-
 void HomeWindow_c::onCartLoaded(const QVariantMap &cartData)
 {
     int itemCount = cartData.value("itemCount").toInt();

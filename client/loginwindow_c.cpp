@@ -1,5 +1,6 @@
 #include "loginwindow_c.h"
 #include "ui_loginwindow_c.h"
+#include "homewindow_c.h"
 #include <QMessageBox>
 LoginWindow_c::LoginWindow_c(NetworkManager *networkManager, QWidget *parent)
     : QMainWindow(parent)
@@ -49,20 +50,30 @@ void LoginWindow_c::onForgotPasswordButtonClicked()
     forgotPasswordWindow->show();
     this->hide();
 }
-void LoginWindow_c::onLoginSucceeded(UserRole role)
-{
-    if (role == UserRole::NormalUser) {
-        if (!genreSelectionWindow) {
+void LoginWindow_c::onLoginSucceeded(UserRole role){
+    if(role == UserRole::NormalUser){
+        if(!genreSelectionWindow){
             genreSelectionWindow = new GenreSelectionWindow_c(networkManager);
             connect(genreSelectionWindow, &GenreSelectionWindow_c::genresConfirmed, this, [this]() {
-                QMessageBox::information(this, "خوش آمدید", "به بوک کلاب خوش آمدید! (صفحه ی اصلی به زودی ساخته می شود)");
+            genreSelectionWindow->close();
+            HomeWindow_c *homeWindow = new HomeWindow_c(networkManager);
+            homeWindow->setAttribute(Qt::WA_DeleteOnClose);
+            homeWindow->show();
             });
         }
-        genreSelectionWindow->show();
+        HomeWindow_c *homeWindow = new HomeWindow_c(networkManager);
+        homeWindow->setAttribute(Qt::WA_DeleteOnClose);
+        homeWindow->show();
         this->hide();
-    } else {
-        QString roleName = (role == UserRole::Publisher) ? "ناشر" : "مدیر سیستم";
-        QMessageBox::information(this, "ورود موفق", "خوش آمدید! نقش شما: " + roleName + " (پنل مربوطه به زودی ساخته می شود)");
+    }
+    else if(role == UserRole::Admin){
+        AdminMainWindow *adminWindow = new AdminMainWindow(networkManager);
+        adminWindow->setAttribute(Qt::WA_DeleteOnClose);
+        adminWindow->show();
+        this->hide();
+    }
+    else {
+        QMessageBox::information(this, "ورود موفق", "پنل ناشر در قدم بعدی ساخته می شود.");
     }
 }
 void LoginWindow_c::onLoginFailed(const QString &message)

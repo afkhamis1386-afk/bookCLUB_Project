@@ -363,6 +363,19 @@ Response BookManager::getRecommendedBooks(int userId){
     data["bookIds"] = bookList;
     return Response(ResponseStatus::Success, "کتاب های پیشنهادی بازیابی شد", data);
 }
+Response BookManager::getPurchasedBooks(int userId){
+    UserRepository userRepo;
+    std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
+    if(!user){
+        return Response(ResponseStatus::NotFound, "کاربر یافت نشد");
+    }
+    QVariantList bookList;
+    for(int bookId : user->getPurchaseHistory())
+        bookList.append(bookId);
+    QVariantMap data;
+    data["bookIds"] = bookList;
+    return Response(ResponseStatus::Success, "کتاب های خریداری شده بازیابی شدند", data);
+}
 Response BookManager::saveReadingProgress(int userId, int bookId, int lastPage){
     if(lastPage < 1){
         return Response(ResponseStatus::ValidationFailed, "شماره صفحه نامعتبر است");

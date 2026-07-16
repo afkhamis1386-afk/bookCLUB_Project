@@ -56,6 +56,7 @@ SOURCES += \
     main.cpp \
     loginwindow_c.cpp \
     notificationwindow_c.cpp \
+    profilewindow_c.cpp \
     registerwindow_c.cpp
 
 HEADERS += \
@@ -101,6 +102,7 @@ HEADERS += \
     librarywindow_c.h \
     loginwindow_c.h \
     notificationwindow_c.h \
+    profilewindow_c.h \
     registerwindow_c.h
 
 FORMS += \
@@ -113,6 +115,7 @@ FORMS += \
     librarywindow_c.ui \
     loginwindow_c.ui \
     notificationwindow_c.ui \
+    profilewindow_c.ui \
     registerwindow_c.ui
 
 # Default rules for deployment.

@@ -20,24 +20,23 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">
-QMainWindow#HomeWindow_c {
+   <string notr="true">QMainWindow#HomeWindow_c {
     background-image: url(&quot;:/wallhaven-49kq3d.jpg&quot;);
     background-position: center center;
     background-repeat: no-repeat;
 }
 
 QFrame#mainFrame {
-    background-color: rgba(20, 24, 33, 0.72);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 14px;
+    background-color: rgba(15, 23, 42, 0.45);  
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px; 
     margin: 15px; 
 }
 
 QLineEdit#searchLineEdit {
-    background-color: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
     padding: 7px 12px;
     color: #ffffff;
     font-family: &quot;Segoe UI&quot;, &quot;Vazirmatn&quot;;
@@ -45,14 +44,14 @@ QLineEdit#searchLineEdit {
     font-weight: bold;
 }
 QLineEdit#searchLineEdit:focus {
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(147, 197, 253, 0.7); 
+    background-color: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(147, 197, 253, 0.8); 
 }
 
 #topBarWidget QPushButton {
-    background-color: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
     padding: 7px 14px; 
     color: #ffffff;
     font-family: &quot;Segoe UI&quot;, &quot;Vazirmatn&quot;;
@@ -60,28 +59,26 @@ QLineEdit#searchLineEdit:focus {
     font-weight: bold; 
 }
 #topBarWidget QPushButton:hover {
-    background-color: rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.35);
 }
 #topBarWidget QPushButton:pressed {
-    background-color: rgba(255, 255, 255, 0.04);
+    background-color: rgba(255, 255, 255, 0.05);
 }
-
 
 QPushButton#searchButton {
-    background-color: rgba(148, 163, 184, 0.35); 
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background-color: rgba(147, 197, 253, 0.3); 
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 QPushButton#searchButton:hover {
-    background-color: rgba(148, 163, 184, 0.5);
+    background-color: rgba(147, 197, 253, 0.45);
 }
 
 #tabsWidget QPushButton {
     background-color: transparent;
     border: none;
     border-bottom: 3px solid transparent; 
-    color: #cbd5e1; 
+    color: #e2e8f0; 
     font-family: &quot;Segoe UI&quot;, &quot;Vazirmatn&quot;;
     font-size: 14px;
     font-weight: bold;
@@ -89,16 +86,15 @@ QPushButton#searchButton:hover {
 }
 #tabsWidget QPushButton:hover {
     color: #ffffff;
-    border-bottom: 3px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.5);
 }
-
 #tabsWidget QPushButton:checked, #tabsWidget QPushButton:pressed {
     color: #ffffff;
     border-bottom: 3px solid #ffffff;
 }
 
 QLabel#statusLabel {
-    color: #94a3b8;
+    color: #cbd5e1;
     font-family: &quot;Segoe UI&quot;, &quot;Vazirmatn&quot;;
     font-size: 13px;
     font-weight: 600;
@@ -107,9 +103,9 @@ QLabel#statusLabel {
 
 
 QScrollArea#booksScrollArea {
-    background-color: rgba(0, 0, 0, 0.2); 
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.04);  
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
 }
 #booksScrollArea &gt; QWidget &gt; QWidget {
     background: transparent;
@@ -121,12 +117,12 @@ QScrollBar:vertical {
     margin: 4px;
 }
 QScrollBar::handle:vertical {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     border-radius: 3px;
     min-height: 30px;
 }
 QScrollBar::handle:vertical:hover {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.45);
 }
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
     background: none;
@@ -139,8 +135,8 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
      <widget class="QFrame" name="mainFrame">
       <property name="maximumSize">
        <size>
-        <width>800</width>
-        <height>850</height>
+        <width>1600</width>
+        <height>1000</height>
        </size>
       </property>
       <property name="frameShape">
@@ -258,7 +254,7 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>744</width>
+            <width>875</width>
             <height>485</height>
            </rect>
           </property>
