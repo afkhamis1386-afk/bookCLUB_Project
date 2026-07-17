@@ -17,9 +17,8 @@ ProfileWindow_c::ProfileWindow_c(NetworkManager *networkManager, QWidget *parent
     ui->ordersTableWidget->setHorizontalHeaderLabels(headers);
     ui->ordersTableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->ordersTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
     connect(ui->changePasswordButton, &QPushButton::clicked, this, &ProfileWindow_c::onChangePasswordButtonClicked);
-    connect(ui->backButton, &QPushButton::clicked, this, &ProfileWindow_c::onEditGenresButtonClicked);
+    connect(ui->editGenresButton, &QPushButton::clicked, this, &ProfileWindow_c::onEditGenresButtonClicked);
     connect(ui->backButton, &QPushButton::clicked, this, &ProfileWindow_c::onBackButtonClicked);
     connect(profileController, &ProfileController::accountInfoLoaded, this, &ProfileWindow_c::onAccountInfoLoaded);
     connect(profileController, &ProfileController::accountInfoLoadFailed, this, &ProfileWindow_c::onAccountInfoLoadFailed);

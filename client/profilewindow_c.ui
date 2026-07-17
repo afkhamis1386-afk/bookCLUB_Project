@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>804</width>
-    <height>714</height>
+    <width>1112</width>
+    <height>892</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -249,7 +249,7 @@ QLineEdit:focus {
        </size>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="accountInfoTab">
        <attribute name="title">
@@ -325,14 +325,20 @@ QLineEdit:focus {
         <string>                 تاریخچه خرید            </string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="1" column="0">
+        <item row="0" column="0">
          <widget class="QTableWidget" name="ordersTableWidget">
           <property name="maximumSize">
            <size>
-            <width>500</width>
+            <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>
+          <attribute name="horizontalHeaderVisible">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>155</number>
+          </attribute>
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>false</bool>
           </attribute>
@@ -369,7 +375,7 @@ QLineEdit:focus {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>804</width>
+     <width>1112</width>
      <height>25</height>
     </rect>
    </property>
