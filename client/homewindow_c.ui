@@ -94,13 +94,16 @@ QPushButton#searchButton:hover {
 }
 
 QLabel#statusLabel {
-    color: #cbd5e1;
+    background-color: rgba(147, 197, 253, 0.1); 
+    border: 1px solid rgba(147, 197, 253, 0.35);
+    border-radius: 8px;
+    color: #93c5fd;
     font-family: &quot;Segoe UI&quot;, &quot;Vazirmatn&quot;;
     font-size: 13px;
-    font-weight: 600;
-    padding-left: 5px;
+    font-weight: bold;
+    padding: 8px 16px;
+    margin-bottom: 5px;
 }
-
 
 QScrollArea#booksScrollArea {
     background-color: rgba(255, 255, 255, 0.04);  
@@ -146,6 +149,57 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout">
+       <item row="3" column="0">
+        <widget class="QScrollArea" name="booksScrollArea">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>875</width>
+            <height>462</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QWidget" name="tabsWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="allTabButton">
+            <property name="text">
+             <string>همه</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="freeTabButton">
+            <property name="text">
+             <string>رایگان</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="newestTabButton">
+            <property name="text">
+             <string>جدید</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="recommendedTabButton">
+            <property name="text">
+             <string>پیشنهادی</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item row="0" column="0">
         <widget class="QWidget" name="topBarWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout">
@@ -197,68 +251,17 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
          </layout>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QWidget" name="tabsWidget" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QPushButton" name="allTabButton">
-            <property name="text">
-             <string>همه</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="freeTabButton">
-            <property name="text">
-             <string>رایگان</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="newestTabButton">
-            <property name="text">
-             <string>جدید</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="recommendedTabButton">
-            <property name="text">
-             <string>پیشنهادی</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
        <item row="2" column="0">
         <widget class="QLabel" name="statusLabel">
          <property name="maximumSize">
           <size>
-           <width>800</width>
-           <height>650</height>
+           <width>300</width>
+           <height>90</height>
           </size>
          </property>
          <property name="text">
           <string/>
          </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QScrollArea" name="booksScrollArea">
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>875</width>
-            <height>485</height>
-           </rect>
-          </property>
-         </widget>
         </widget>
        </item>
       </layout>

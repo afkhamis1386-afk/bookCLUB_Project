@@ -2,7 +2,7 @@
 #include "ui_loginwindow_c.h"
 #include "homewindow_c.h"
 #include "adminmainwindow.h"
-
+#include "publishermainwindow.h"
 #include <QMessageBox>
 LoginWindow_c::LoginWindow_c(NetworkManager *networkManager, QWidget *parent)
     : QMainWindow(parent)
@@ -52,30 +52,33 @@ void LoginWindow_c::onForgotPasswordButtonClicked()
     forgotPasswordWindow->show();
     this->hide();
 }
-void LoginWindow_c::onLoginSucceeded(UserRole role){
+void LoginWindow_c::onLoginSucceeded(UserRole role)
+{
     if(role == UserRole::NormalUser){
-        if(!genreSelectionWindow){
-            genreSelectionWindow = new GenreSelectionWindow_c(networkManager);
-            connect(genreSelectionWindow, &GenreSelectionWindow_c::genresConfirmed, this, [this]() {
-            genreSelectionWindow->close();
-            HomeWindow_c *homeWindow = new HomeWindow_c(networkManager);
-            homeWindow->setAttribute(Qt::WA_DeleteOnClose);
-            homeWindow->show();
-            });
-        }
         HomeWindow_c *homeWindow = new HomeWindow_c(networkManager);
         homeWindow->setAttribute(Qt::WA_DeleteOnClose);
         homeWindow->show();
         this->hide();
     }
-    else if(role == UserRole::Admin){
+    else if (role == UserRole::Admin) {
         AdminMainWindow *adminWindow = new AdminMainWindow(networkManager);
         adminWindow->setAttribute(Qt::WA_DeleteOnClose);
+        connect(adminWindow, &AdminMainWindow::logoutRequested, this, [this, adminWindow]() {
+            adminWindow->close();
+            this->show();
+        });
         adminWindow->show();
         this->hide();
     }
     else {
-        QMessageBox::information(this, "ورود موفق", "پنل ناشر در قدم بعدی ساخته می شود.");
+        PublisherMainWindow *publisherWindow = new PublisherMainWindow(networkManager);
+        publisherWindow->setAttribute(Qt::WA_DeleteOnClose);
+        connect(publisherWindow, &PublisherMainWindow::logoutRequested, this, [this, publisherWindow]() {
+            publisherWindow->close();
+            this->show();
+        });
+        publisherWindow->show();
+        this->hide();
     }
 }
 void LoginWindow_c::onLoginFailed(const QString &message)

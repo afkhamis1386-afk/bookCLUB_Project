@@ -59,6 +59,7 @@ SOURCES += \
     notificationwindow_c.cpp \
     profilewindow_c.cpp \
     publisheraddbookwindow_c.cpp \
+    publishermainwindow.cpp \
     registerwindow_c.cpp
 
 HEADERS += \
@@ -107,6 +108,7 @@ HEADERS += \
     notificationwindow_c.h \
     profilewindow_c.h \
     publisheraddbookwindow_c.h \
+    publishermainwindow.h \
     registerwindow_c.h
 
 FORMS += \
@@ -122,6 +124,7 @@ FORMS += \
     notificationwindow_c.ui \
     profilewindow_c.ui \
     publisheraddbookwindow_c.ui \
+    publishermainwindow.ui \
     registerwindow_c.ui
 
 # Default rules for deployment.

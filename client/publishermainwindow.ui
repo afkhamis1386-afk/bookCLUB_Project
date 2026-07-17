@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PublisherMainWindow</class>
+ <widget class="QMainWindow" name="PublisherMainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>981</width>
+    <height>880</height>
+   </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>16777215</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="layoutDirection">
+   <enum>Qt::RightToLeft</enum>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QMainWindow {
+    background-image: url(&quot;:/wallhaven-49kq3d.jpg&quot;);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+QFrame#mainFrame {
+    background-color: rgba(255, 255, 255, 0.42); 
+    border: 1px solid rgba(255, 255, 255, 0.6);  
+    border-radius: 24px;                          
+}
+
+QTabWidget::pane {
+    border: none; 
+    background: transparent;
+}
+
+QTabBar::tab {
+    background-color: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-bottom: none;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    padding: 8px 16px;
+    color: #34495e;
+    font-weight: bold;
+    font-size: 13px;
+    font-family: &quot;Segoe UI&quot;, &quot;Vazir&quot;, &quot;Tahoma&quot;;
+}
+
+QTabBar::tab:selected {
+ 
+    background-color: rgba(212, 225, 237, 0.65); 
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    color: #1a252f;
+}
+
+QTabBar QToolButton {
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+    margin: 2px;
+}
+
+QTabBar QToolButton:hover {
+    background-color: rgba(212, 225, 237, 0.7);
+}
+QWidget#dashboardTab, QWidget#myBooksTab, QWidget#publisherProfileTab {
+    background: transparent;
+}
+
+QLabel {
+    color: #2c3e50;
+    font-family: &quot;Segoe UI&quot;, &quot;Vazir&quot;, &quot;Tahoma&quot;;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.18); 
+    border: 1px dashed rgba(255, 255, 255, 0.45); 
+    border-radius: 10px;                         
+}
+QPushButton {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    color: #2c3e50;
+    font-family: &quot;Segoe UI&quot;, &quot;Vazir&quot;, &quot;Tahoma&quot;;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 10px 20px;
+}
+
+QPushButton:hover {
+    background-color: rgba(212, 225, 237, 0.6); 
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    color: #1a252f;
+}
+
+
+QListWidget, QListView {
+    background-color: rgba(200, 214, 229, 0.22); 
+    border: 1px solid rgba(255, 255, 255, 0.5);   
+    border-radius: 14px;
+    color: #2c3e50;
+    font-family: &quot;Segoe UI&quot;, &quot;Vazir&quot;, &quot;Tahoma&quot;;
+    padding: 6px;
+}
+
+QListWidget::item:hover, QListView::item:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+    border-radius: 8px;
+    color: #1a252f;
+}
+
+QTableWidget, QTableView {
+    background-color: rgba(200, 214, 229, 0.22); 
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    gridline-color: rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    color: #2c3e50;
+}
+QHeaderView::section {
+    background-color: rgba(212, 225, 237, 0.5);  
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+QScrollBar:vertical, QScrollBar:horizontal {
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background: rgba(212, 225, 237, 0.7); 
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::add-line, QScrollBar::sub-line {
+    border: none;
+    background: none;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>312</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>52</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <widget class="QFrame" name="mainFrame">
+      <property name="maximumSize">
+       <size>
+        <width>1000</width>
+        <height>700</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="3" column="0">
+        <widget class="QPushButton" name="logoutButton">
+         <property name="text">
+          <string>خروج از حساب</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="statusLabel">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QTabWidget" name="publisherTabWidget">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="currentIndex">
+          <number>2</number>
+         </property>
+         <widget class="QWidget" name="dashboardTab">
+          <attribute name="title">
+           <string>                                داشبورد                               </string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QLabel" name="totalBooksLabel">
+             <property name="text">
+              <string>تعداد کل کتاب ها:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="totalRevenueLabel">
+             <property name="text">
+              <string>مجموع درآمد:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="topSellingHeaderLabel">
+             <property name="text">
+              <string>پرفروش ترین کتاب ها:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QListWidget" name="topSellingListWidget"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="leastSellingHeaderLabel">
+             <property name="text">
+              <string>کم فروش ترین کتاب ها:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QListWidget" name="leastSellingListWidget"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="refreshDashboardButton">
+             <property name="text">
+              <string>به روز رسانی</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="myBooksTab">
+          <attribute name="title">
+           <string>                          مدیریت کتاب ها                       </string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0">
+            <widget class="QTableWidget" name="myBooksTableWidget">
+             <property name="maximumSize">
+              <size>
+               <width>625</width>
+               <height>700</height>
+              </size>
+             </property>
+             <property name="columnCount">
+              <number>5</number>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>false</bool>
+             </attribute>
+             <column/>
+             <column/>
+             <column/>
+             <column/>
+             <column/>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="addNewBookButton">
+             <property name="text">
+              <string>افزودن کتاب جدید</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="editBookButton">
+             <property name="text">
+              <string>ویرایش کتاب انتخابی</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QPushButton" name="applyDiscountButton">
+             <property name="text">
+              <string>اعمال تخفیف</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QPushButton" name="toggleBookActiveButton">
+             <property name="text">
+              <string>غیرفعال/فعال سازی</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="publisherProfileTab">
+          <attribute name="title">
+           <string>                           پروفایل ناشر                         </string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QLabel" name="nameLabel">
+             <property name="text">
+              <string>نام و نام خانوادگی:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="emailLabel">
+             <property name="text">
+              <string>ایمیل:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="publicationNameLabel">
+             <property name="text">
+              <string>نام انتشارات:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="licenseNumberLabel">
+             <property name="text">
+              <string>شماره پروانه نشر:</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>53</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>312</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>981</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
