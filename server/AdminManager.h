@@ -16,5 +16,6 @@ public:
     Response getBookDetailsForReview(int bookId);
     Response removeInvalidBook(int bookId);
     Response getAllReviews();
+    Response createAdmin(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName, const QString &lastName, bool requireNoExistingAdmin);
 };
 #endif // ADMINMANAGER_H

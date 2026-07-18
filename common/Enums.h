@@ -62,6 +62,8 @@ enum class RequestType {
     GetAllReviews,
     GetNotifications,
     MarkNotificationRead,
+    BootstrapFirstAdmin,
+    CreateAdditionalAdmin,
     GetUnreadNotificationCount,
     GetAllGenres,
     GetAllCategories,

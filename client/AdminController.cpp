@@ -66,6 +66,14 @@ void AdminController::deleteReview(int reviewId){
     if(!networkManager->isConnected()) { emit reviewDeleteFailed("اتصال به سرور برقرار نیست"); return; }
     networkManager->deleteReviewByAdmin(reviewId);
 }
+void AdminController::createAdmin(const QString &username, const QString &password, const QString &securityAnswer, const QString &firstName, const QString &lastName) {
+    if(username.trimmed().isEmpty() || password.isEmpty() || firstName.trimmed().isEmpty() || lastName.trimmed().isEmpty()){
+        emit validationError("تمامی فیلدها الزامی هستند");
+        return;
+    }
+    if(!networkManager->isConnected()) { emit adminCreateFailed("اتصال به سرور برقرار نیست"); return; }
+    networkManager->createAdditionalAdmin(username, password, securityAnswer, firstName, lastName);
+}
 void AdminController::onResponseReceived(RequestType type, const Response &response){
     switch(type){
     case RequestType::GetAllUsers:
@@ -115,6 +123,10 @@ void AdminController::onResponseReceived(RequestType type, const Response &respo
     case RequestType::DeleteReviewByAdmin:
         if(response.isSuccess()) emit reviewDeleted(response.getMessage());
         else emit reviewDeleteFailed(response.getMessage());
+        break;
+    case RequestType::CreateAdditionalAdmin:
+        if(response.isSuccess()) emit adminCreated(response.getMessage());
+        else emit adminCreateFailed(response.getMessage());
         break;
     default:
         break;

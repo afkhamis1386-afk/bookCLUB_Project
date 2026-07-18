@@ -116,3 +116,7 @@ bool AdminRepository::isAdminExists(int userId){
     }
     return false;
 }
+bool AdminRepository::anyAdminExists(){
+    QVector<int> ids = getAllAdminIds();
+    return !ids.isEmpty();
+}
