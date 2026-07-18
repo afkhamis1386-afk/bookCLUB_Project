@@ -51,6 +51,7 @@ SOURCES += \
     bookdetailswindow_c.cpp \
     bookreaderwindow_c.cpp \
     cartwindow_c.cpp \
+    createadmindialog.cpp \
     forgotpasswordwindow_c.cpp \
     homewindow_c.cpp \
     librarywindow_c.cpp \
@@ -101,6 +102,7 @@ HEADERS += \
     bookdetailswindow_c.h \
     bookreaderwindow_c.h \
     cartwindow_c.h \
+    createadmindialog.h \
     forgotpasswordwindow_c.h \
     homewindow_c.h \
     librarywindow_c.h \
@@ -117,6 +119,7 @@ FORMS += \
     bookdetailswindow_c.ui \
     bookreaderwindow_c.ui \
     cartwindow_c.ui \
+    createadmindialog.ui \
     forgotpasswordwindow_c.ui \
     homewindow_c.ui \
     librarywindow_c.ui \
