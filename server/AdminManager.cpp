@@ -5,6 +5,8 @@
 #include "ReviewRepository.h"
 #include "../common/normaluser.h"
 #include "../common/publisher.h"
+#include "../common/Admin.h"
+#include "AdminRepository.h"
 #include "../common/Book.h"
 #include "../common/Review.h"
 #include <memory>
@@ -186,4 +188,27 @@ Response AdminManager::getAllReviews(){
     QVariantMap data;
     data["reviews"] = reviewList;
     return Response(ResponseStatus::Success, "لیست تمامی نظرات بازیابی شد", data);
+}
+Response AdminManager::createAdmin(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName, const QString &lastName, bool requireNoExistingAdmin) {
+    AdminRepository adminRepo;
+    if(requireNoExistingAdmin && adminRepo.anyAdminExists()){
+        return Response(ResponseStatus::Error, "این مسیر فقط برای راه اندازی اولیه سیستم است و دیگر در دسترس نیست");
+    }
+    if(!User::isValidUsername(username)){
+        return Response(ResponseStatus::ValidationFailed, "نام کاربری نامعتبر است");
+    }
+    if(!User::isStrongPassword(plainPassword)){
+        return Response(ResponseStatus::ValidationFailed, "رمز عبور ضعیف است");
+    }
+    if(firstName.trimmed().isEmpty() || lastName.trimmed().isEmpty()) {
+        return Response(ResponseStatus::ValidationFailed, "نام و نام خانوادگی الزامی است");
+    }
+    Admin newAdmin(username, plainPassword, plainAnswer, firstName, lastName);
+    int newAdminId = adminRepo.insertAdmin(newAdmin);
+    if(newAdminId == -1){
+        return Response(ResponseStatus::Error, "خطا در ثبت ادمین (شاید نام کاربری تکراری است)");
+    }
+    QVariantMap data;
+    data["userId"] = newAdminId;
+    return Response(ResponseStatus::Success, "ادمین با موفقیت ساخته شد", data);
 }

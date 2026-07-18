@@ -12,5 +12,6 @@ public:
     bool updateLastName(int userId, const QString &lastName);
     QVector<int> getAllAdminIds();
     bool isAdminExists(int userId);
+    bool anyAdminExists();
 };
 #endif // ADMINREPOSITORY_H

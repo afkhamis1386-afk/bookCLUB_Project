@@ -157,6 +157,29 @@ Response BookManager::getCoverImageData(int bookId){
     file.close();
     return Response(ResponseStatus::Success, "عکس جلد بازیابی شد", data);
 }
+Response BookManager::updateBook(int publisherUserId, int bookId, const QString &bookName, const QString &description, double price){
+    BookRepository bookRepo;
+    std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
+    if(!book){
+        return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
+    }
+    if(book->getPublisherUserId() != publisherUserId){
+        return Response(ResponseStatus::Unauthorized, "شما اجازه ویرایش این کتاب را ندارید");
+    }
+    if(!book->setBookName(bookName)){
+        return Response(ResponseStatus::ValidationFailed, "نام کتاب نامعتبر است");
+    }
+    if(!book->setBookDescription(description)){
+        return Response(ResponseStatus::ValidationFailed, "توضیحات کتاب نامعتبر است");
+    }
+    if(!book->setBookPrice(price)){
+        return Response(ResponseStatus::ValidationFailed, "قیمت کتاب نامعتبر است");
+    }
+    if(!bookRepo.updateBook(*book)){
+        return Response(ResponseStatus::Error, "خطا در به روزرسانی کتاب");
+    }
+    return Response(ResponseStatus::Success, "کتاب با موفقیت ویرایش شد");
+}
 Response BookManager::applyDiscount(int publisherUserId, int bookId, double discountPercent, double discountAmount){
     BookRepository bookRepo;
     std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));

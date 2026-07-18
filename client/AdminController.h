@@ -23,6 +23,7 @@ public:
     void deleteBook(int bookId);
     void loadAllReviews();
     void deleteReview(int reviewId);
+    void createAdmin(const QString &username, const QString &password, const QString &securityAnswer, const QString &firstName, const QString &lastName);
 
 signals:
     void usersLoaded(const QVariantList &users);
@@ -50,6 +51,8 @@ signals:
     void reviewDeleted(const QString &message);
     void reviewDeleteFailed(const QString &message);
     void validationError(const QString &message);
+    void adminCreated(const QString &message);
+    void adminCreateFailed(const QString &message);
 
 private slots:
     void onResponseReceived(RequestType type, const Response &response);
