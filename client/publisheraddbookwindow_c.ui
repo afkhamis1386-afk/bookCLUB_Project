@@ -16,38 +16,58 @@
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
     <string notr="true">#centralwidget {
-    border-image: url(:/wallhaven-49kq3d.jpg);
+    border-image: url(:/wallhaven-49kq3d.jpg) 0 0 0 0 stretch stretch;
 }</string>
    </property>
-   <widget class="QFrame" name="cardFrame">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>162</y>
-      <width>811</width>
-      <height>607</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>811</width>
-      <height>607</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>811</width>
-      <height>607</height>
-     </size>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QFrame#cardFrame {
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>141</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>439</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1" rowspan="2">
+     <widget class="QFrame" name="cardFrame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>811</width>
+        <height>607</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>811</width>
+        <height>607</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame#cardFrame {
     background-color: rgba(255, 255, 255, 120);  
     border: 1px solid rgba(255, 255, 255, 180);
     border-radius: 20px;                      
@@ -118,6 +138,7 @@ QPushButton#submitButton {
 
 QPushButton#submitButton:hover {
     background-color: #34495e;
+	color: #d4af37;
 }
 QPushButton#backButton {
     background-color: transparent;
@@ -132,183 +153,211 @@ QPushButton#backButton {
 QPushButton#backButton:hover {
     color: #d4af37; 
 }</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QLineEdit" name="bookNameLineEdit">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>70</y>
-       <width>191</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="placeholderText">
-      <string>         نام کتاب </string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="authorNameLineEdit">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>120</y>
-       <width>191</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="placeholderText">
-      <string>      نام نویسنده </string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="categoryTitleLineEdit">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>10</y>
-       <width>191</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="placeholderText">
-      <string> عنوان دسته بندی     </string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="genreTitleLineEdit">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>10</y>
-       <width>411</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="placeholderText">
-      <string>عنوان ژانر ( دقیقا مطابق لیست ژانر های سیستم )</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="submitButton">
-     <property name="geometry">
-      <rect>
-       <x>660</x>
-       <y>530</y>
-       <width>111</width>
-       <height>66</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>ثبت کتاب </string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="backButton">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>550</y>
-       <width>90</width>
-       <height>47</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>بازگشت </string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="priceDoubleSpinBox">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>280</y>
-       <width>191</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="maximum">
-      <double>100000000.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="statusLabel">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>530</y>
-       <width>341</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>-</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="selectPdfButton">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>230</y>
-       <width>191</width>
-       <height>42</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>... pdf انتخاب فایل</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="pdfPathLabel">
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>240</y>
-       <width>131</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>   فایلی انتخاب نشده</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="selectCoverButton">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>180</y>
-       <width>191</width>
-       <height>42</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>...انتخاب عکس جلد </string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="coverPathLabel">
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>190</y>
-       <width>141</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>   فایلی انتخاب نشده</string>
-     </property>
-    </widget>
-    <widget class="QTextEdit" name="descriptionTextEdit">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>330</y>
-       <width>611</width>
-       <height>191</height>
-      </rect>
-     </property>
-     <property name="placeholderText">
-      <string>-</string>
-     </property>
-    </widget>
-   </widget>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLineEdit" name="bookNameLineEdit">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>70</y>
+         <width>191</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="placeholderText">
+        <string>         نام کتاب </string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="authorNameLineEdit">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>120</y>
+         <width>191</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="placeholderText">
+        <string>      نام نویسنده </string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="categoryTitleLineEdit">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>10</y>
+         <width>191</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="placeholderText">
+        <string> عنوان دسته بندی     </string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="genreTitleLineEdit">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>10</y>
+         <width>411</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="placeholderText">
+        <string>عنوان ژانر ( دقیقا مطابق لیست ژانر های سیستم )</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="submitButton">
+       <property name="geometry">
+        <rect>
+         <x>660</x>
+         <y>530</y>
+         <width>111</width>
+         <height>66</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>ثبت کتاب </string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="backButton">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>550</y>
+         <width>90</width>
+         <height>47</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>بازگشت </string>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="priceDoubleSpinBox">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>280</y>
+         <width>191</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <double>100000000.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QLabel" name="statusLabel">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>530</y>
+         <width>341</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>-</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="selectPdfButton">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>230</y>
+         <width>191</width>
+         <height>42</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>... pdf انتخاب فایل</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="pdfPathLabel">
+       <property name="geometry">
+        <rect>
+         <x>420</x>
+         <y>240</y>
+         <width>131</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>   فایلی انتخاب نشده</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="selectCoverButton">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>180</y>
+         <width>191</width>
+         <height>42</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>...انتخاب عکس جلد </string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="coverPathLabel">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>190</y>
+         <width>141</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>   فایلی انتخاب نشده</string>
+       </property>
+      </widget>
+      <widget class="QTextEdit" name="descriptionTextEdit">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>330</y>
+         <width>611</width>
+         <height>191</height>
+        </rect>
+       </property>
+       <property name="placeholderText">
+        <string>-</string>
+       </property>
+      </widget>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>439</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="1">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>141</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

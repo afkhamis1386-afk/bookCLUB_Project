@@ -52,6 +52,7 @@ private slots:
     void onReviewDeleteFailed(const QString &message);
     void onValidationError(const QString &message);
     void onLogoutButtonClicked();
+    void onCreateAdminButtonClicked();
 
 private:
     Ui::AdminMainWindow *ui;

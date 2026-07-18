@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>974</width>
+    <width>1044</width>
     <height>621</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <property name="styleSheet">
    <string notr="true">
 QDialog {
-    background-image: url(&quot;:/wallhaven-49kq3d.jpg&quot;);
+    background-image: url(&quot;:/wallhaven-49kq3d.jpg&quot;) 0 0 0 0 stretch stretch;
     background-position: center;
 }
 
@@ -73,7 +73,7 @@ QPushButton:pressed {
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>280</x>
