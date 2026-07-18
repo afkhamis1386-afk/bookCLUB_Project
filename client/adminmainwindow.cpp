@@ -59,10 +59,7 @@ AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent
     connect(adminController, &AdminController::reviewDeleted, this, &AdminMainWindow::onReviewDeleted);
     connect(adminController, &AdminController::reviewDeleteFailed, this, &AdminMainWindow::onReviewDeleteFailed);
     connect(adminController, &AdminController::validationError, this, &AdminMainWindow::onValidationError);
-    connect(ui->createAdminButton, &QPushButton::clicked, this, [this]() {
-        CreateAdminDialog dialog(networkManager, this);
-        dialog.exec();
-    });
+    connect(ui->createAdminButton, &QPushButton::clicked, this, &AdminMainWindow::onCreateAdminButtonClicked);
     adminController->loadAllUsers();
     adminController->loadAllBooks();
     adminController->loadAllReviews();
@@ -192,5 +189,9 @@ void AdminMainWindow::onReviewDeleted(const QString &message) { ui->statusLabel-
 void AdminMainWindow::onReviewDeleteFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onValidationError(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onLogoutButtonClicked() { emit logoutRequested(); }
+void AdminMainWindow::onCreateAdminButtonClicked() {
+    CreateAdminDialog dialog(networkManager, this);
+    dialog.exec();
+}
 
 

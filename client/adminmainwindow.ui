@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1722</width>
-    <height>1018</height>
+    <width>1682</width>
+    <height>1334</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#centralwidget {
-    background-image: url(&quot;:/wallhaven-49kq3d.jpg&quot;);
+    background-image: url(&quot;:/wallhaven-49kq3d.jpg&quot;) 0 0 0 0 stretch stretch;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -34,6 +34,7 @@ QTabWidget::pane {
     border-top-right-radius: 0px;
     margin-top: -2px; 
     padding: 20px;
+border-radius: 20px;
 }
 
 QTabBar {
@@ -259,271 +260,323 @@ QLineEdit:focus {
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="adminTabWidget">
-    <property name="geometry">
-     <rect>
-      <x>366</x>
-      <y>184</y>
-      <width>991</width>
-      <height>611</height>
-     </rect>
-    </property>
-    <property name="sizeIncrement">
-     <size>
-      <width>0</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="baseSize">
-     <size>
-      <width>0</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="currentIndex">
-     <number>2</number>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>16</width>
-      <height>16</height>
-     </size>
-    </property>
-    <widget class="QWidget" name="tab">
-     <attribute name="title">
-      <string>                         مدیریت کاربران                            </string>
-     </attribute>
-     <widget class="QTableWidget" name="usersTableWidget">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>30</y>
-        <width>621</width>
-        <height>192</height>
-       </rect>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
-      <property name="columnCount">
-       <number>5</number>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>272</height>
+       </size>
       </property>
-      <column>
-       <property name="text">
-        <string>نام کاربری </string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>نقش</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>مسدود</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>فعال</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>تاریخ عضویت</string>
-       </property>
-      </column>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>325</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1" colspan="2">
+     <widget class="QTabWidget" name="adminTabWidget">
+      <property name="minimumSize">
+       <size>
+        <width>991</width>
+        <height>611</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>991</width>
+        <height>611</height>
+       </size>
+      </property>
+      <property name="sizeIncrement">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>                         مدیریت کاربران                            </string>
+       </attribute>
+       <widget class="QTableWidget" name="usersTableWidget">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>30</y>
+          <width>621</width>
+          <height>192</height>
+         </rect>
+        </property>
+        <property name="columnCount">
+         <number>5</number>
+        </property>
+        <column>
+         <property name="text">
+          <string>نام کاربری </string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>نقش</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>مسدود</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>فعال</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>تاریخ عضویت</string>
+         </property>
+        </column>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>240</y>
+          <width>621</width>
+          <height>271</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QPushButton" name="blockUserButton">
+           <property name="text">
+            <string>مسدودسازی</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="unblockUserButton">
+           <property name="text">
+            <string>رفع مسدودیت</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="toggleActiveButton">
+           <property name="text">
+            <string>فعال/غیرفعال سازی</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="deleteUserButton">
+           <property name="text">
+            <string>حذف حساب</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="refreshUsersButton">
+           <property name="text">
+            <string>به روزرسانی</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="createAdminButton">
+           <property name="text">
+            <string>ایجاد ادمین جدید</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>                             مدیریت کتاب ها                                 </string>
+       </attribute>
+       <widget class="QTableWidget" name="booksTableWidget">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>30</y>
+          <width>621</width>
+          <height>192</height>
+         </rect>
+        </property>
+        <property name="columnCount">
+         <number>5</number>
+        </property>
+        <column/>
+        <column/>
+        <column/>
+        <column/>
+        <column/>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>240</y>
+          <width>621</width>
+          <height>151</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QPushButton" name="viewBookDetailsButton">
+           <property name="text">
+            <string>مشاهده جزئیات</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="deleteBookButton">
+           <property name="text">
+            <string>حذف کتاب نامعتبر </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="refreshBooksButton">
+           <property name="text">
+            <string>به روزرسانی</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>                                 نظارت بر نظرات                           </string>
+       </attribute>
+       <widget class="QTableWidget" name="reviewsTableWidget">
+        <property name="geometry">
+         <rect>
+          <x>220</x>
+          <y>30</y>
+          <width>501</width>
+          <height>192</height>
+         </rect>
+        </property>
+        <property name="columnCount">
+         <number>4</number>
+        </property>
+        <column/>
+        <column/>
+        <column/>
+        <column/>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>220</x>
+          <y>240</y>
+          <width>501</width>
+          <height>99</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QPushButton" name="deleteReviewButton">
+           <property name="text">
+            <string>حذف نظر نامناسب</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="refreshReviewsButton">
+           <property name="text">
+            <string>به روزرسانی</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>240</y>
-        <width>621</width>
+    </item>
+    <item row="1" column="3">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>324</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1" colspan="2">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QPushButton" name="logoutButton">
+        <property name="text">
+         <string>خروج از حساب</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="statusLabel">
+        <property name="text">
+         <string>                             -</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="2">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
         <height>271</height>
-       </rect>
+       </size>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QPushButton" name="blockUserButton">
-         <property name="text">
-          <string>مسدودسازی</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="unblockUserButton">
-         <property name="text">
-          <string>رفع مسدودیت</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="toggleActiveButton">
-         <property name="text">
-          <string>فعال/غیرفعال سازی</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="deleteUserButton">
-         <property name="text">
-          <string>حذف حساب</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="refreshUsersButton">
-         <property name="text">
-          <string>به روزرسانی</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="createAdminButton">
-         <property name="text">
-          <string>ایجاد ادمین جدید</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>                             مدیریت کتاب ها                                 </string>
-     </attribute>
-     <widget class="QTableWidget" name="booksTableWidget">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>30</y>
-        <width>621</width>
-        <height>192</height>
-       </rect>
-      </property>
-      <property name="columnCount">
-       <number>5</number>
-      </property>
-      <column/>
-      <column/>
-      <column/>
-      <column/>
-      <column/>
-     </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>240</y>
-        <width>621</width>
-        <height>151</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QPushButton" name="viewBookDetailsButton">
-         <property name="text">
-          <string>مشاهده جزئیات</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="deleteBookButton">
-         <property name="text">
-          <string>حذف کتاب نامعتبر </string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="refreshBooksButton">
-         <property name="text">
-          <string>به روزرسانی</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>                                 نظارت بر نظرات                           </string>
-     </attribute>
-     <widget class="QTableWidget" name="reviewsTableWidget">
-      <property name="geometry">
-       <rect>
-        <x>220</x>
-        <y>30</y>
-        <width>501</width>
-        <height>192</height>
-       </rect>
-      </property>
-      <property name="columnCount">
-       <number>4</number>
-      </property>
-      <column/>
-      <column/>
-      <column/>
-      <column/>
-     </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>220</x>
-        <y>240</y>
-        <width>501</width>
-        <height>99</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QPushButton" name="deleteReviewButton">
-         <property name="text">
-          <string>حذف نظر نامناسب</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="refreshReviewsButton">
-         <property name="text">
-          <string>به روزرسانی</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>740</x>
-      <y>810</y>
-      <width>281</width>
-      <height>101</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_4">
-     <item>
-      <widget class="QPushButton" name="logoutButton">
-       <property name="text">
-        <string>خروج از حساب</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="statusLabel">
-       <property name="text">
-        <string>                             -</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
+     </spacer>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1722</width>
+     <width>1682</width>
      <height>25</height>
     </rect>
    </property>

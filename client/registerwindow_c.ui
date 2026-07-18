@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1172</width>
+    <width>1182</width>
     <height>772</height>
    </rect>
   </property>
@@ -253,6 +253,9 @@ QPushButton#backToLoginButton:hover {
        </item>
        <item>
         <widget class="QPushButton" name="backToLoginButton">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>قبلا حساب دارید؟ وارد شوید</string>
          </property>
@@ -268,7 +271,7 @@ QPushButton#backToLoginButton:hover {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1172</width>
+     <width>1182</width>
      <height>25</height>
     </rect>
    </property>

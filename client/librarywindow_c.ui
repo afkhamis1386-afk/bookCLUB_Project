@@ -6,17 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1578</width>
-    <height>1115</height>
+    <width>1214</width>
+    <height>736</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">
-
-QTabWidget {
+   <string notr="true">QTabWidget {
     background: transparent;
 }
 
@@ -36,6 +34,7 @@ QTabBar {
 
 QTabBar::tab {
     background: rgba(255, 255, 255, 0.35);  
+    padding: 12px 20px;
     border: 2px solid rgba(112, 146, 190, 0.8);
     border-bottom: none;
     color: #2c3e50; 
@@ -211,120 +210,92 @@ QComboBox#moveToShelfComboBox QAbstractItemView {
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
     <string notr="true">#centralwidget {
-    border-image: url(:/back.im.jpg);
+    border-image: url(:/back.im.jpg) 0 0 0 0 stretch stretch;
 }</string>
    </property>
-   <widget class="QPushButton" name="backButton">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>740</y>
-      <width>161</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>بازگشت</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="statusLabel">
-    <property name="geometry">
-     <rect>
-      <x>1160</x>
-      <y>740</y>
-      <width>250</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>250</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QLabel#statusLabel {
-    background: rgba(255, 255, 255, 0.45);
-    border: 2px solid rgba(112, 146, 190, 0.7);
-    border-radius: 14px;
-    color: #2c3e50;
-    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;, sans-serif;
-    font-weight: bold;
-}</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QTabWidget" name="mainTabWidget">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>190</y>
-      <width>1000</width>
-      <height>531</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>1000</width>
-      <height>400</height>
-     </size>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <widget class="QWidget" name="shelvesTab">
-     <attribute name="title">
-      <string>                            قفسه های من                          </string>
-     </attribute>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QFrame" name="frame">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <widget class="QLabel" name="shelfBooksLabel">
-         <property name="geometry">
-          <rect>
-           <x>480</x>
-           <y>20</y>
-           <width>171</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel#shelfBooksLabel {
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="2">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>18</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>86</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1" colspan="4">
+     <widget class="QTabWidget" name="mainTabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>1000</width>
+        <height>600</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="shelvesTab">
+       <attribute name="title">
+        <string>                         قفسه های من                   </string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QFrame" name="frame">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <widget class="QLabel" name="shelfBooksLabel">
+           <property name="geometry">
+            <rect>
+             <x>480</x>
+             <y>20</y>
+             <width>171</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLabel#shelfBooksLabel {
     color: #2c3e50;
     background: rgba(255, 255, 255, 0.65);
     border: 1px solid rgba(112, 146, 190, 0.5);
@@ -333,48 +304,48 @@ QComboBox#moveToShelfComboBox QAbstractItemView {
     font-size: 14px;
     font-weight: bold;
 }</string>
-         </property>
-         <property name="text">
-          <string>کتاب های این قفسه :</string>
-         </property>
-        </widget>
-        <widget class="QListWidget" name="shelvesListWidget">
-         <property name="geometry">
-          <rect>
-           <x>700</x>
-           <y>20</y>
-           <width>256</width>
-           <height>451</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QListWidget" name="shelfBookListWidget">
-         <property name="geometry">
-          <rect>
-           <x>390</x>
-           <y>70</y>
-           <width>261</width>
-           <height>401</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="moveToShelfComboBox">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>70</y>
-           <width>351</width>
-           <height>61</height>
-          </rect>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>60</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QComboBox {
+           </property>
+           <property name="text">
+            <string>کتاب های این قفسه :</string>
+           </property>
+          </widget>
+          <widget class="QListWidget" name="shelvesListWidget">
+           <property name="geometry">
+            <rect>
+             <x>700</x>
+             <y>20</y>
+             <width>256</width>
+             <height>451</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QListWidget" name="shelfBookListWidget">
+           <property name="geometry">
+            <rect>
+             <x>390</x>
+             <y>70</y>
+             <width>261</width>
+             <height>401</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="moveToShelfComboBox">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>70</y>
+             <width>351</width>
+             <height>61</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>60</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QComboBox {
     background-color: rgba(0, 0, 0, 100);
     color: white;
     border: 1px solid rgba(255, 255, 255, 30);
@@ -395,136 +366,200 @@ QComboBox QAbstractItemView {
     color: white;
     selection-background-color: rgba(45, 95, 139, 150);
 }</string>
-         </property>
-        </widget>
-        <widget class="QWidget" name="layoutWidget">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>160</y>
-           <width>351</width>
-           <height>321</height>
-          </rect>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QPushButton" name="moveBookButton">
-            <property name="text">
-             <string>انتقال کتاب به قفسه بالا </string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="createShelfButton">
-            <property name="text">
-             <string>ساخت قفسه</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="newShelfNameLineEdit">
-            <property name="placeholderText">
-             <string>نام قفسه جدید </string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="renameShelfButton">
-            <property name="text">
-             <string>تغییر نام قفسه</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="deleteShelfButton">
-            <property name="text">
-             <string>حذف قفسه</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+           </property>
+          </widget>
+          <widget class="QWidget" name="layoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>160</y>
+             <width>351</width>
+             <height>321</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QPushButton" name="moveBookButton">
+              <property name="text">
+               <string>انتقال کتاب به قفسه بالا </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="createShelfButton">
+              <property name="text">
+               <string>ساخت قفسه</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="newShelfNameLineEdit">
+              <property name="placeholderText">
+               <string>نام قفسه جدید </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="renameShelfButton">
+              <property name="text">
+               <string>تغییر نام قفسه</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="deleteShelfButton">
+              <property name="text">
+               <string>حذف قفسه</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="savedBooksTab">
+       <attribute name="title">
+        <string>                              کتاب های ذخیره شده             </string>
+       </attribute>
+       <widget class="QListWidget" name="saveBooksListWidget">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>961</width>
+          <height>301</height>
+         </rect>
+        </property>
        </widget>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="savedBooksTab">
-     <attribute name="title">
-      <string>                              کتاب های ذخیره شده                        </string>
-     </attribute>
-     <widget class="QListWidget" name="saveBooksListWidget">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>961</width>
-        <height>301</height>
-       </rect>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>340</y>
+          <width>531</width>
+          <height>87</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QPushButton" name="removeSavedBookButton">
+           <property name="text">
+            <string>حذف از لیست ذخیره ها</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="viewSavedBookButton">
+           <property name="text">
+            <string>مشاهده جزئیات</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>                               کتاب های من                           </string>
+       </attribute>
+       <widget class="QListWidget" name="myBooksListWidget">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>21</y>
+          <width>921</width>
+          <height>271</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="openBookButton">
+        <property name="geometry">
+         <rect>
+          <x>300</x>
+          <y>320</y>
+          <width>391</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>مشاهده / مطالعه </string>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+    <item row="1" column="5">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>86</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="backButton">
+      <property name="text">
+       <string>بازگشت</string>
       </property>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>230</x>
-        <y>340</y>
-        <width>531</width>
-        <height>87</height>
-       </rect>
+    </item>
+    <item row="2" column="4">
+     <widget class="QLabel" name="statusLabel">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QPushButton" name="removeSavedBookButton">
-         <property name="text">
-          <string>حذف از لیست ذخیره ها</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="viewSavedBookButton">
-         <property name="text">
-          <string>مشاهده جزئیات</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab">
-     <attribute name="title">
-      <string>                               کتاب های من                                     </string>
-     </attribute>
-     <widget class="QListWidget" name="myBooksListWidget">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>21</y>
-        <width>921</width>
-        <height>271</height>
-       </rect>
+      <property name="minimumSize">
+       <size>
+        <width>250</width>
+        <height>0</height>
+       </size>
       </property>
-     </widget>
-     <widget class="QPushButton" name="openBookButton">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>320</y>
-        <width>391</width>
-        <height>61</height>
-       </rect>
+      <property name="styleSheet">
+       <string notr="true">QLabel#statusLabel {
+    background: rgba(255, 255, 255, 0.45);
+    border: 2px solid rgba(112, 146, 190, 0.7);
+    border-radius: 14px;
+    color: #2c3e50;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;, sans-serif;
+    font-weight: bold;
+}</string>
       </property>
       <property name="text">
-       <string>مشاهده / مطالعه </string>
+       <string/>
       </property>
      </widget>
-    </widget>
-   </widget>
+    </item>
+    <item row="3" column="3">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>19</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1578</width>
+     <width>1214</width>
      <height>25</height>
     </rect>
    </property>

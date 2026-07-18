@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
     <string notr="true">#centralwidget {
-    border-image: url(:/wallhaven-49kq3d.jpg);
+    border-image: url(:/wallhaven-49kq3d.jpg) 0 0 0 0 stretch stretch;
 }</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
