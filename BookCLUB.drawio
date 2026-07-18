@@ -1,0 +1,185 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="whotBNiV1DvYC4Zn--55">
+    <mxGraphModel dx="2894" dy="2420" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-24" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;strokeColor=#3A5431;fontColor=#ffffff;" value="&lt;div&gt;#int userId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; #QString encryptedUsername;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; #QString passwordHash;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; #QString hashedSecurityAnswer;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; #bool isBlocked;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; #bool isDeleted;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; #bool isActive;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; #QDateTime registerDate;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; #static const QString encryptionKey;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; #void serializeBase(QDataStream &amp;amp;out) const;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; #void deserializeBase(QDataStream &amp;amp;in);&lt;/div&gt;" vertex="1">
+          <mxGeometry height="170" width="320" x="110" y="-320" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-26" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;strokeColor=#314354;fontColor=#ffffff;" value="class NormalUser:" vertex="1">
+          <mxGeometry height="40" width="290" x="480" y="-500" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-28" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;strokeColor=#3A5431;fontColor=#ffffff;" value="&lt;div&gt;&amp;nbsp;-QVector&amp;lt;int&amp;gt; favoriteGenreIds;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QVector&amp;lt;int&amp;gt; purchasedBookIds;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QVector&amp;lt;int&amp;gt; savedBookIds;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QMap&amp;lt;int, int&amp;gt; lastReadPages;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="290" x="480" y="-460" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-30" edge="1" parent="1" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="480" y="-220" as="sourcePoint" />
+            <mxPoint x="480" y="-220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-32" edge="1" parent="1" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="70" y="90" as="sourcePoint" />
+            <mxPoint x="70" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-35" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Admin:" vertex="1">
+          <mxGeometry height="40" width="260" x="140" y="-110" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-36" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;strokeColor=#314354;fontColor=#ffffff;" value="class Publisher:" vertex="1">
+          <mxGeometry height="40" width="280" x="480" y="-350" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-37" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-QString firstName;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString lastName;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString email;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString shortDescription;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString publicationName;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString publisherLicenseNumber;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QVector&amp;lt;int&amp;gt; publishedBookIds;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -bool isValidName(const QString &amp;amp;name) const;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="280" x="480" y="-310" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-42" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;strokeColor=#3A5431;fontColor=#ffffff;" value="&lt;div&gt;&amp;nbsp;-QString firstName;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString lastName;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="260" x="140" y="-70" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-44" edge="1" parent="1" source="oBVFpY-CsgeHHiAD3oGu-26" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="oBVFpY-CsgeHHiAD3oGu-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-46" edge="1" parent="1" source="oBVFpY-CsgeHHiAD3oGu-42" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="oBVFpY-CsgeHHiAD3oGu-42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-48" edge="1" parent="1" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="350" y="-200" as="sourcePoint" />
+            <mxPoint x="350" y="-200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-60" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Book:" vertex="1">
+          <mxGeometry height="40" width="310" x="800" y="-510" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-61" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;&lt;div&gt;-int bookId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString bookName;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString bookDescription;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -double bookPrice;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -double discountPercent;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -double discountAmount;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString coverImagePath;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString pdfFilePath;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QDateTime registeredIn;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -bool isActive;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -bool isDeleted;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int genreId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int categoryId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int authorId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int publisherUserId;&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="230" width="310" x="800" y="-470" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-63" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Review:" vertex="1">
+          <mxGeometry height="37.5" width="280" x="820" y="-200" as="geometry" />
+        </mxCell>
+        <mxCell id="oBVFpY-CsgeHHiAD3oGu-64" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-int reviewId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp;-int userId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int bookId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString commentText;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int parentId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -bool isDeleted;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QDateTime reviewDate;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="117.5" width="280" x="820" y="-162.5" as="geometry" />
+        </mxCell>
+        <mxCell id="3xsEctTVGmhiFpr49VCc-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Cart:" vertex="1">
+          <mxGeometry height="50" width="330" x="1140" y="-480" as="geometry" />
+        </mxCell>
+        <mxCell id="3xsEctTVGmhiFpr49VCc-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-int cartId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int userId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QVector&amp;lt;CartItem&amp;gt; items;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QDateTime lastUpdated;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="330" x="1140" y="-430" as="geometry" />
+        </mxCell>
+        <mxCell id="3xsEctTVGmhiFpr49VCc-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Shelf:" vertex="1">
+          <mxGeometry height="40" width="230" x="1180" y="-150" as="geometry" />
+        </mxCell>
+        <mxCell id="3xsEctTVGmhiFpr49VCc-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-int shelfId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int userId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString shelfName;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QVector&amp;lt;int&amp;gt; bookIds;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="230" x="1180" y="-110" as="geometry" />
+        </mxCell>
+        <mxCell id="3xsEctTVGmhiFpr49VCc-15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class User:" vertex="1">
+          <mxGeometry height="40" width="320" x="110" y="-360" as="geometry" />
+        </mxCell>
+        <mxCell id="5xAiTXfNc0nfYHcMDne3-2" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="270" y="310" as="sourcePoint" />
+            <mxPoint x="270" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qEtww6o2EFlUzPzPl9rq-32" edge="1" parent="1" style="edgeStyle=none;html=1;endSize=12;endArrow=block;endFill=0;rounded=0;" value="">
+          <mxGeometry relative="1" width="160" as="geometry">
+            <Array as="points">
+              <mxPoint x="1300" y="-560" />
+              <mxPoint x="280" y="-560" />
+              <mxPoint x="280" y="-399.52" />
+            </Array>
+            <mxPoint x="1300" y="-480" as="sourcePoint" />
+            <mxPoint x="280" y="-360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qEtww6o2EFlUzPzPl9rq-34" edge="1" parent="1" style="edgeStyle=none;html=1;endSize=12;endArrow=block;endFill=0;rounded=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" value="">
+          <mxGeometry relative="1" width="160" as="geometry">
+            <Array as="points">
+              <mxPoint x="410" y="-475" />
+              <mxPoint x="340" y="-475" />
+            </Array>
+            <mxPoint x="480" y="-475" as="sourcePoint" />
+            <mxPoint x="340" y="-360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qEtww6o2EFlUzPzPl9rq-40" edge="1" parent="1" source="oBVFpY-CsgeHHiAD3oGu-42" style="edgeStyle=none;html=1;endSize=12;endArrow=block;endFill=0;rounded=0;entryX=-0.002;entryY=0.652;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="oBVFpY-CsgeHHiAD3oGu-24" value="">
+          <mxGeometry relative="1" width="160" as="geometry">
+            <Array as="points">
+              <mxPoint x="80" y="-50" />
+              <mxPoint x="80" y="-210" />
+            </Array>
+            <mxPoint x="98.08" y="400" as="sourcePoint" />
+            <mxPoint x="108.07999999999993" y="19.279999999999973" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qEtww6o2EFlUzPzPl9rq-41" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Notification:" vertex="1">
+          <mxGeometry height="40" width="220" x="10" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="qEtww6o2EFlUzPzPl9rq-42" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;&amp;nbsp;-int notificationId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int userId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int targetId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int senderId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -NotificationType notificationType;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString title;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString message;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -bool read;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QDateTime createdAt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="220" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="qEtww6o2EFlUzPzPl9rq-54" edge="1" parent="1" source="qEtww6o2EFlUzPzPl9rq-42" style="edgeStyle=none;html=1;endSize=12;endArrow=block;endFill=0;rounded=0;entryX=-0.007;entryY=0.382;entryDx=0;entryDy=0;entryPerimeter=0;exitX=-0.004;exitY=0.848;exitDx=0;exitDy=0;exitPerimeter=0;" target="oBVFpY-CsgeHHiAD3oGu-24" value="">
+          <mxGeometry relative="1" width="160" as="geometry">
+            <Array as="points">
+              <mxPoint x="-50" y="169" />
+              <mxPoint x="-50" y="-221" />
+              <mxPoint x="-50" y="-255" />
+            </Array>
+            <mxPoint x="69" y="660" as="sourcePoint" />
+            <mxPoint x="140" y="30" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5W-GJ_4qXfH4wKR9SKTH-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Author:" vertex="1">
+          <mxGeometry height="45" width="270" x="1160" y="-330" as="geometry" />
+        </mxCell>
+        <mxCell id="5W-GJ_4qXfH4wKR9SKTH-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-int authorId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString authorName;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="90" width="270" x="1160" y="-285" as="geometry" />
+        </mxCell>
+        <mxCell id="5W-GJ_4qXfH4wKR9SKTH-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Category:" vertex="1">
+          <mxGeometry height="40" width="190" x="790" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="5W-GJ_4qXfH4wKR9SKTH-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-int categoryId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString categoryTitle;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="190" x="790" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;strokeColor=#314354;fontColor=#ffffff;" value="class Genre:" vertex="1">
+          <mxGeometry height="45" width="275" x="475" y="5" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-int genreId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString genreTitle;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="275" x="475" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Order:" vertex="1">
+          <mxGeometry height="50" width="310" x="1080" y="5" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-int orderId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int userId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QVector&amp;lt;OrderItem&amp;gt; items;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QDateTime orderDate;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -double totalPrice;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -double discountAmount;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -double finalPrice;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -OrderStatus status;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="130" width="310" x="1080" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Rating:" vertex="1">
+          <mxGeometry height="40" width="180" x="820" y="-20" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-int ratingId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int userId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int bookId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int ratingValue;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="180" x="820" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class TimedDiscount:" vertex="1">
+          <mxGeometry height="40" width="240" x="500" y="-150" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-24" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-int discountId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int bookId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -double discountPercent;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QDateTime startDate;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QDateTime endDate;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="90" width="240" x="500" y="-110" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-25" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Request:" vertex="1">
+          <mxGeometry height="40" width="180" x="260" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-26" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;&amp;nbsp;-RequestType type;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -int senderUserId;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QVariantMap payload;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="180" x="260" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-28" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" value="class Response:" vertex="1">
+          <mxGeometry height="40" width="220" x="260" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="sV-OyanRzVAy6lqhW4x6-29" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="&lt;div&gt;-ResponseStatus status;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QString message;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; -QVariantMap data;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="220" x="260" y="170" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
