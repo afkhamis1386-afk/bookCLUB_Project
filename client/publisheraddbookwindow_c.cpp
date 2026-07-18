@@ -1,5 +1,6 @@
 #include "publisheraddbookwindow_c.h"
 #include "ui_publisheraddbookwindow_c.h"
+#include <QFileInfo>
 #include <QFileDialog>
 #include <QMessageBox>
 

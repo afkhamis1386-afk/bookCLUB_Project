@@ -125,7 +125,7 @@ QListWidget::item:selected {
       <item>
        <widget class="QLabel" name="statusLabel">
         <property name="text">
-         <string>-</string>
+         <string></string>
         </property>
        </widget>
       </item>
@@ -187,3 +187,4 @@ QListWidget::item:selected {
  <resources/>
  <connections/>
 </ui>
+

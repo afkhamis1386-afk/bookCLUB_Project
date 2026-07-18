@@ -287,7 +287,7 @@ QComboBox#moveToShelfComboBox QAbstractItemView {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="shelvesTab">
      <attribute name="title">
@@ -397,7 +397,7 @@ QComboBox QAbstractItemView {
 }</string>
          </property>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -462,7 +462,7 @@ QComboBox QAbstractItemView {
        </rect>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>230</x>

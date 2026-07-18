@@ -39,7 +39,6 @@ BookReaderWindow_c::~BookReaderWindow_c()
 {
     delete ui;
 }
-
 void BookReaderWindow_c::onBookReady(const QString &localFilePath, int startPage)
 {
     ui->statusLabel->clear();
@@ -48,7 +47,9 @@ void BookReaderWindow_c::onBookReady(const QString &localFilePath, int startPage
         ui->statusLabel->setText("خطا در باز کردن فایل PDF");
         return;
     }
-    pdfView->pageNavigator()->jump(startPage - 1, QPointF());
+    int safePageIndex = qBound(0, startPage - 1, pdfDocument->pageCount() - 1);
+    pdfView->pageNavigator()->jump(safePageIndex, QPointF());
+
     updatePageInfoLabel();
 }
 
@@ -67,14 +68,12 @@ void BookReaderWindow_c::onCurrentPageChanged(int page)
     updatePageInfoLabel();
     bookReaderController->updateCurrentPage(page + 1);
 }
-
 void BookReaderWindow_c::updatePageInfoLabel()
 {
     int current = pdfView->pageNavigator()->currentPage() + 1;
     int total = pdfDocument->pageCount();
     ui->pageInfoLabel->setText(QString("صفحه %1 از %2").arg(current).arg(total));
 }
-
 void BookReaderWindow_c::onPrevPageButtonClicked()
 {
     int current = pdfView->pageNavigator()->currentPage();

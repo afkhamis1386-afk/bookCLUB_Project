@@ -46,10 +46,13 @@ void GenreSelectionWindow_c::onGenresLoadFailed(const QString &message) {
 void GenreSelectionWindow_c::onListItemChanged(QListWidgetItem *item)
 {
     if (item->checkState() == Qt::Checked && countCheckedItems() > 3) {
+        ui->genresListWidget->blockSignals(true);
         item->setCheckState(Qt::Unchecked);
         ui->statusLabel->setText("حداکثر ۳ ژانر می توانید انتخاب کنید");
+        ui->genresListWidget->blockSignals(false);
     }
 }
+
 void GenreSelectionWindow_c::onConfirmButtonClicked() {
     ui->statusLabel->clear();
     QVector<int> selectedGenreIds;

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CreateAdminDialog</class>
+ <widget class="QDialog" name="CreateAdminDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>974</width>
+    <height>621</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QDialog {
+    background-image: url(&quot;:/wallhaven-49kq3d.jpg&quot;);
+    background-position: center;
+}
+
+QLineEdit {
+    background-color: rgba(255, 255, 255, 150);
+    color: #2c3e50;
+    border: 1px solid rgba(44, 62, 80, 50);
+    border-radius: 10px;
+    padding: 10px;
+    font-family: &quot;Vazirmatn&quot;, &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+QLineEdit:focus {
+    border: 2px solid #2c3e50;
+    background-color: #ffffff;
+}
+
+QPushButton {
+    background-color: #2c3e50;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 25px;
+    font-family: &quot;Vazirmatn&quot;, &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 80px;
+}
+
+QPushButton:hover {
+    background-color: #34495e; 
+    color: #d4af37;
+}
+
+QPushButton:pressed {
+    background-color: #1a252f;
+}</string>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>510</y>
+     <width>419</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>70</y>
+     <width>421</width>
+     <height>401</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLineEdit" name="firstNameLineEdit">
+      <property name="placeholderText">
+       <string>                                                  نام</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="lastNameLineEdit">
+      <property name="placeholderText">
+       <string>                                         نام خانوادگی</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="usernameLineEdit">
+      <property name="placeholderText">
+       <string>                                            نام کاربری</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="passwordLineEdit">
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="placeholderText">
+       <string>                                             رمز عبور</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="securityAnswerLineEdit">
+      <property name="placeholderText">
+       <string>                                   پاسخ سوال امنیتی</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>CreateAdminDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>CreateAdminDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
