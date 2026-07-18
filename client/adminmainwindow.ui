@@ -262,10 +262,10 @@ QLineEdit:focus {
    <widget class="QTabWidget" name="adminTabWidget">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>110</y>
+      <x>366</x>
+      <y>184</y>
       <width>991</width>
-      <height>601</height>
+      <height>611</height>
      </rect>
     </property>
     <property name="sizeIncrement">
@@ -291,7 +291,7 @@ QLineEdit:focus {
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>                                    userTab                                </string>
+      <string>                         مدیریت کاربران                            </string>
      </attribute>
      <widget class="QTableWidget" name="usersTableWidget">
       <property name="geometry">
@@ -331,13 +331,13 @@ QLineEdit:focus {
        </property>
       </column>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>170</x>
         <y>240</y>
         <width>621</width>
-        <height>255</height>
+        <height>271</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -376,12 +376,19 @@ QLineEdit:focus {
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="createAdminButton">
+         <property name="text">
+          <string>ایجاد ادمین جدید</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
-      <string>                                    bookTab                                 </string>
+      <string>                             مدیریت کتاب ها                                 </string>
      </attribute>
      <widget class="QTableWidget" name="booksTableWidget">
       <property name="geometry">
@@ -401,7 +408,7 @@ QLineEdit:focus {
       <column/>
       <column/>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>170</x>
@@ -437,7 +444,7 @@ QLineEdit:focus {
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
-      <string>                                   reviewsTab                           </string>
+      <string>                                 نظارت بر نظرات                           </string>
      </attribute>
      <widget class="QTableWidget" name="reviewsTableWidget">
       <property name="geometry">
@@ -456,7 +463,7 @@ QLineEdit:focus {
       <column/>
       <column/>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>220</x>
@@ -484,11 +491,11 @@ QLineEdit:focus {
      </widget>
     </widget>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>820</x>
-      <y>740</y>
+      <x>740</x>
+      <y>810</y>
       <width>281</width>
       <height>101</height>
      </rect>

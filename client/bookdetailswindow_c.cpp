@@ -87,7 +87,7 @@ void BookDetailsWindow_c::onSubmitReviewButtonClicked() {
     reviewController->submitReview(bookId, text, -1);
 }
 void BookDetailsWindow_c::onSubmitRatingButtonClicked() {
-    int ratingValue = ui->ratingComboBox->currentText().toInt();
+    int ratingValue = ui->ratingComboBox->currentIndex() + 1;
     ratingController->submitRating(bookId, ratingValue);
 }
 void BookDetailsWindow_c::onAddToCartSucceeded(const QString &message) { ui->statusLabel->setText(message); }

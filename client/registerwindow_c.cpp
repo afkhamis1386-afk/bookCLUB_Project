@@ -41,7 +41,7 @@ void RegisterWindow_c::onRegisterButtonClicked()
             ui->confirmPasswordLineEdit->text(),
             ui->securityAnswerLineEdit->text()
             );
-    } else {
+    } else if (ui->publisherRadio->isChecked()) {
         loginController->attemptRegisterPublisher(
             ui->usernameLineEdit->text(),
             ui->passwordLineEdit->text(),
@@ -54,9 +54,16 @@ void RegisterWindow_c::onRegisterButtonClicked()
             ui->licenseNumberLineEdit->text(),
             ui->shortDescriptionTextEdit->toPlainText()
             );
+    } else {
+        networkManager->bootstrapFirstAdmin(
+            ui->usernameLineEdit->text(),
+            ui->passwordLineEdit->text(),
+            ui->securityAnswerLineEdit->text(),
+            ui->firstNameLineEdit->text(),
+            ui->lastNameLineEdit->text()
+            );
     }
 }
-
 void RegisterWindow_c::onBackToLoginButtonClicked()
 {
     emit backToLoginRequested();

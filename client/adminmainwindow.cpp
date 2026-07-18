@@ -1,5 +1,6 @@
 #include "adminmainwindow.h"
 #include "ui_adminmainwindow.h"
+#include "createadmindialog.h"
 #include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QMessageBox>
@@ -58,6 +59,10 @@ AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent
     connect(adminController, &AdminController::reviewDeleted, this, &AdminMainWindow::onReviewDeleted);
     connect(adminController, &AdminController::reviewDeleteFailed, this, &AdminMainWindow::onReviewDeleteFailed);
     connect(adminController, &AdminController::validationError, this, &AdminMainWindow::onValidationError);
+    connect(ui->createAdminButton, &QPushButton::clicked, this, [this]() {
+        CreateAdminDialog dialog(networkManager, this);
+        dialog.exec();
+    });
     adminController->loadAllUsers();
     adminController->loadAllBooks();
     adminController->loadAllReviews();
@@ -175,11 +180,17 @@ void AdminMainWindow::onAllReviewsLoaded(const QVariantList &reviews)
 void AdminMainWindow::onAllReviewsLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onDeleteReviewButtonClicked() {
     int id = getSelectedReviewId();
-    if (id <= 0) { ui->statusLabel->setText("ابتدا یک نظر را انتخاب کنید"); return; }
-    if (QMessageBox::question(this, "حذف نظر", "مطمئن هستید؟") == QMessageBox::Yes)
+    if (id <= 0) {
+        ui->statusLabel->setText("ابتدا یک نظر را انتخاب کنید");
+        return;
+    }
+    if (QMessageBox::question(this, "حذف نظر", "مطمئن هستید؟") == QMessageBox::Yes) {
         adminController->deleteReview(id);
+    }
 }
 void AdminMainWindow::onReviewDeleted(const QString &message) { ui->statusLabel->setText(message); adminController->loadAllReviews(); }
 void AdminMainWindow::onReviewDeleteFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onValidationError(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onLogoutButtonClicked() { emit logoutRequested(); }
+
+

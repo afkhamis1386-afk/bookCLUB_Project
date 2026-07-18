@@ -9,7 +9,8 @@
 namespace Ui {
 class ServerDashboardWindow;
 }
-class ServerDashboardWindow : public QMainWindow {
+class ServerDashboardWindow : public QMainWindow
+{
     Q_OBJECT
 public:
     explicit ServerDashboardWindow(ServerApplication *server, QWidget *parent = nullptr);
@@ -20,6 +21,7 @@ private slots:
     void onClientDisconnected(qintptr socketDescriptor);
     void onRequestProcessed(const QString &requestType, int statusCode);
     void refreshStats();
+
 private:
     Ui::ServerDashboardWindow *ui;
     ServerApplication *server;
