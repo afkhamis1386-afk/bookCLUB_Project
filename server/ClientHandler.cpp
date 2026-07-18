@@ -88,7 +88,9 @@ bool ClientHandler::checkRole(const QVector<UserRole> &allowedRoles, Response &o
 void ClientHandler::processRequest(const Request &req) {
     Response response;
     RequestType type = req.getType();
-    if (type == RequestType::Register || type == RequestType::Login || type == RequestType::RecoverPassword || type == RequestType::GetAllGenres || type == RequestType::GetAllCategories) {
+    if (type == RequestType::Register || type == RequestType::Login ||
+        type == RequestType::RecoverPassword || type == RequestType::BootstrapFirstAdmin ||
+        type == RequestType::GetAllGenres || type == RequestType::GetAllCategories) {
         response = handleAuthRequest(req);
         if (type == RequestType::Login && response.isSuccess()) {
             if (isAuthenticated) {
@@ -217,6 +219,7 @@ void ClientHandler::processRequest(const Request &req) {
             response = handleLogoutRequest();
             break;
         case RequestType::GetAllUsers:
+        case RequestType::CreateAdditionalAdmin:
         case RequestType::GetNormalUserDetails:
         case RequestType::GetPublisherDetails:
         case RequestType::BlockUser:
@@ -295,6 +298,16 @@ Response ClientHandler::handleAuthRequest(const Request &req) {
             genreIds.append(v.toInt());
         }
         return authManager.setFavoriteGenres(authenticatedUserId, genreIds);
+    }
+    case RequestType::BootstrapFirstAdmin: {
+        AdminManager adminManager;
+        return adminManager.createAdmin(
+            p.value("username").toString(),
+            p.value("password").toString(),
+            p.value("securityAnswer").toString(),
+            p.value("firstName").toString(),
+            p.value("lastName").toString(),
+            true);
     }
     default:
         return Response(ResponseStatus::Error, "درخواست احراز هویت نامعتبر");
@@ -490,6 +503,14 @@ Response ClientHandler::handleAdminRequest(const Request &req) {
         ReviewManager reviewManager;
         return reviewManager.deleteReviewByAdmin(p.value("reviewId").toInt());
     }
+    case RequestType::CreateAdditionalAdmin:
+        return adminManager.createAdmin(
+            p.value("username").toString(),
+            p.value("password").toString(),
+            p.value("securityAnswer").toString(),
+            p.value("firstName").toString(),
+            p.value("lastName").toString(),
+            false);
     default:
         return Response(ResponseStatus::Error, "درخواست ادمین نامعتبر");
     }
