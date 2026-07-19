@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "NetworkManager.h"
 #include "PublisherBookController.h"
+#include "ProfileController.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -30,11 +31,14 @@ private slots:
     void onBookFileReadFailed(const QString &message);
     void onValidationError(const QString &message);
     void onBackButtonClicked();
+    void onGenresLoaded(const QVariantList &genres);
+    void onGenresLoadFailed(const QString &message);
 
 private:
     Ui::PublisherAddBookWindow_c *ui;
     NetworkManager *networkManager;
     PublisherBookController *publisherBookController;
+    ProfileController *profileController;
     QString selectedCoverPath;
     QString selectedPdfPath;
 };

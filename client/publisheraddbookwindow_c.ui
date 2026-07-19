@@ -68,23 +68,38 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QFrame#cardFrame {
-    background-color: rgba(255, 255, 255, 120);  
+    background-color: rgba(255, 255, 255, 120);
     border: 1px solid rgba(255, 255, 255, 180);
-    border-radius: 20px;                      
+    border-radius: 20px;
     padding: 25px;
 }
-QLineEdit, QTextEdit, QDoubleSpinBox {
-    background-color: rgba(255, 255, 255, 200);  
-    border: 1px solid rgba(44, 62, 80, 60);     
-    border-radius: 8px;                        
+QLineEdit, QTextEdit, QDoubleSpinBox, QComboBox {
+    background-color: rgba(255, 255, 255, 200);
+    border: 1px solid rgba(44, 62, 80, 60);
+    border-radius: 8px;
     padding: 8px 12px;
     color: #2c3e50;
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-size: 11pt;
 }
-QLineEdit:focus, QTextEdit:focus, QDoubleSpinBox:focus {
+QLineEdit:focus, QTextEdit:focus, QDoubleSpinBox:focus, QComboBox:focus {
     border: 2px solid #2c3e50;
     background-color: #ffffff;
+}
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top left;
+    width: 30px;
+    border-left: none;
+}
+QComboBox QAbstractItemView {
+    background-color: #ffffff;
+    border: 1px solid rgba(44, 62, 80, 60);
+    selection-background-color: #2c3e50;
+    selection-color: #ffffff;
+    border-radius: 4px;
+    color: #2c3e50;
+    outline: none;
 }
 QLabel {
     color: #2c3e50;
@@ -138,7 +153,7 @@ QPushButton#submitButton {
 
 QPushButton#submitButton:hover {
     background-color: #34495e;
-	color: #d4af37;
+        color: #d4af37;
 }
 QPushButton#backButton {
     background-color: transparent;
@@ -151,7 +166,7 @@ QPushButton#backButton {
     margin-top: 5px;
 }
 QPushButton#backButton:hover {
-    color: #d4af37; 
+    color: #d4af37;
 }</string>
       </property>
       <property name="frameShape">
@@ -199,7 +214,7 @@ QPushButton#backButton:hover {
         <string> عنوان دسته بندی     </string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="genreTitleLineEdit">
+      <widget class="QComboBox" name="genreComboBox">
        <property name="geometry">
         <rect>
          <x>70</x>
@@ -209,7 +224,7 @@ QPushButton#backButton:hover {
         </rect>
        </property>
        <property name="placeholderText">
-        <string>عنوان ژانر ( دقیقا مطابق لیست ژانر های سیستم )</string>
+        <string>                                                   ...انتخاب ژانر  </string>
        </property>
       </widget>
       <widget class="QPushButton" name="submitButton">
