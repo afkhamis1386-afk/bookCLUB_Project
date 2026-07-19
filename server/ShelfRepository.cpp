@@ -77,7 +77,7 @@ bool ShelfRepository::deleteShelf(int shelfId){
     deleteItems.prepare("DELETE FROM ShelfBooks WHERE ShelfID = :shelfId");
     deleteItems.bindValue(":shelfId", shelfId);
     if(!deleteItems.exec()){
-        qWarning() << "خطا در حذف کتاب‌های قفسه:" << deleteItems.lastError().text();
+        qWarning() << "خطا در حذف کتاب های قفسه:" << deleteItems.lastError().text();
         db.rollback();
         return false;
     }
@@ -118,7 +118,7 @@ bool ShelfRepository::removeBookFromShelf(int shelfId, int bookId){
         qWarning() << "خطا در حذف کتاب از قفسه:" << query.lastError().text();
         return false;
     }
-    return true;
+    return query.numRowsAffected() > 0;
 }
 bool ShelfRepository::shelfNameExistsForUser(int userId, const QString &shelfName){
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();

@@ -36,6 +36,7 @@ HomeWindow_c::HomeWindow_c(NetworkManager *networkManager, QWidget *parent)
     connect(bookStoreController, &BookStoreController::coverImageLoaded, this, &HomeWindow_c::onCoverImageLoaded);
     connect(cartController, &CartController::cartLoaded, this, &HomeWindow_c::onCartLoaded);
     connect(notificationController, &NotificationController::unreadCountLoaded, this, &HomeWindow_c::onUnreadCountLoaded);
+    connect(notificationController, &NotificationController::newNotificationArrived, this, &HomeWindow_c::onNewNotificationArrived);
     connect(bookStoreController, &BookStoreController::bookDetailsReceived, this, &HomeWindow_c::onBookDetailsReceived);
     bookStoreController->loadRecommendedBooks();
     cartController->refreshCart();
@@ -62,14 +63,14 @@ void HomeWindow_c::displayBooks(const QVariantList &bookIds)
     clearBookGrid();
     ui->statusLabel->clear();
 
-    if (bookIds.isEmpty()) {
+    if(bookIds.isEmpty()){
         ui->statusLabel->setText("کتابی برای نمایش یافت نشد");
         return;
     }
 
     const int columnsPerRow = 4;
     int row = 0, col = 0;
-    for (const QVariant &v : bookIds) {
+    for(const QVariant &v : bookIds){
         int bookId = v.toInt();
         BookCardWidget *card = new BookCardWidget(bookId, gridContainer);
         connect(card, &BookCardWidget::clicked, this, &HomeWindow_c::onCardClicked);
@@ -95,7 +96,6 @@ void HomeWindow_c::onBookDetailsReceived(const QVariantMap &bookData)
     double finalPrice = bookData.value("finalPrice").toDouble();
     cardsByBookId[bookId]->setBookInfo(bookName, finalPrice);
 }
-
 void HomeWindow_c::onBooksLoaded(const QVariantList &bookIds) { displayBooks(bookIds); }
 void HomeWindow_c::onBooksLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 void HomeWindow_c::onRecommendedBooksLoaded(const QVariantList &bookIds) { displayBooks(bookIds); }
@@ -187,4 +187,11 @@ void HomeWindow_c::onCartLoaded(const QVariantMap &cartData)
 void HomeWindow_c::onUnreadCountLoaded(int count)
 {
     ui->notificationsButton->setText(QString("اعلان ها (%1)").arg(count));
+}
+
+void HomeWindow_c::onNewNotificationArrived(const QVariantMap &notificationData)
+{
+    notificationController->refreshUnreadCount();
+    statusBar()->showMessage(
+        QString("اعلان جدید: %1").arg(notificationData.value("title").toString()), 5000);
 }

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<Notification>("Notification");
     qRegisterMetaType<Response>("Response");
 
-    DatabaseManager::getInstance()->configure("YOUR_SERVER_NAME", "BookClub");
+    DatabaseManager::getInstance()->configure(".", "BookClub", "", "");
     ServerApplication server;
     if (!server.startListening(5555)) {
         return 1;

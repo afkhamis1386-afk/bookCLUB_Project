@@ -154,19 +154,22 @@ QPushButton#backToLoginButton:hover {
         </widget>
        </item>
        <item>
+        <widget class="QLineEdit" name="usernameLineEdit">
+         <property name="echoMode">
+          <enum>QLineEdit::Normal</enum>
+         </property>
+         <property name="placeholderText">
+          <string>نام کاربری</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLineEdit" name="passwordLineEdit">
          <property name="echoMode">
           <enum>QLineEdit::Password</enum>
          </property>
          <property name="placeholderText">
           <string>رمز عبور</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="usernameLineEdit">
-         <property name="placeholderText">
-          <string>نام کاربری</string>
          </property>
         </widget>
        </item>
