@@ -13,6 +13,7 @@ public:
     explicit ClientHandler(qintptr socketDescriptor, QObject *parent = nullptr);
     Q_INVOKABLE void pushNotificationToClient(const Notification &notification);
     int getAuthenticatedUserId() const { return authenticatedUserId; }
+    static constexpr quint32 MAX_FRAME_SIZE = 150u * 1024u * 1024u;
 public slots:
     void run();
     void sendLiveUpdateToClient(const Response &liveUpdate);
@@ -47,4 +48,3 @@ private:
 };
 
 #endif // CLIENTHANDLER_H
-
