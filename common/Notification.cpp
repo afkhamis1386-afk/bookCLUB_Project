@@ -59,7 +59,7 @@ bool Notification::setMessage(const QString &m) {
 QString Notification::getTypeDisplayName() const {
     switch (notificationType) {
     case NotificationType::NewBookInFavouriteGenre: return "کتاب جدید در ژانر مورد علاقه";
-    case NotificationType::DiscountOnSavedBook: return "تخفیف برای کتاب‌های ذخیره شده";
+    case NotificationType::DiscountOnSavedBook: return "تخفیف برای کتاب های ذخیره شده";
     case NotificationType::NewSaleForPublisher: return "اعلان فروش جدید";
     case NotificationType::NewReviewForPublisher: return "ثبت نظر یا امتیاز جدید";
     default: return "اعلان";

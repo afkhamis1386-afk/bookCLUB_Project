@@ -21,7 +21,7 @@ QString User::decryptString(const QString &encrypted) {
 }
 bool User::isValidUsername(const QString &username) {
     QString trimmed = username.trimmed();
-    if (trimmed.length() < 3 || trimmed.length() > 20)
+    if (trimmed.length() < 3 || trimmed.length() > 15)
         return false;
     static const QRegularExpression regex(R"(^[a-zA-Z0-9_\-]+$)");
     return regex.match(trimmed).hasMatch();

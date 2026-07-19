@@ -44,6 +44,8 @@ private slots:
     void onRatingSubmitted(double newAverage, int ratingCount, const QString &message);
     void onRatingSubmitFailed(const QString &message);
     void onValidationError(const QString &message);
+    void onRatingSummaryLoaded(double averageRating, int ratingCount);
+    void onBookLiveUpdateReceived(const QString &updateType, const QVariantMap &data);
 private:
     Ui::BookDetailsWindow_c *ui;
     NetworkManager *networkManager;
