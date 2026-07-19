@@ -54,7 +54,7 @@ void ClientHandler::onReadyRead() {
         sizeStream >> msgSize;
         if (msgSize > MAX_FRAME_SIZE) {
             qWarning() << "پیام دریافتی از حد مجاز بزرگتر است (msgSize:" << msgSize
-                       << ") - اتصال کلاینت قطع می شود Socket ID:" << socketDescriptor;
+                       << ") اتصال کلاینت قطع می شود Socket ID:" << socketDescriptor;
             buffer.clear();
             socket->abort();
             return;
@@ -491,13 +491,13 @@ Response ClientHandler::handleAdminRequest(const Request &req) {
     case RequestType::GetPublisherDetails:
         return adminManager.getPublisherDetails(p.value("userId").toInt());
     case RequestType::BlockUser:
-        return adminManager.blockUser(p.value("userId").toInt());
+        return adminManager.blockUser(authenticatedUserId, p.value("userId").toInt());
     case RequestType::UnblockUser:
         return adminManager.unblockUser(p.value("userId").toInt());
     case RequestType::DeleteUser:
-        return adminManager.deleteUser(p.value("userId").toInt());
+        return adminManager.deleteUser(authenticatedUserId, p.value("userId").toInt());
     case RequestType::SetUserActiveStatus:
-        return adminManager.setUserActiveStatus(p.value("userId").toInt(), p.value("active").toBool());
+        return adminManager.setUserActiveStatus(authenticatedUserId, p.value("userId").toInt(), p.value("active").toBool());
     case RequestType::GetAllBooksAdmin:
         return adminManager.getAllBooks();
     case RequestType::GetBookDetailsForReview:
