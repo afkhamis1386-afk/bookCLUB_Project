@@ -47,6 +47,7 @@ private slots:
     void onCartLoaded(const QVariantMap &cartData);
     void onUnreadCountLoaded(int count);
     void onBookDetailsReceived(const QVariantMap &bookData);
+    void onNewNotificationArrived(const QVariantMap &notificationData);
 
 private:
     Ui::HomeWindow_c *ui;
