@@ -34,6 +34,8 @@ BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int boo
     connect(reviewController, &ReviewController::reviewSubmitFailed, this, &BookDetailsWindow_c::onReviewSubmitFailed);
     connect(ratingController, &RatingController::ratingSubmitted, this, &BookDetailsWindow_c::onRatingSubmitted);
     connect(ratingController, &RatingController::ratingSubmitFailed, this, &BookDetailsWindow_c::onRatingSubmitFailed);
+    connect(ratingController, &RatingController::ratingSummaryLoaded, this, &BookDetailsWindow_c::onRatingSummaryLoaded);
+    connect(networkManager, &NetworkManager::bookLiveUpdateReceived, this, &BookDetailsWindow_c::onBookLiveUpdateReceived);
     bookStoreController->loadBookDetails(bookId);
     bookStoreController->loadCoverImage(bookId);
     reviewController->loadReviewsForBook(bookId);
@@ -107,3 +109,15 @@ void BookDetailsWindow_c::onRatingSubmitted(double newAverage, int ratingCount, 
 }
 void BookDetailsWindow_c::onRatingSubmitFailed(const QString &message) { ui->statusLabel->setText(message); }
 void BookDetailsWindow_c::onValidationError(const QString &message) { ui->statusLabel->setText(message); }
+void BookDetailsWindow_c::onRatingSummaryLoaded(double averageRating, int ratingCount) {
+    ui->ratingLabel->setText(QString("امتیاز: %1 از ۵ (%2 رأی)").arg(averageRating, 0, 'f', 1).arg(ratingCount));
+}
+void BookDetailsWindow_c::onBookLiveUpdateReceived(const QString &updateType, const QVariantMap &data) {
+    if (data.value("bookId").toInt() != bookId)
+        return;
+    if (updateType == "newReview") {
+        reviewController->loadReviewsForBook(bookId);
+    } else if (updateType == "newRating") {
+        ratingController->loadRatingSummary(bookId);
+    }
+}
