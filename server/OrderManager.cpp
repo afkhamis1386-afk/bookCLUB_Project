@@ -13,6 +13,8 @@
 #include "../common/Book.h"
 #include "../common/Enums.h"
 #include "../common/TimedDiscount.h"
+#include "UserRepository.h"
+#include "../common/normaluser.h"
 #include <memory>
 
 OrderManager::OrderManager() {}
@@ -24,6 +26,8 @@ Response OrderManager::checkout(int userId) {
     }
     BookRepository bookRepo;
     TimedDiscountRepository timedDiscountRepo;
+    UserRepository userRepo;
+    std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
     QVector<CartItem> cartItems = cart->getItems();
     Order newOrder(userId);
     double totalPrice = 0;
@@ -38,6 +42,9 @@ Response OrderManager::checkout(int userId) {
         std::unique_ptr<Book> book(bookRepo.loadBookById(cartItem.getBookId()));
         if (!book || !book->isAvailableForPurchase()) {
             return Response(ResponseStatus::Error, QString("کتاب با شناسه %1 دیگر برای خرید موجود نیست").arg(cartItem.getBookId()));
+        }
+        if (user && user->hasPurchased(cartItem.getBookId())) {
+            return Response(ResponseStatus::ValidationFailed, QString("شما قبلاً کتاب «%1» را خریداری کرده اید").arg(book->getBookName()));
         }
         std::unique_ptr<TimedDiscount> activeDiscount( timedDiscountRepo.getActiveDiscountForBook(cartItem.getBookId()) );
         double timedPercent = activeDiscount ? activeDiscount->getDiscountPercent() : 0;
@@ -94,9 +101,7 @@ Response OrderManager::checkout(int userId) {
     }
     NotificationManager notifManager;
     for (const SoldBookInfo &sold : qAsConst(soldBooks)) {
-        notifManager.sendNotification( sold.publisherUserId, NotificationType::NewSaleForPublisher,
-            "فروش جدید",
-            QString("کتاب «%1» شما به فروش رسید").arg(sold.bookName), sold.bookId, userId );
+        notifManager.sendNotification( sold.publisherUserId, NotificationType::NewSaleForPublisher, "فروش جدید", QString("کتاب «%1» شما به فروش رسید").arg(sold.bookName), sold.bookId, userId );
     }
     QVariantMap data;
     data["orderId"] = newOrderId;
