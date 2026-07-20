@@ -48,7 +48,7 @@ public:
     void addToCart(int bookId);
     void removeFromCart(int bookId);
     void getCart();
-    void checkout();
+    void checkout(const QString &cardNumber);
     void getOrderHistory();
     void submitReview(int bookId, const QString &commentText, int parentId = -1);
     void editReview(int reviewId, const QString &newCommentText);

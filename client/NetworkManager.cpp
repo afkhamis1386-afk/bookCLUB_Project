@@ -206,8 +206,8 @@ void NetworkManager::removeFromCart(int bookId) {
 void NetworkManager::getCart(){
     sendRequest(RequestType::GetCart);
 }
-void NetworkManager::checkout() {
-    sendRequest(RequestType::Checkout);
+void NetworkManager::checkout(const QString &cardNumber) {
+    sendRequest(RequestType::Checkout, {{"cardNumber", cardNumber}});
 }
 void NetworkManager::getOrderHistory() {
     sendRequest(RequestType::GetOrderHistory);
@@ -413,7 +413,6 @@ void NetworkManager::bootstrapFirstAdmin(const QString &username, const QString 
     p["lastName"] = lastName;
     sendRequest(RequestType::BootstrapFirstAdmin, p);
 }
-
 void NetworkManager::createAdditionalAdmin(const QString &username, const QString &password, const QString &securityAnswer,
                                            const QString &firstName, const QString &lastName) {
     QVariantMap p;
@@ -424,4 +423,3 @@ void NetworkManager::createAdditionalAdmin(const QString &username, const QStrin
     p["lastName"] = lastName;
     sendRequest(RequestType::CreateAdditionalAdmin, p);
 }
-
