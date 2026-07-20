@@ -5,16 +5,14 @@
 #include <QPushButton>
 #include <QPointF>
 #include <QPdfPageNavigator>
-
-
+#include <QCloseEvent>
 BookReaderWindow_c::BookReaderWindow_c(NetworkManager *networkManager, int bookId, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::BookReaderWindow_c)
     , networkManager(networkManager)
     , bookId(bookId)
     , bookReaderController(new BookReaderController(networkManager, this))
-    , pdfDocument(new QPdfDocument(this))
-{
+    , pdfDocument(new QPdfDocument(this)) {
     ui->setupUi(this);
     pdfView = new QPdfView(ui->pdfViewContainer);
     pdfView->setDocument(pdfDocument);
@@ -35,12 +33,10 @@ BookReaderWindow_c::BookReaderWindow_c(NetworkManager *networkManager, int bookI
     ui->statusLabel->setText("در حال دریافت فایل از سرور...");
     bookReaderController->openBook(bookId);
 }
-BookReaderWindow_c::~BookReaderWindow_c()
-{
+BookReaderWindow_c::~BookReaderWindow_c() {
     delete ui;
 }
-void BookReaderWindow_c::onBookReady(const QString &localFilePath, int startPage)
-{
+void BookReaderWindow_c::onBookReady(const QString &localFilePath, int startPage) {
     ui->statusLabel->clear();
     QPdfDocument::Error err = pdfDocument->load(localFilePath);
     if (err != QPdfDocument::Error::None) {
@@ -52,43 +48,32 @@ void BookReaderWindow_c::onBookReady(const QString &localFilePath, int startPage
 
     updatePageInfoLabel();
 }
-
-void BookReaderWindow_c::onBookOpenFailed(const QString &message)
-{
+void BookReaderWindow_c::onBookOpenFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
-
-void BookReaderWindow_c::onProgressSaveFailed(const QString &message)
-{
+void BookReaderWindow_c::onProgressSaveFailed(const QString &message) {
     Q_UNUSED(message)
 }
-
-void BookReaderWindow_c::onCurrentPageChanged(int page)
-{
+void BookReaderWindow_c::onCurrentPageChanged(int page) {
     updatePageInfoLabel();
     bookReaderController->updateCurrentPage(page + 1);
 }
-void BookReaderWindow_c::updatePageInfoLabel()
-{
+void BookReaderWindow_c::updatePageInfoLabel() {
     int current = pdfView->pageNavigator()->currentPage() + 1;
     int total = pdfDocument->pageCount();
     ui->pageInfoLabel->setText(QString("صفحه %1 از %2").arg(current).arg(total));
 }
-void BookReaderWindow_c::onPrevPageButtonClicked()
-{
+void BookReaderWindow_c::onPrevPageButtonClicked() {
     int current = pdfView->pageNavigator()->currentPage();
     if (current > 0)
         pdfView->pageNavigator()->jump(current - 1, QPointF());
 }
-
-void BookReaderWindow_c::onNextPageButtonClicked()
-{
+void BookReaderWindow_c::onNextPageButtonClicked() {
     int current = pdfView->pageNavigator()->currentPage();
     if (current < pdfDocument->pageCount() - 1)
         pdfView->pageNavigator()->jump(current + 1, QPointF());
 }
-void BookReaderWindow_c::onGoToPageButtonClicked()
-{
+void BookReaderWindow_c::onGoToPageButtonClicked() {
     bool ok;
     int page = ui->pageNumberLineEdit->text().toInt(&ok);
     if (!ok || page < 1 || page > pdfDocument->pageCount()) {
@@ -97,18 +82,18 @@ void BookReaderWindow_c::onGoToPageButtonClicked()
     }
     pdfView->pageNavigator()->jump(page - 1, QPointF());
 }
-
-void BookReaderWindow_c::onZoomInButtonClicked()
-{
+void BookReaderWindow_c::onZoomInButtonClicked() {
     pdfView->setZoomFactor(pdfView->zoomFactor() * 1.2);
 }
 
-void BookReaderWindow_c::onZoomOutButtonClicked()
-{
+void BookReaderWindow_c::onZoomOutButtonClicked() {
     pdfView->setZoomFactor(pdfView->zoomFactor() / 1.2);
 }
 
-void BookReaderWindow_c::onBackButtonClicked()
-{
+void BookReaderWindow_c::onBackButtonClicked() {
     emit backRequested();
+}
+void BookReaderWindow_c::closeEvent(QCloseEvent *event) {
+    bookReaderController->flushPendingSave();
+    QMainWindow::closeEvent(event);
 }
