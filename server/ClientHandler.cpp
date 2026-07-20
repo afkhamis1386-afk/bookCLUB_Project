@@ -254,7 +254,7 @@ void ClientHandler::processRequest(const Request &req) {
         }
     }
     sendResponse(response);
-    emit requestLogReceived(QString::number(static_cast<int>(type)), static_cast<int>(response.getStatus()));
+    emit requestLogReceived(requestTypeToString(type), static_cast<int>(response.getStatus()));
 }
 void ClientHandler::sendResponse(const Response &res) {
     QByteArray data;
