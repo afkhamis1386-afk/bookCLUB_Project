@@ -58,6 +58,7 @@ SOURCES += \
     main.cpp \
     loginwindow_c.cpp \
     notificationwindow_c.cpp \
+    paymentwindow_c.cpp \
     profilewindow_c.cpp \
     publisheraddbookwindow_c.cpp \
     publishermainwindow.cpp \
@@ -108,6 +109,7 @@ HEADERS += \
     librarywindow_c.h \
     loginwindow_c.h \
     notificationwindow_c.h \
+    paymentwindow_c.h \
     profilewindow_c.h \
     publisheraddbookwindow_c.h \
     publishermainwindow.h \
@@ -125,6 +127,7 @@ FORMS += \
     librarywindow_c.ui \
     loginwindow_c.ui \
     notificationwindow_c.ui \
+    paymentwindow_c.ui \
     profilewindow_c.ui \
     publisheraddbookwindow_c.ui \
     publishermainwindow.ui \

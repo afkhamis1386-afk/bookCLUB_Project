@@ -11,6 +11,7 @@ public:
     bool updateCategoryTitle(int categoryId, const QString &newTitle);
     bool deleteCategory(int categoryId);
     QVector<Category> getAllCategories();
+    int getOrCreateCategory(const QString &categoryTitle);
 };
 
 #endif // CATEGORYREPOSITORY_H

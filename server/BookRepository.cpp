@@ -293,11 +293,12 @@ QVector<int> BookRepository::getTopSellingBooksByPublisher(int publisherUserId, 
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
-        "SELECT TOP (:limit) b.BookID, COUNT(oi.OrderItemID) AS SoldCount "
+        "SELECT TOP (:limit) b.BookID, "
+        "COUNT(CASE WHEN s.StatusTitle IN ('Paid', 'Completed') THEN oi.OrderItemID END) AS SoldCount "
         "FROM Books b "
         "LEFT JOIN OrderItems oi ON b.BookID = oi.BookID "
         "LEFT JOIN Orders o ON oi.OrderID = o.OrderID "
-        "LEFT JOIN Statuses s ON o.StatusID = s.StatusID AND s.StatusTitle IN ('Paid', 'Completed') "
+        "LEFT JOIN Statuses s ON o.StatusID = s.StatusID "
         "WHERE b.PublisherUserID = :publisherId AND b.IsDeleted = 0 "
         "GROUP BY b.BookID "
         "ORDER BY SoldCount DESC"
@@ -315,11 +316,12 @@ QVector<int> BookRepository::getLeastSellingBooksByPublisher(int publisherUserId
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
     query.prepare(
-        "SELECT TOP (:limit) b.BookID, COUNT(oi.OrderItemID) AS SoldCount "
+        "SELECT TOP (:limit) b.BookID, "
+        "COUNT(CASE WHEN s.StatusTitle IN ('Paid', 'Completed') THEN oi.OrderItemID END) AS SoldCount "
         "FROM Books b "
         "LEFT JOIN OrderItems oi ON b.BookID = oi.BookID "
         "LEFT JOIN Orders o ON oi.OrderID = o.OrderID "
-        "LEFT JOIN Statuses s ON o.StatusID = s.StatusID AND s.StatusTitle IN ('Paid', 'Completed') "
+        "LEFT JOIN Statuses s ON o.StatusID = s.StatusID "
         "WHERE b.PublisherUserID = :publisherId AND b.IsDeleted = 0 "
         "GROUP BY b.BookID "
         "ORDER BY SoldCount ASC"
