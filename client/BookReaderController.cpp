@@ -41,6 +41,13 @@ void BookReaderController::onSaveTimerTimeout(){
         return;
     }
     networkManager->saveReadingProgress(currentBookId, pendingPageToSave);
+    pendingPageToSave = -1;
+}
+void BookReaderController::flushPendingSave(){
+    if(!saveDebounceTimer->isActive() || pendingPageToSave < 1)
+        return;
+    saveDebounceTimer->stop();
+    onSaveTimerTimeout();
 }
 void BookReaderController::onResponseReceived(RequestType type, const Response &response) {
     switch(type){

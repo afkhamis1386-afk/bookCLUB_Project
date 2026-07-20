@@ -88,15 +88,26 @@ Response AdminManager::getPublisherDetails(int userId){
     data["publishedBooksCount"] = publisher->getPublishedBooksCount();
     return Response(ResponseStatus::Success, "اطلاعات ناشر بازیابی شد", data);
 }
-Response AdminManager::blockUser(int userId){
+Response AdminManager::blockUser(int actingAdminUserId, int userId){
+    if(userId == actingAdminUserId){
+        return Response(ResponseStatus::ValidationFailed, "نمی توانید حساب کاربری خودتان را مسدود کنید");
+    }
     UserRepository userRepo;
+    UserRole targetRole;
+    if(!userRepo.findRoleById(userId, targetRole)){
+        return Response(ResponseStatus::NotFound, "کاربر مورد نظر یافت نشد");
+    }
+    if(targetRole == UserRole::Admin){
+        return Response(ResponseStatus::ValidationFailed, "امکان مسدود کردن حساب مدیر سیستم وجود ندارد");
+    }
     if(!userRepo.updateBlockedStatus(userId, true)){
         return Response(ResponseStatus::Error, "خطا در مسدودسازی کاربر");
     }
     return Response(ResponseStatus::Success, "کاربر با موفقیت مسدود شد");
 }
 
-Response AdminManager::unblockUser(int userId){
+Response AdminManager::unblockUser(int actingAdminUserId, int userId){
+    Q_UNUSED(actingAdminUserId)
     UserRepository userRepo;
     if(!userRepo.updateBlockedStatus(userId, false)){
         return Response(ResponseStatus::Error, "خطا در رفع مسدودیت کاربر");
@@ -104,24 +115,41 @@ Response AdminManager::unblockUser(int userId){
     return Response(ResponseStatus::Success, "مسدودیت کاربر با موفقیت رفع شد");
 }
 
-Response AdminManager::deleteUser(int userId){
+Response AdminManager::deleteUser(int actingAdminUserId, int userId){
+    if(userId == actingAdminUserId){
+        return Response(ResponseStatus::ValidationFailed, "نمی توانید حساب کاربری خودتان را حذف کنید");
+    }
     UserRepository userRepo;
+    UserRole targetRole;
+    if(!userRepo.findRoleById(userId, targetRole)){
+        return Response(ResponseStatus::NotFound, "کاربر مورد نظر یافت نشد");
+    }
+    if(targetRole == UserRole::Admin){
+        return Response(ResponseStatus::ValidationFailed, "امکان حذف حساب مدیر سیستم وجود ندارد");
+    }
     if(!userRepo.updateDeletedStatus(userId, true)){
         return Response(ResponseStatus::Error, "خطا در حذف کاربر");
     }
     return Response(ResponseStatus::Success, "حساب کاربری با موفقیت حذف شد");
 }
 
-Response AdminManager::setUserActiveStatus(int targetUserId, bool active){
+Response AdminManager::setUserActiveStatus(int actingAdminUserId, int targetUserId, bool active){
+    if(!active && targetUserId == actingAdminUserId){
+        return Response(ResponseStatus::ValidationFailed, "نمی توانید حساب کاربری خودتان را غیرفعال کنید");
+    }
     UserRepository userRepo;
+    UserRole targetRole;
+    if(!userRepo.findRoleById(targetUserId, targetRole)){
+        return Response(ResponseStatus::NotFound, "کاربر مورد نظر یافت نشد");
+    }
+    if(!active && targetRole == UserRole::Admin){
+        return Response(ResponseStatus::ValidationFailed, "امکان غیرفعال کردن حساب مدیر سیستم وجود ندارد");
+    }
     if(!userRepo.updateActiveStatus(targetUserId, active)){
         return Response(ResponseStatus::Error, "خطا در تغییر وضعیت فعال سازی کاربر");
     }
     return Response(ResponseStatus::Success, active ? "کاربر فعال شد" : "کاربر غیرفعال شد");
 }
-
-// 🆕🆕🆕 پایان بخش جدید
-
 Response AdminManager::getAllBooks(){
     BookRepository bookRepo;
     QVector<int> bookIds = bookRepo.getAllBookIdsForAdmin();

@@ -61,4 +61,17 @@ QVector<Category> CategoryRepository::getAllCategories(){
     }
     return categories;
 }
+int CategoryRepository::getOrCreateCategory(const QString &categoryTitle){
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("SELECT CategoryID FROM Categories WHERE CategoryTitle = :title");
+    selectQuery.bindValue(":title", categoryTitle);
+    if(selectQuery.exec() && selectQuery.next()){
+        return selectQuery.value(0).toInt();
+    }
+    Category newCategory;
+    if(!newCategory.setCategoryTitle(categoryTitle))
+        return -1;
+    return insertCategory(newCategory);
+}
 

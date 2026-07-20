@@ -8,10 +8,10 @@ public:
     Response getAllUsers();
     Response getNormalUserDetails(int userId);
     Response getPublisherDetails(int userId);
-    Response blockUser(int userId);
-    Response unblockUser(int userId);
-    Response deleteUser(int userId);
-    Response setUserActiveStatus(int targetUserId, bool active);
+    Response blockUser(int actingAdminUserId, int userId);
+    Response unblockUser(int actingAdminUserId, int userId);
+    Response deleteUser(int actingAdminUserId, int userId);
+    Response setUserActiveStatus(int actingAdminUserId, int targetUserId, bool active);
     Response getAllBooks();
     Response getBookDetailsForReview(int bookId);
     Response removeInvalidBook(int bookId);

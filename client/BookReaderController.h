@@ -11,6 +11,7 @@ public:
     explicit BookReaderController(NetworkManager *networkManager, QObject *parent = nullptr);
     void openBook(int bookId);
     void updateCurrentPage(int currentPage);
+    void flushPendingSave();
 
 signals:
     void bookReady(const QString &localFilePath, int startPage);

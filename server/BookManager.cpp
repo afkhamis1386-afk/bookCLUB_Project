@@ -15,7 +15,6 @@
 #include "PriceCalculator.h"
 #include "../common/Book.h"
 #include "../common/Genre.h"
-#include "../common/Category.h"
 #include "../common/TimedDiscount.h"
 #include "../common/normaluser.h"
 #include <memory>
@@ -33,8 +32,7 @@ static QString storageRootPath(){
     if(!pdfs.exists()) pdfs.mkpath(".");
     return path;
 }
-Response BookManager::addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-    const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData)
+Response BookManager::addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,  const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData)
 {
     if(bookName.trimmed().isEmpty() || bookName.length() > 60){
         return Response(ResponseStatus::ValidationFailed, "نام کتاب نامعتبر است (حداکثر ۶۰ کاراکتر)");
@@ -69,16 +67,9 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
         return Response(ResponseStatus::ValidationFailed, "ژانر انتخاب شده معتبر نیست");
     }
     CategoryRepository categoryRepo;
-    QVector<Category> allCategories = categoryRepo.getAllCategories();
-    int categoryId = -1;
-    for(const Category &c : qAsConst(allCategories)){
-        if(c.getCategoryTitle() == categoryTitle.trimmed()){
-            categoryId = c.getCategoryId();
-            break;
-        }
-    }
+    int categoryId = categoryRepo.getOrCreateCategory(categoryTitle.trimmed());
     if(categoryId == -1){
-        return Response(ResponseStatus::ValidationFailed, "دسته بندی انتخاب شده معتبر نیست");
+        return Response(ResponseStatus::ValidationFailed, "دسته بندی انتخاب شده معتبر نیست (حداکثر ۵۰ کاراکتر)");
     }
 
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
@@ -133,8 +124,7 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     QVector<int> interestedUserIds = userRepoForNotif.getUserIdsByFavoriteGenre(genreId);
     if(!interestedUserIds.isEmpty()){
         NotificationManager notifManager;
-        notifManager.broadcastNotification( interestedUserIds, NotificationType::NewBookInFavouriteGenre, "کتاب جدید در ژانر مورد علاقه شما",
-         QString("کتاب «%1» در ژانر مورد علاقه ی شما منتشر شد").arg(bookName.trimmed()), newBookId, publisherUserId );
+        notifManager.broadcastNotification( interestedUserIds, NotificationType::NewBookInFavouriteGenre, "کتاب جدید در ژانر مورد علاقه شما", QString("کتاب «%1» در ژانر مورد علاقه ی شما منتشر شد").arg(bookName.trimmed()), newBookId, publisherUserId );
     }
     return Response(ResponseStatus::Success, "کتاب با موفقیت ثبت شد", data);
 }
@@ -207,8 +197,8 @@ Response BookManager::applyDiscount(int publisherUserId, int bookId, double disc
         if(!interestedUserIds.isEmpty()){
             NotificationManager notifManager;
             notifManager.broadcastNotification(
-            interestedUserIds,
-            NotificationType::DiscountOnSavedBook, "تخفیف روی کتاب ذخیره شده", QString("کتاب «%1» که ذخیره کرده اید تخفیف خورد").arg(book->getBookName()), bookId, publisherUserId );
+                interestedUserIds,
+                NotificationType::DiscountOnSavedBook, "تخفیف روی کتاب ذخیره شده", QString("کتاب «%1» که ذخیره کرده اید تخفیف خورد").arg(book->getBookName()), bookId, publisherUserId );
         }
     }
     return Response(ResponseStatus::Success, "تخفیف با موفقیت اعمال شد");
@@ -320,9 +310,9 @@ Response BookManager::getBookDetails(int bookId){
     std::unique_ptr<TimedDiscount> activeDiscount(timedDiscountRepo.getActiveDiscountForBook(bookId));
     double timedPercent = activeDiscount ? activeDiscount->getDiscountPercent() : 0.0;
     double effectivePercent = PriceCalculator::calculateEffectivePercent(
-    book->getDiscountPercent(), timedPercent);
+        book->getDiscountPercent(), timedPercent);
     double finalPrice = PriceCalculator::calculateFinalPrice(
-    book->getBookPrice(), effectivePercent, book->getDiscountAmount());
+        book->getBookPrice(), effectivePercent, book->getDiscountAmount());
     RatingRepository ratingRepo;
     double avgRating = ratingRepo.getAverageRating(bookId);
     int ratingCount = ratingRepo.getRatingCount(bookId);
