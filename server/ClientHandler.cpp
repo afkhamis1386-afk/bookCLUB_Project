@@ -395,9 +395,10 @@ Response ClientHandler::handleCartRequest(const Request &req) {
 }
 Response ClientHandler::handleOrderRequest(const Request &req) {
     OrderManager orderManager;
+    QVariantMap p = req.getPayload();
     switch (req.getType()) {
     case RequestType::Checkout:
-        return orderManager.checkout(authenticatedUserId);
+        return orderManager.checkout(authenticatedUserId, p.value("cardNumber").toString());
     case RequestType::GetOrderHistory:
         return orderManager.getOrderHistory(authenticatedUserId);
     default:
