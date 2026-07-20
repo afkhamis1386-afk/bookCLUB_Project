@@ -15,10 +15,18 @@
 #include "../common/TimedDiscount.h"
 #include "UserRepository.h"
 #include "../common/normaluser.h"
+#include <QRegularExpression>
+#include <QDateTime>
 #include <memory>
 
 OrderManager::OrderManager() {}
-Response OrderManager::checkout(int userId) {
+Response OrderManager::checkout(int userId, const QString &cardNumber) {
+    QString cleanCardNumber = cardNumber;
+    cleanCardNumber.remove(' ');
+    static const QRegularExpression cardRegex(R"(^\d{16}$)");
+    if (!cardRegex.match(cleanCardNumber).hasMatch()) {
+        return Response(ResponseStatus::ValidationFailed, "شماره کارت نامعتبر است (باید ۱۶ رقم باشد)");
+    }
     CartRepository cartRepo;
     std::unique_ptr<Cart> cart(cartRepo.loadCartByUserId(userId));
     if (!cart || cart->getItemCount() == 0) {
@@ -82,7 +90,12 @@ Response OrderManager::checkout(int userId) {
         db.rollback();
         return Response(ResponseStatus::Error, "خطا در ثبت سفارش. لطفاً دوباره تلاش کنید");
     }
-    Payment newPayment(newOrderId, finalPrice);
+    QString lastFourDigits = cleanCardNumber.right(4);
+    QString transactionCode = QString("TXN-%1-%2-%3")
+                                  .arg(newOrderId)
+                                  .arg(lastFourDigits)
+                                  .arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
+    Payment newPayment(newOrderId, finalPrice, transactionCode);
     newPayment.setPaymentStatusId(static_cast<int>(PaymentStatus::Successful));
     PaymentRepository paymentRepo;
     int newPaymentId = paymentRepo.insertPayment(newPayment);
@@ -109,6 +122,8 @@ Response OrderManager::checkout(int userId) {
     data["totalPrice"] = totalPrice;
     data["discountAmount"] = totalDiscountAmount;
     data["paymentId"] = newPaymentId;
+    data["transactionCode"] = transactionCode;
+    data["cardLastFour"] = lastFourDigits;
     return Response(ResponseStatus::Success, "خرید با موفقیت انجام شد", data);
 }
 Response OrderManager::getOrderHistory(int userId) {

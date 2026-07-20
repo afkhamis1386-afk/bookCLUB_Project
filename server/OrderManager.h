@@ -5,7 +5,7 @@
 class OrderManager {
 public:
     OrderManager();
-    Response checkout(int userId);
+    Response checkout(int userId, const QString &cardNumber);
     Response getOrderHistory(int userId);
     Response getOrderDetails(int userId, int orderId);
     Response cancelorder(int userId, int orderId);
