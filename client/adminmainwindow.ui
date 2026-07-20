@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1682</width>
-    <height>1334</height>
+    <width>1030</width>
+    <height>785</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -261,32 +261,6 @@ QLineEdit:focus {
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1">
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>272</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>325</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
     <item row="1" column="1" colspan="2">
      <widget class="QTabWidget" name="adminTabWidget">
       <property name="minimumSize">
@@ -314,7 +288,7 @@ QLineEdit:focus {
        </size>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -525,6 +499,19 @@ QLineEdit:focus {
       </widget>
      </widget>
     </item>
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>272</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
     <item row="1" column="3">
      <spacer name="horizontalSpacer_2">
       <property name="orientation">
@@ -534,6 +521,19 @@ QLineEdit:focus {
        <size>
         <width>324</width>
         <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="2">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>271</height>
        </size>
       </property>
      </spacer>
@@ -556,15 +556,15 @@ QLineEdit:focus {
       </item>
      </layout>
     </item>
-    <item row="3" column="2">
-     <spacer name="verticalSpacer_2">
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Horizontal</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>20</width>
-        <height>271</height>
+        <width>325</width>
+        <height>20</height>
        </size>
       </property>
      </spacer>
@@ -576,7 +576,7 @@ QLineEdit:focus {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1682</width>
+     <width>1030</width>
      <height>25</height>
     </rect>
    </property>
