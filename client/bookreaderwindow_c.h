@@ -12,6 +12,7 @@ namespace Ui {
 class BookReaderWindow_c;
 }
 QT_END_NAMESPACE
+class QCloseEvent;
 
 class BookReaderWindow_c : public QMainWindow
 {
@@ -28,26 +29,25 @@ private slots:
     void onBookReady(const QString &localFilePath, int startPage);
     void onBookOpenFailed(const QString &message);
     void onProgressSaveFailed(const QString &message);
-
     void onPrevPageButtonClicked();
     void onNextPageButtonClicked();
     void onGoToPageButtonClicked();
     void onZoomInButtonClicked();
     void onZoomOutButtonClicked();
     void onBackButtonClicked();
-
     void onCurrentPageChanged(int page);
 
 private:
     Ui::BookReaderWindow_c *ui;
     NetworkManager *networkManager;
     int bookId;
-
     BookReaderController *bookReaderController;
     QPdfDocument *pdfDocument;
     QPdfView *pdfView;
-
     void updatePageInfoLabel();
+protected:
+    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // BOOKREADERWINDOW_C_H
+

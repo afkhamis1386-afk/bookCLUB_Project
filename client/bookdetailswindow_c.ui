@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1165</width>
-    <height>986</height>
+    <width>1001</width>
+    <height>906</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
     border-image: url(:/wallhaven-49kq3d.jpg) 0 0 0 0 stretch stretch;
 }</string>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="3">
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="1">
      <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -28,69 +28,36 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>67</height>
+        <height>19</height>
        </size>
       </property>
      </spacer>
     </item>
-    <item row="2" column="0">
+    <item row="1" column="0">
      <spacer name="horizontalSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>212</width>
+        <width>180</width>
         <height>20</height>
        </size>
       </property>
      </spacer>
     </item>
-    <item row="2" column="2">
-     <widget class="QLabel" name="statusLabel">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="5">
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>211</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="3" column="4">
-     <spacer name="verticalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>67</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="1" rowspan="2" colspan="4">
+    <item row="1" column="1" colspan="2">
      <widget class="QScrollArea" name="scrollArea">
       <property name="minimumSize">
        <size>
-        <width>700</width>
-        <height>900</height>
+        <width>600</width>
+        <height>800</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>16777215</width>
-        <height>1677215</height>
+        <width>600</width>
+        <height>900</height>
        </size>
       </property>
       <property name="styleSheet">
@@ -172,12 +139,12 @@ QListWidget::item:selected {
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>698</width>
-         <height>898</height>
+         <width>598</width>
+         <height>798</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="QLabel" name="coverImageLabel">
@@ -268,7 +235,7 @@ color: white;</string>
           </item>
          </layout>
         </item>
-        <item>
+        <item row="1" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <widget class="QTextEdit" name="newReviewTextEdit">
@@ -348,6 +315,39 @@ color: white;</string>
       </widget>
      </widget>
     </item>
+    <item row="1" column="3">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>179</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="statusLabel">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>17</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -355,7 +355,7 @@ color: white;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1165</width>
+     <width>1001</width>
      <height>25</height>
     </rect>
    </property>

@@ -1,5 +1,6 @@
 #include "cartwindow_c.h"
 #include "ui_cartwindow_c.h"
+#include "paymentwindow_c.h"
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QTableWidgetItem>
@@ -52,6 +53,7 @@ void CartWindow_c::onCartLoaded(const QVariantMap &cartData) {
     double totalPrice = cartData.value("totalPrice").toDouble();
     double totalDiscount = cartData.value("totalDiscount").toDouble();
     double finalPrice = cartData.value("finalPrice").toDouble();
+    currentFinalPrice = finalPrice;
     ui->totalPriceLabel->setText(QString("جمع کل: %1 تومان").arg(totalPrice, 0, 'f', 0));
     ui->discountLabel->setText(QString("تخفیف: %1 تومان").arg(totalDiscount, 0, 'f', 0));
     ui->finalPriceLabel->setText(QString("مبلغ قابل پرداخت: %1 تومان").arg(finalPrice, 0, 'f', 0));
@@ -77,12 +79,16 @@ void CartWindow_c::onRemoveFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
 void CartWindow_c::onCheckoutButtonClicked() {
-    cartController->checkout();
+    PaymentWindow_c paymentDialog(currentFinalPrice, this);
+    if (paymentDialog.exec() == QDialog::Accepted) {
+        cartController->checkout(paymentDialog.getCardNumber());
+    }
 }
 void CartWindow_c::onCheckoutSucceeded(const QVariantMap &orderData) {
     double finalPrice = orderData.value("finalPrice").toDouble();
-    QMessageBox::information(this, "خرید موفق", QString("خرید شما با موفقیت ثبت شد!\nمبلغ پرداخت شده: %1 تومان\nکتاب ها به کتابخانه ی شما اضافه شدند.")
-                                 .arg(finalPrice, 0, 'f', 0));
+    QString transactionCode = orderData.value("transactionCode").toString();
+    QString cardLastFour = orderData.value("cardLastFour").toString();
+    QMessageBox::information(this, "خرید موفق", QString("خرید شما با موفقیت ثبت شد!\nمبلغ پرداخت شده: %1 تومان\nکارت: **** **** **** %2\nکد پیگیری: %3\nکتاب ها به کتابخانه ی شما اضافه شدند.").arg(finalPrice, 0, 'f', 0).arg(cardLastFour, transactionCode));
     cartController->refreshCart();
 }
 void CartWindow_c::onCheckoutFailed(const QString &message) {

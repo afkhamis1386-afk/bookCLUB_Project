@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1730</width>
-    <height>1283</height>
+    <width>877</width>
+    <height>628</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -125,7 +125,7 @@ QListWidget::item:selected {
       <item>
        <widget class="QLabel" name="statusLabel">
         <property name="text">
-         <string></string>
+         <string/>
         </property>
        </widget>
       </item>
@@ -177,7 +177,7 @@ QListWidget::item:selected {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1730</width>
+     <width>877</width>
      <height>25</height>
     </rect>
    </property>
@@ -187,4 +187,3 @@ QListWidget::item:selected {
  <resources/>
  <connections/>
 </ui>
-

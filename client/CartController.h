@@ -12,7 +12,7 @@ public:
     void addBook(int bookId);
     void removeBook(int bookId);
     void refreshCart();
-    void checkout();
+    void checkout(const QString &cardNumber);
 signals:
     void addToCartSucceeded(const QString &message);
     void addToCartFailed(const QString &message);

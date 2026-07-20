@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1731</width>
-    <height>981</height>
+    <width>953</width>
+    <height>693</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,7 +73,7 @@
     border-radius: 20px;
     padding: 25px;
 }
-QLineEdit, QTextEdit, QDoubleSpinBox, QComboBox {
+QLineEdit, QTextEdit, QDoubleSpinBox {
     background-color: rgba(255, 255, 255, 200);
     border: 1px solid rgba(44, 62, 80, 60);
     border-radius: 8px;
@@ -82,24 +82,9 @@ QLineEdit, QTextEdit, QDoubleSpinBox, QComboBox {
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-size: 11pt;
 }
-QLineEdit:focus, QTextEdit:focus, QDoubleSpinBox:focus, QComboBox:focus {
+QLineEdit:focus, QTextEdit:focus, QDoubleSpinBox:focus {
     border: 2px solid #2c3e50;
     background-color: #ffffff;
-}
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top left;
-    width: 30px;
-    border-left: none;
-}
-QComboBox QAbstractItemView {
-    background-color: #ffffff;
-    border: 1px solid rgba(44, 62, 80, 60);
-    selection-background-color: #2c3e50;
-    selection-color: #ffffff;
-    border-radius: 4px;
-    color: #2c3e50;
-    outline: none;
 }
 QLabel {
     color: #2c3e50;
@@ -223,8 +208,34 @@ QPushButton#backButton:hover {
          <height>51</height>
         </rect>
        </property>
-       <property name="placeholderText">
-        <string>                                                   ...انتخاب ژانر  </string>
+       <property name="styleSheet">
+        <string notr="true">QComboBox {
+    background-color: rgba(255, 255, 255, 200);
+    border: 1px solid rgba(44, 62, 80, 60);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #2c3e50;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 11pt;
+}
+
+QComboBox:focus {
+    border: 2px solid #2c3e50;
+    background-color: #ffffff;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 28px;
+    background: transparent;
+}
+
+QComboBox::down-arrow {
+    image: none;
+    width: 0;
+    height: 0;
+}
+</string>
        </property>
       </widget>
       <widget class="QPushButton" name="submitButton">
@@ -379,7 +390,7 @@ QPushButton#backButton:hover {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1731</width>
+     <width>953</width>
      <height>25</height>
     </rect>
    </property>

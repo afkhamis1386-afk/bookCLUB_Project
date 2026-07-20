@@ -3,9 +3,11 @@
 #include "BookRepository.h"
 #include "TimedDiscountRepository.h"
 #include "PriceCalculator.h"
+#include "UserRepository.h"
 #include "../common/Cart.h"
 #include "../common/Book.h"
 #include "../common/TimedDiscount.h"
+#include "../common/normaluser.h"
 #include <memory>
 
 CartManager::CartManager() {}
@@ -17,6 +19,11 @@ Response CartManager::addBookToCart(int userId, int bookId) {
     }
     if (!book->isAvailableForPurchase()) {
         return Response(ResponseStatus::Error, "این کتاب در حال حاضر برای خرید موجود نیست");
+    }
+    UserRepository userRepo;
+    std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
+    if (user && user->hasPurchased(bookId)) {
+        return Response(ResponseStatus::ValidationFailed, "شما قبلاً این کتاب را خریداری کرده اید");
     }
     CartRepository cartRepo;
     int cartId = cartRepo.getOrCreateCartId(userId);

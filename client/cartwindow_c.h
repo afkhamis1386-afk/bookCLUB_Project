@@ -1,6 +1,5 @@
 #ifndef CARTWINDOW_C_H
 #define CARTWINDOW_C_H
-
 #include <QMainWindow>
 #include "NetworkManager.h"
 #include "CartController.h"
@@ -34,7 +33,9 @@ private:
     Ui::CartWindow_c *ui;
     NetworkManager *networkManager;
     CartController *cartController;
+    double currentFinalPrice = 0;
     void populateTable(const QVariantList &items);
 };
 
 #endif // CARTWINDOW_C_H
+

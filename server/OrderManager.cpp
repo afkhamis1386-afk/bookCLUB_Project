@@ -13,10 +13,20 @@
 #include "../common/Book.h"
 #include "../common/Enums.h"
 #include "../common/TimedDiscount.h"
+#include "UserRepository.h"
+#include "../common/normaluser.h"
+#include <QRegularExpression>
+#include <QDateTime>
 #include <memory>
 
 OrderManager::OrderManager() {}
-Response OrderManager::checkout(int userId) {
+Response OrderManager::checkout(int userId, const QString &cardNumber) {
+    QString cleanCardNumber = cardNumber;
+    cleanCardNumber.remove(' ');
+    static const QRegularExpression cardRegex(R"(^\d{16}$)");
+    if (!cardRegex.match(cleanCardNumber).hasMatch()) {
+        return Response(ResponseStatus::ValidationFailed, "شماره کارت نامعتبر است (باید ۱۶ رقم باشد)");
+    }
     CartRepository cartRepo;
     std::unique_ptr<Cart> cart(cartRepo.loadCartByUserId(userId));
     if (!cart || cart->getItemCount() == 0) {
@@ -24,6 +34,8 @@ Response OrderManager::checkout(int userId) {
     }
     BookRepository bookRepo;
     TimedDiscountRepository timedDiscountRepo;
+    UserRepository userRepo;
+    std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
     QVector<CartItem> cartItems = cart->getItems();
     Order newOrder(userId);
     double totalPrice = 0;
@@ -38,6 +50,9 @@ Response OrderManager::checkout(int userId) {
         std::unique_ptr<Book> book(bookRepo.loadBookById(cartItem.getBookId()));
         if (!book || !book->isAvailableForPurchase()) {
             return Response(ResponseStatus::Error, QString("کتاب با شناسه %1 دیگر برای خرید موجود نیست").arg(cartItem.getBookId()));
+        }
+        if (user && user->hasPurchased(cartItem.getBookId())) {
+            return Response(ResponseStatus::ValidationFailed, QString("شما قبلاً کتاب «%1» را خریداری کرده اید").arg(book->getBookName()));
         }
         std::unique_ptr<TimedDiscount> activeDiscount( timedDiscountRepo.getActiveDiscountForBook(cartItem.getBookId()) );
         double timedPercent = activeDiscount ? activeDiscount->getDiscountPercent() : 0;
@@ -75,7 +90,12 @@ Response OrderManager::checkout(int userId) {
         db.rollback();
         return Response(ResponseStatus::Error, "خطا در ثبت سفارش. لطفاً دوباره تلاش کنید");
     }
-    Payment newPayment(newOrderId, finalPrice);
+    QString lastFourDigits = cleanCardNumber.right(4);
+    QString transactionCode = QString("TXN-%1-%2-%3")
+                                  .arg(newOrderId)
+                                  .arg(lastFourDigits)
+                                  .arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
+    Payment newPayment(newOrderId, finalPrice, transactionCode);
     newPayment.setPaymentStatusId(static_cast<int>(PaymentStatus::Successful));
     PaymentRepository paymentRepo;
     int newPaymentId = paymentRepo.insertPayment(newPayment);
@@ -94,9 +114,7 @@ Response OrderManager::checkout(int userId) {
     }
     NotificationManager notifManager;
     for (const SoldBookInfo &sold : qAsConst(soldBooks)) {
-        notifManager.sendNotification( sold.publisherUserId, NotificationType::NewSaleForPublisher,
-            "فروش جدید",
-            QString("کتاب «%1» شما به فروش رسید").arg(sold.bookName), sold.bookId, userId );
+        notifManager.sendNotification( sold.publisherUserId, NotificationType::NewSaleForPublisher, "فروش جدید", QString("کتاب «%1» شما به فروش رسید").arg(sold.bookName), sold.bookId, userId );
     }
     QVariantMap data;
     data["orderId"] = newOrderId;
@@ -104,6 +122,8 @@ Response OrderManager::checkout(int userId) {
     data["totalPrice"] = totalPrice;
     data["discountAmount"] = totalDiscountAmount;
     data["paymentId"] = newPaymentId;
+    data["transactionCode"] = transactionCode;
+    data["cardLastFour"] = lastFourDigits;
     return Response(ResponseStatus::Success, "خرید با موفقیت انجام شد", data);
 }
 Response OrderManager::getOrderHistory(int userId) {

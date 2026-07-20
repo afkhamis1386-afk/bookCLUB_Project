@@ -35,12 +35,12 @@ void CartController::refreshCart() {
     }
     networkManager->getCart();
 }
-void CartController::checkout() {
+void CartController::checkout(const QString &cardNumber) {
     if (!networkManager->isConnected()) {
         emit checkoutFailed("اتصال به سرور برقرار نیست");
         return;
     }
-    networkManager->checkout();
+    networkManager->checkout(cardNumber);
 }
 void CartController::onResponseReceived(RequestType type, const Response &response) {
     switch (type) {

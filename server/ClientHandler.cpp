@@ -54,7 +54,7 @@ void ClientHandler::onReadyRead() {
         sizeStream >> msgSize;
         if (msgSize > MAX_FRAME_SIZE) {
             qWarning() << "پیام دریافتی از حد مجاز بزرگتر است (msgSize:" << msgSize
-                       << ") اتصال کلاینت قطع می شود Socket ID:" << socketDescriptor;
+                       << ")اتصال کلاینت قطع می شود Socket ID:" << socketDescriptor;
             buffer.clear();
             socket->abort();
             return;
@@ -254,7 +254,7 @@ void ClientHandler::processRequest(const Request &req) {
         }
     }
     sendResponse(response);
-    emit requestLogReceived(QString::number(static_cast<int>(type)), static_cast<int>(response.getStatus()));
+    emit requestLogReceived(requestTypeToString(type), static_cast<int>(response.getStatus()));
 }
 void ClientHandler::sendResponse(const Response &res) {
     QByteArray data;
@@ -395,9 +395,10 @@ Response ClientHandler::handleCartRequest(const Request &req) {
 }
 Response ClientHandler::handleOrderRequest(const Request &req) {
     OrderManager orderManager;
+    QVariantMap p = req.getPayload();
     switch (req.getType()) {
     case RequestType::Checkout:
-        return orderManager.checkout(authenticatedUserId);
+        return orderManager.checkout(authenticatedUserId, p.value("cardNumber").toString());
     case RequestType::GetOrderHistory:
         return orderManager.getOrderHistory(authenticatedUserId);
     default:
@@ -493,7 +494,7 @@ Response ClientHandler::handleAdminRequest(const Request &req) {
     case RequestType::BlockUser:
         return adminManager.blockUser(authenticatedUserId, p.value("userId").toInt());
     case RequestType::UnblockUser:
-        return adminManager.unblockUser(p.value("userId").toInt());
+        return adminManager.unblockUser(authenticatedUserId, p.value("userId").toInt());
     case RequestType::DeleteUser:
         return adminManager.deleteUser(authenticatedUserId, p.value("userId").toInt());
     case RequestType::SetUserActiveStatus:
