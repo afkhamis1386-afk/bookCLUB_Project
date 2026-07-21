@@ -71,9 +71,13 @@ enum class RequestType {
     SetFavoriteGenres,
     SetUserActiveStatus,
     GetAccountInfo,
-    GetOrderHistory
+    GetOrderHistory,
+    GetPopularBooks,
+    GetBestSellers,
+    ApplyTimedDiscount,
+    UpdateBookByAdmin
 };
-inline QString requestTypeToString(RequestType type) {
+inline QString requestTypeToString(RequestType type){
     switch (type) {
     case RequestType::Register: return "Register";
     case RequestType::Login: return "Login";
@@ -139,6 +143,10 @@ inline QString requestTypeToString(RequestType type) {
     case RequestType::SetUserActiveStatus: return "SetUserActiveStatus";
     case RequestType::GetAccountInfo: return "GetAccountInfo";
     case RequestType::GetOrderHistory: return "GetOrderHistory";
+    case RequestType::GetPopularBooks: return "GetPopularBooks";
+    case RequestType::GetBestSellers: return "GetBestSellers";
+    case RequestType::ApplyTimedDiscount: return "ApplyTimedDiscount";
+    case RequestType::UpdateBookByAdmin: return "UpdateBookByAdmin";
     }
     return "Unknown";
 }
@@ -150,7 +158,7 @@ enum class ResponseStatus {
     ValidationFailed,
     PushNotification
 };
-inline QString responseStatusToString(ResponseStatus status) {
+inline QString responseStatusToString(ResponseStatus status){
     switch (status) {
     case ResponseStatus::Success: return "Success";
     case ResponseStatus::Error: return "Error";
@@ -161,31 +169,31 @@ inline QString responseStatusToString(ResponseStatus status) {
     }
     return "Unknown";
 }
-inline QDataStream &operator<<(QDataStream &out, UserRole role) {
+inline QDataStream &operator<<(QDataStream &out, UserRole role){
     out << static_cast<int>(role);
     return out;
 }
-inline QDataStream &operator>>(QDataStream &in, UserRole &role) {
+inline QDataStream &operator>>(QDataStream &in, UserRole &role){
     int v;
     in >> v;
     role = static_cast<UserRole>(v);
     return in;
 }
-inline QDataStream &operator<<(QDataStream &out, RequestType t) {
+inline QDataStream &operator<<(QDataStream &out, RequestType t){
     out << static_cast<int>(t);
     return out;
 }
-inline QDataStream &operator>>(QDataStream &in, RequestType &t) {
+inline QDataStream &operator>>(QDataStream &in, RequestType &t){
     int v;
     in >> v;
     t = static_cast<RequestType>(v);
     return in;
 }
-inline QDataStream &operator<<(QDataStream &out, ResponseStatus s) {
+inline QDataStream &operator<<(QDataStream &out, ResponseStatus s){
     out << static_cast<int>(s);
     return out;
 }
-inline QDataStream &operator>>(QDataStream &in, ResponseStatus &s) {
+inline QDataStream &operator>>(QDataStream &in, ResponseStatus &s){
     int v;
     in >> v;
     s = static_cast<ResponseStatus>(v);

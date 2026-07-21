@@ -22,6 +22,8 @@ HomeWindow_c::HomeWindow_c(NetworkManager *networkManager, QWidget *parent)
     connect(ui->recommendedTabButton, &QPushButton::clicked, this, &HomeWindow_c::onRecommendedTabClicked);
     connect(ui->newestTabButton, &QPushButton::clicked, this, &HomeWindow_c::onNewestTabClicked);
     connect(ui->freeTabButton, &QPushButton::clicked, this, &HomeWindow_c::onFreeTabClicked);
+    connect(ui->bestSellersTabButton, &QPushButton::clicked, this, &HomeWindow_c::onBestSellersTabClicked);
+    connect(ui->popularTabButton, &QPushButton::clicked, this, &HomeWindow_c::onPopularTabClicked);
     connect(ui->allTabButton, &QPushButton::clicked, this, &HomeWindow_c::onAllTabClicked);
     connect(ui->cartButton, &QPushButton::clicked, this, &HomeWindow_c::onCartButtonClicked);
     connect(ui->notificationsButton, &QPushButton::clicked, this, &HomeWindow_c::onNotificationsButtonClicked);
@@ -121,6 +123,8 @@ void HomeWindow_c::onSearchButtonClicked()
 void HomeWindow_c::onRecommendedTabClicked() { bookStoreController->loadRecommendedBooks(); }
 void HomeWindow_c::onNewestTabClicked() { bookStoreController->loadNewestBooks(20); }
 void HomeWindow_c::onFreeTabClicked() { bookStoreController->loadFreeBooks(); }
+void HomeWindow_c::onBestSellersTabClicked() { bookStoreController->loadBestSellers(20); }
+void HomeWindow_c::onPopularTabClicked() { bookStoreController->loadPopularBooks(20); }
 void HomeWindow_c::onAllTabClicked() { bookStoreController->loadAllBooks(); }
 void HomeWindow_c::onCardClicked(int bookId)
 {

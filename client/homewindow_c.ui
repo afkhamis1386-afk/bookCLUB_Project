@@ -170,6 +170,20 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
         <widget class="QWidget" name="tabsWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
+           <widget class="QPushButton" name="popularTabButton">
+            <property name="text">
+             <string>محبوب</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="bestSellersTabButton">
+            <property name="text">
+             <string>پرفروش</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="allTabButton">
             <property name="text">
              <string>همه</string>

@@ -197,6 +197,26 @@ Response AdminManager::removeInvalidBook(int bookId){
     }
     return Response(ResponseStatus::Success, "کتاب نامعتبر با موفقیت حذف شد");
 }
+Response AdminManager::updateBook(int bookId, const QString &bookName, const QString &description, double price){
+    BookRepository bookRepo;
+    std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
+    if(!book){
+        return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
+    }
+    if(!book->setBookName(bookName)){
+        return Response(ResponseStatus::ValidationFailed, "نام کتاب نامعتبر است");
+    }
+    if(!book->setBookDescription(description)){
+        return Response(ResponseStatus::ValidationFailed, "توضیحات کتاب نامعتبر است");
+    }
+    if(!book->setBookPrice(price)){
+        return Response(ResponseStatus::ValidationFailed, "قیمت کتاب نامعتبر است");
+    }
+    if(!bookRepo.updateBook(*book)){
+        return Response(ResponseStatus::Error, "خطا در ویرایش کتاب توسط مدیر");
+    }
+    return Response(ResponseStatus::Success, "کتاب با موفقیت توسط مدیر ویرایش شد");
+}
 Response AdminManager::getAllReviews(){
     ReviewRepository reviewRepo;
     QVector<int> reviewIds = reviewRepo.getAllReviewIds();

@@ -215,7 +215,7 @@ QScrollBar::add-line, QScrollBar::sub-line {
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="dashboardTab">
           <attribute name="title">
@@ -270,6 +270,34 @@ QScrollBar::add-line, QScrollBar::sub-line {
            <string>                          مدیریت کتاب ها                       </string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_2">
+           <item row="2" column="0">
+            <widget class="QPushButton" name="editBookButton">
+             <property name="text">
+              <string>ویرایش کتاب انتخابی</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QPushButton" name="applyDiscountButton">
+             <property name="text">
+              <string>اعمال تخفیف</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="addNewBookButton">
+             <property name="text">
+              <string>افزودن کتاب جدید</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QPushButton" name="toggleBookActiveButton">
+             <property name="text">
+              <string>غیرفعال/فعال سازی</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
             <widget class="QTableWidget" name="myBooksTableWidget">
              <property name="maximumSize">
@@ -291,31 +319,10 @@ QScrollBar::add-line, QScrollBar::sub-line {
              <column/>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QPushButton" name="addNewBookButton">
+           <item row="5" column="0">
+            <widget class="QPushButton" name="applyTimedDiscountButton">
              <property name="text">
-              <string>افزودن کتاب جدید</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QPushButton" name="editBookButton">
-             <property name="text">
-              <string>ویرایش کتاب انتخابی</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QPushButton" name="applyDiscountButton">
-             <property name="text">
-              <string>اعمال تخفیف</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QPushButton" name="toggleBookActiveButton">
-             <property name="text">
-              <string>غیرفعال/فعال سازی</string>
+              <string>تخفیف زمان دار</string>
              </property>
             </widget>
            </item>
