@@ -311,6 +311,49 @@ QVector<int> BookRepository::getTopSellingBooksByPublisher(int publisherUserId, 
     }
     return ids;
 }
+QVector<int> BookRepository::getBestSellingBookIds(int limit){
+    QVector<int> ids;
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare(
+        "SELECT TOP (:limit) b.BookID, "
+        "COUNT(CASE WHEN s.StatusTitle IN ('Paid', 'Completed') THEN oi.OrderItemID END) AS SoldCount "
+        "FROM Books b "
+        "LEFT JOIN OrderItems oi ON b.BookID = oi.BookID "
+        "LEFT JOIN Orders o ON oi.OrderID = o.OrderID "
+        "LEFT JOIN Statuses s ON o.StatusID = s.StatusID "
+        "WHERE b.IsActive = 1 AND b.IsDeleted = 0 "
+        "GROUP BY b.BookID "
+        "ORDER BY SoldCount DESC, b.RegisteredIn DESC"
+        );
+    query.bindValue(":limit", limit);
+    if(query.exec()){
+        while(query.next())
+            ids.append(query.value(0).toInt());
+    }
+    return ids;
+}
+QVector<int> BookRepository::getMostPopularBookIds(int limit){
+    QVector<int> ids;
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare(
+        "SELECT TOP (:limit) b.BookID, "
+        "AVG(CAST(r.Rating AS FLOAT)) AS AvgRating, "
+        "COUNT(r.RatingID) AS RatingCount "
+        "FROM Books b "
+        "LEFT JOIN Ratings r ON b.BookID = r.BookID "
+        "WHERE b.IsActive = 1 AND b.IsDeleted = 0 "
+        "GROUP BY b.BookID "
+        "ORDER BY AvgRating DESC, RatingCount DESC, b.RegisteredIn DESC"
+        );
+    query.bindValue(":limit", limit);
+    if(query.exec()){
+        while(query.next())
+            ids.append(query.value(0).toInt());
+    }
+    return ids;
+}
 QVector<int> BookRepository::getLeastSellingBooksByPublisher(int publisherUserId, int limit){
     QVector<int> ids;
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();

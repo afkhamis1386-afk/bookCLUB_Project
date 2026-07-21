@@ -15,6 +15,7 @@ public:
     Response getAllBooks();
     Response getBookDetailsForReview(int bookId);
     Response removeInvalidBook(int bookId);
+    Response updateBook(int bookId, const QString &bookName, const QString &description, double price);
     Response getAllReviews();
     Response createAdmin(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName, const QString &lastName, bool requireNoExistingAdmin);
 };

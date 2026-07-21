@@ -29,11 +29,14 @@ private slots:
     void onAddNewBookButtonClicked();
     void onEditBookButtonClicked();
     void onApplyDiscountButtonClicked();
+    void onApplyTimedDiscountButtonClicked();
     void onToggleBookActiveButtonClicked();
     void onBookUpdated(const QString &message);
     void onBookUpdateFailed(const QString &message);
     void onDiscountApplied(const QString &message);
     void onDiscountApplyFailed(const QString &message);
+    void onTimedDiscountApplied(const QString &message);
+    void onTimedDiscountApplyFailed(const QString &message);
     void onBookDeactivated(const QString &message);
     void onBookDeactivateFailed(const QString &message);
     void onBookReactivated(const QString &message);

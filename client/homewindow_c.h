@@ -31,6 +31,8 @@ private slots:
     void onRecommendedTabClicked();
     void onNewestTabClicked();
     void onFreeTabClicked();
+    void onBestSellersTabClicked();
+    void onPopularTabClicked();
     void onAllTabClicked();
     void onCartButtonClicked();
     void onNotificationsButtonClicked();

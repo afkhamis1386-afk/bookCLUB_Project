@@ -57,6 +57,14 @@ void AdminController::deleteBook(int bookId){
     if(!networkManager->isConnected()) { emit bookDeleteFailed("اتصال به سرور برقرار نیست"); return; }
     networkManager->deleteBook(bookId);
 }
+void AdminController::updateBook(int bookId, const QString &bookName, const QString &description, double price){
+    if(bookId <= 0) { emit validationError("شناسه کتاب نامعتبر است"); return; }
+    if(bookName.trimmed().isEmpty()) { emit validationError("نام کتاب نمی تواند خالی باشد"); return; }
+    if(description.trimmed().isEmpty()) { emit validationError("توضیحات کتاب نمی تواند خالی باشد"); return; }
+    if(price < 0) { emit validationError("قیمت کتاب نمی تواند منفی باشد"); return; }
+    if(!networkManager->isConnected()) { emit bookUpdateFailed("اتصال به سرور برقرار نیست"); return; }
+    networkManager->updateBookByAdmin(bookId, bookName.trimmed(), description.trimmed(), price);
+}
 void AdminController::loadAllReviews(){
     if(!networkManager->isConnected()) { emit allReviewsLoadFailed("اتصال به سرور برقرار نیست"); return; }
     networkManager->getAllReviews();
@@ -115,6 +123,10 @@ void AdminController::onResponseReceived(RequestType type, const Response &respo
     case RequestType::DeleteBook:
         if(response.isSuccess()) emit bookDeleted(response.getMessage());
         else emit bookDeleteFailed(response.getMessage());
+        break;
+    case RequestType::UpdateBookByAdmin:
+        if(response.isSuccess()) emit bookUpdated(response.getMessage());
+        else emit bookUpdateFailed(response.getMessage());
         break;
     case RequestType::GetAllReviews:
         if(response.isSuccess()) emit allReviewsLoaded(response.getData().value("reviews").toList());

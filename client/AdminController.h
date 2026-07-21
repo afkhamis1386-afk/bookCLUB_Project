@@ -21,6 +21,7 @@ public:
     void loadAllBooks();
     void loadBookDetailsForReview(int bookId);
     void deleteBook(int bookId);
+    void updateBook(int bookId, const QString &bookName, const QString &description, double price);
     void loadAllReviews();
     void deleteReview(int reviewId);
     void createAdmin(const QString &username, const QString &password, const QString &securityAnswer, const QString &firstName, const QString &lastName);
@@ -46,6 +47,8 @@ signals:
     void bookDetailsForReviewLoadFailed(const QString &message);
     void bookDeleted(const QString &message);
     void bookDeleteFailed(const QString &message);
+    void bookUpdated(const QString &message);
+    void bookUpdateFailed(const QString &message);
     void allReviewsLoaded(const QVariantList &reviews);
     void allReviewsLoadFailed(const QString &message);
     void reviewDeleted(const QString &message);

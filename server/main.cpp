@@ -1,7 +1,7 @@
 #include <QApplication>
 #include "DatabaseManager.h"
 #include "ServerApplication.h"
-#include "ServerDashboardWindow.h"
+#include "serverdashboardwindow.h"
 #include "../common/Notification.h"
 #include "../common/Response.h"
 int main(int argc, char *argv[])

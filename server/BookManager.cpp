@@ -203,6 +203,47 @@ Response BookManager::applyDiscount(int publisherUserId, int bookId, double disc
     }
     return Response(ResponseStatus::Success, "تخفیف با موفقیت اعمال شد");
 }
+Response BookManager::applyTimedDiscount(int publisherUserId, int bookId, double discountPercent, const QDateTime &startDate, const QDateTime &endDate){
+    BookRepository bookRepo;
+    std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
+    if(!book){
+        return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
+    }
+    if(book->getPublisherUserId() != publisherUserId){
+        return Response(ResponseStatus::Unauthorized, "شما اجازه اعمال تخفیف روی این کتاب را ندارید");
+    }
+    if(discountPercent <= 0 || discountPercent > 100){
+        return Response(ResponseStatus::ValidationFailed, "درصد تخفیف زمان دار باید بین ۰ تا ۱۰۰ باشد");
+    }
+    if(!startDate.isValid() || !endDate.isValid()){
+        return Response(ResponseStatus::ValidationFailed, "تاریخ شروع یا پایان تخفیف نامعتبر است");
+    }
+    if(startDate >= endDate){
+        return Response(ResponseStatus::ValidationFailed, "تاریخ شروع باید قبل از تاریخ پایان باشد");
+    }
+    if(endDate <= QDateTime::currentDateTime()){
+        return Response(ResponseStatus::ValidationFailed, "تاریخ پایان تخفیف باید در آینده باشد");
+    }
+    TimedDiscount timedDiscount(bookId, discountPercent, startDate, endDate);
+    TimedDiscountRepository timedDiscountRepo;
+    int newDiscountId = timedDiscountRepo.insertTimedDiscount(timedDiscount);
+    if(newDiscountId == -1){
+        return Response(ResponseStatus::Error, "خطا در ثبت تخفیف زمان دار");
+    }
+    SavedBookRepository savedRepo;
+    QVector<int> interestedUserIds = savedRepo.getUserIdsWhoSavedBook(bookId);
+    if(!interestedUserIds.isEmpty()){
+        NotificationManager notifManager;
+        notifManager.broadcastNotification(
+            interestedUserIds,
+            NotificationType::DiscountOnSavedBook, "تخفیف زمان دار روی کتاب ذخیره شده",
+            QString("کتاب «%1» که ذخیره کرده اید تخفیف زمان دار خورد").arg(book->getBookName()),
+            bookId, publisherUserId );
+    }
+    QVariantMap data;
+    data["discountId"] = newDiscountId;
+    return Response(ResponseStatus::Success, "تخفیف زمان دار با موفقیت اعمال شد", data);
+}
 Response BookManager::deactivateBook(int publisherUserId, int bookId){
     BookRepository bookRepo;
     std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
@@ -280,6 +321,28 @@ Response BookManager::getFreeBooks(){
         bookList.append(id);
     data["bookIds"] = bookList;
     return Response(ResponseStatus::Success, "لیست کتاب های رایگان بازیابی شد", data);
+}
+Response BookManager::getBestSellers(int limit){
+    if(limit <= 0) limit = 10;
+    BookRepository bookRepo;
+    QVector<int> bookIds = bookRepo.getBestSellingBookIds(limit);
+    QVariantMap data;
+    QVariantList bookList;
+    for(int id : qAsConst(bookIds))
+        bookList.append(id);
+    data["bookIds"] = bookList;
+    return Response(ResponseStatus::Success, "لیست کتاب های پرفروش بازیابی شد", data);
+}
+Response BookManager::getPopularBooks(int limit){
+    if(limit <= 0) limit = 10;
+    BookRepository bookRepo;
+    QVector<int> bookIds = bookRepo.getMostPopularBookIds(limit);
+    QVariantMap data;
+    QVariantList bookList;
+    for(int id : qAsConst(bookIds))
+        bookList.append(id);
+    data["bookIds"] = bookList;
+    return Response(ResponseStatus::Success, "لیست کتاب های محبوب بازیابی شد", data);
 }
 Response BookManager::searchBooks(const QString &query){
     if(query.trimmed().isEmpty()) {
