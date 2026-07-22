@@ -39,7 +39,7 @@ void PaymentWindow_c::onPayButtonClicked()
     }
     static const QRegularExpression expiryRegex(R"(^\d{2}/\d{2}$)");
     if (!expiryRegex.match(ui->expiryLineEdit->text().trimmed()).hasMatch()) {
-        ui->statusLabel->setText("تاریخ انقضا را به‌صورت MM/YY وارد کنید");
+        ui->statusLabel->setText("تاریخ انقضا را به صورت MM/YY وارد کنید");
         return;
     }
     static const QRegularExpression cvvRegex(R"(^\d{3,4}$)");
