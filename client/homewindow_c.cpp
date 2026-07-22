@@ -2,6 +2,7 @@
 #include "ui_homewindow_c.h"
 #include "cartwindow_c.h"
 #include "profilewindow_c.h"
+#include "librarywindow_c.h"
 #include <QMessageBox>
 #include <QScrollArea>
 HomeWindow_c::HomeWindow_c(NetworkManager *networkManager, QWidget *parent)
@@ -168,9 +169,15 @@ void HomeWindow_c::onNotificationsButtonClicked()
 
 void HomeWindow_c::onLibraryButtonClicked()
 {
-    QMessageBox::information(this, "کتابخانه من", "صفحه ی کتابخانه در قدم بعدی ساخته می شود.");
-}
-
+        LibraryWindow_c *libraryWindow = new LibraryWindow_c(networkManager);
+        libraryWindow->setAttribute(Qt::WA_DeleteOnClose);
+        connect(libraryWindow, &LibraryWindow_c::backRequested, this, [this, libraryWindow]() {
+        libraryWindow->close();
+        this->show();
+        });
+        libraryWindow->show();
+        this->hide();
+    }
 void HomeWindow_c::onProfileButtonClicked()
 {
     ProfileWindow_c *profileWindow = new ProfileWindow_c(networkManager);
