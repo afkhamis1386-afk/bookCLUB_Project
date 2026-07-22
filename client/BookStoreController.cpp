@@ -82,6 +82,22 @@ void BookStoreController::loadFreeBooks() {
     lastBookListRequest = RequestType::GetFreeBooks;
     networkManager->getFreeBooks();
 }
+void BookStoreController::loadBestSellers(int limit) {
+    if (!networkManager->isConnected()) {
+        emit booksLoadFailed("اتصال به سرور برقرار نیست");
+        return;
+    }
+    lastBookListRequest = RequestType::GetBestSellers;
+    networkManager->getBestSellers(limit);
+}
+void BookStoreController::loadPopularBooks(int limit) {
+    if (!networkManager->isConnected()) {
+        emit booksLoadFailed("اتصال به سرور برقرار نیست");
+        return;
+    }
+    lastBookListRequest = RequestType::GetPopularBooks;
+    networkManager->getPopularBooks(limit);
+}
 void BookStoreController::loadRecommendedBooks() {
     if (!networkManager->isConnected()) {
         emit recommendedBooksLoadFailed("اتصال به سرور برقرار نیست");
@@ -128,6 +144,8 @@ void BookStoreController::onResponseReceived(RequestType type, const Response &r
     case RequestType::GetBooksByCategory:
     case RequestType::GetNewestBooks:
     case RequestType::GetFreeBooks:
+    case RequestType::GetBestSellers:
+    case RequestType::GetPopularBooks:
         if (response.isSuccess())
             emit booksLoaded(response.getData().value("bookIds").toList());
         else
