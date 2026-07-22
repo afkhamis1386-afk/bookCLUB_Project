@@ -368,7 +368,7 @@ QComboBox QAbstractItemView {
 }</string>
            </property>
           </widget>
-          <widget class="QWidget" name="layoutWidget">
+          <widget class="QWidget" name="layoutWidget_shelves">
            <property name="geometry">
             <rect>
              <x>10</x>
@@ -433,7 +433,7 @@ QComboBox QAbstractItemView {
          </rect>
         </property>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QWidget" name="layoutWidget_savedBooks">
         <property name="geometry">
          <rect>
           <x>230</x>
