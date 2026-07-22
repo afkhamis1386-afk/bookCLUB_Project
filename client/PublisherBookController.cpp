@@ -107,6 +107,23 @@ void PublisherBookController::applyDiscount(int bookId, double discountPercent, 
     if (!networkManager->isConnected()) { emit discountApplyFailed("اتصال به سرور برقرار نیست"); return; }
     networkManager->applyDiscount(bookId, discountPercent, discountAmount);
 }
+void PublisherBookController::applyTimedDiscount(int bookId, double discountPercent, const QDateTime &startDate, const QDateTime &endDate) {
+    if (bookId <= 0) { emit validationError("شناسه کتاب نامعتبر است"); return; }
+    if (discountPercent <= 0 || discountPercent > 100) {
+        emit validationError("درصد تخفیف زمان دار باید بین ۰ تا ۱۰۰ باشد");
+        return;
+    }
+    if (!startDate.isValid() || !endDate.isValid()) {
+        emit validationError("تاریخ شروع یا پایان نامعتبر است");
+        return;
+    }
+    if (startDate >= endDate) {
+        emit validationError("تاریخ شروع باید قبل از تاریخ پایان باشد");
+        return;
+    }
+    if (!networkManager->isConnected()) { emit timedDiscountApplyFailed("اتصال به سرور برقرار نیست"); return; }
+    networkManager->applyTimedDiscount(bookId, discountPercent, startDate, endDate);
+}
 void PublisherBookController::onResponseReceived(RequestType type, const Response &response) {
     switch (type) {
     case RequestType::AddBook:
@@ -134,6 +151,10 @@ void PublisherBookController::onResponseReceived(RequestType type, const Respons
     case RequestType::ApplyDiscount:
         if (response.isSuccess()) emit discountApplied(response.getMessage());
         else emit discountApplyFailed(response.getMessage());
+        break;
+    case RequestType::ApplyTimedDiscount:
+        if (response.isSuccess()) emit timedDiscountApplied(response.getMessage());
+        else emit timedDiscountApplyFailed(response.getMessage());
         break;
     default:
         break;

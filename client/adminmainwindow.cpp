@@ -5,12 +5,13 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QDateTime>
+#include <QInputDialog>
+#include <QLineEdit>
 AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::AdminMainWindow)
     , networkManager(networkManager)
-    , adminController(new AdminController(networkManager, this))
-{
+    , adminController(new AdminController(networkManager, this)) {
     ui->setupUi(this);
     ui->usersTableWidget->setColumnCount(6);
     ui->usersTableWidget->setHorizontalHeaderLabels({"شناسه", "نام کاربری", "نقش", "مسدود", "فعال", "تاریخ عضویت"});
@@ -35,6 +36,7 @@ AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent
     connect(ui->refreshBooksButton, &QPushButton::clicked, adminController, &AdminController::loadAllBooks);
     connect(ui->viewBookDetailsButton, &QPushButton::clicked, this, &AdminMainWindow::onViewBookDetailsButtonClicked);
     connect(ui->deleteBookButton, &QPushButton::clicked, this, &AdminMainWindow::onDeleteBookButtonClicked);
+    connect(ui->editBookButton, &QPushButton::clicked, this, &AdminMainWindow::onEditBookButtonClicked);
     connect(ui->refreshReviewsButton, &QPushButton::clicked, adminController, &AdminController::loadAllReviews);
     connect(ui->deleteReviewButton, &QPushButton::clicked, this, &AdminMainWindow::onDeleteReviewButtonClicked);
     connect(ui->logoutButton, &QPushButton::clicked, this, &AdminMainWindow::onLogoutButtonClicked);
@@ -54,6 +56,8 @@ AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent
     connect(adminController, &AdminController::bookDetailsForReviewLoadFailed, this, &AdminMainWindow::onBookDetailsForReviewLoadFailed);
     connect(adminController, &AdminController::bookDeleted, this, &AdminMainWindow::onBookDeleted);
     connect(adminController, &AdminController::bookDeleteFailed, this, &AdminMainWindow::onBookDeleteFailed);
+    connect(adminController, &AdminController::bookUpdated, this, &AdminMainWindow::onBookUpdated);
+    connect(adminController, &AdminController::bookUpdateFailed, this, &AdminMainWindow::onBookUpdateFailed);
     connect(adminController, &AdminController::allReviewsLoaded, this, &AdminMainWindow::onAllReviewsLoaded);
     connect(adminController, &AdminController::allReviewsLoadFailed, this, &AdminMainWindow::onAllReviewsLoadFailed);
     connect(adminController, &AdminController::reviewDeleted, this, &AdminMainWindow::onReviewDeleted);
@@ -64,8 +68,7 @@ AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent
     adminController->loadAllBooks();
     adminController->loadAllReviews();
 }
-AdminMainWindow::~AdminMainWindow()
-{
+AdminMainWindow::~AdminMainWindow() {
     delete ui;
 }
 int AdminMainWindow::getSelectedUserId() const {
@@ -83,8 +86,7 @@ int AdminMainWindow::getSelectedReviewId() const {
     if (row < 0) return -1;
     return ui->reviewsTableWidget->item(row, 0)->text().toInt();
 }
-void AdminMainWindow::onUsersLoaded(const QVariantList &users)
-{
+void AdminMainWindow::onUsersLoaded(const QVariantList &users) {
     ui->usersTableWidget->setRowCount(users.size());
     for (int i = 0; i < users.size(); ++i) {
         QVariantMap u = users[i].toMap();
@@ -128,8 +130,7 @@ void AdminMainWindow::onUserActiveStatusChanged(const QString &message) { ui->st
 void AdminMainWindow::onUserActiveStatusChangeFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onUserDeleted(const QString &message) { ui->statusLabel->setText(message); adminController->loadAllUsers(); }
 void AdminMainWindow::onUserDeleteFailed(const QString &message) { ui->statusLabel->setText(message); }
-void AdminMainWindow::onAllBooksLoaded(const QVariantList &books)
-{
+void AdminMainWindow::onAllBooksLoaded(const QVariantList &books) {
     ui->booksTableWidget->setRowCount(books.size());
     for (int i = 0; i < books.size(); ++i) {
         QVariantMap b = books[i].toMap();
@@ -148,8 +149,7 @@ void AdminMainWindow::onViewBookDetailsButtonClicked() {
     adminController->loadBookDetailsForReview(id);
 }
 void AdminMainWindow::onBookDetailsForReviewLoaded(const QVariantMap &bookData) {
-    QMessageBox::information(this, "جزئیات کتاب",
-                             QString("نام: %1\nتوضیحات: %2\nقیمت: %3")
+    QMessageBox::information(this, "جزئیات کتاب", QString("نام: %1\nتوضیحات: %2\nقیمت: %3")
                                  .arg(bookData.value("bookName").toString())
                                  .arg(bookData.value("description").toString())
                                  .arg(bookData.value("price").toDouble()));
@@ -162,9 +162,25 @@ void AdminMainWindow::onDeleteBookButtonClicked() {
         adminController->deleteBook(id);
 }
 void AdminMainWindow::onBookDeleted(const QString &message) { ui->statusLabel->setText(message); adminController->loadAllBooks(); }
+void AdminMainWindow::onEditBookButtonClicked() {
+    int id = getSelectedBookId();
+    if (id <= 0) { ui->statusLabel->setText("ابتدا یک کتاب را انتخاب کنید"); return; }
+    int row = ui->booksTableWidget->currentRow();
+    QString currentName = (row >= 0 && ui->booksTableWidget->item(row, 1))
+                              ? ui->booksTableWidget->item(row, 1)->text() : QString();
+    bool ok;
+    QString newName = QInputDialog::getText(this, "ویرایش کتاب", "نام جدید کتاب:", QLineEdit::Normal, currentName, &ok);
+    if (!ok) return;
+    QString newDescription = QInputDialog::getMultiLineText(this, "ویرایش کتاب", "توضیحات جدید:", "", &ok);
+    if (!ok) return;
+    double newPrice = QInputDialog::getDouble(this, "ویرایش کتاب", "قیمت جدید:", 0, 0, 100000000, 0, &ok);
+    if (!ok) return;
+    adminController->updateBook(id, newName, newDescription, newPrice);
+}
+void AdminMainWindow::onBookUpdated(const QString &message) { ui->statusLabel->setText(message); adminController->loadAllBooks(); }
+void AdminMainWindow::onBookUpdateFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onBookDeleteFailed(const QString &message) { ui->statusLabel->setText(message); }
-void AdminMainWindow::onAllReviewsLoaded(const QVariantList &reviews)
-{
+void AdminMainWindow::onAllReviewsLoaded(const QVariantList &reviews) {
     ui->reviewsTableWidget->setRowCount(reviews.size());
     for (int i = 0; i < reviews.size(); ++i) {
         QVariantMap r = reviews[i].toMap();
@@ -193,5 +209,3 @@ void AdminMainWindow::onCreateAdminButtonClicked() {
     CreateAdminDialog dialog(networkManager, this);
     dialog.exec();
 }
-
-

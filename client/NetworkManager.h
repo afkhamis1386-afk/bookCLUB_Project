@@ -1,6 +1,7 @@
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
 #include <QObject>
+#include <QDateTime>
 #include "ClientSocket.h"
 #include "../common/Response.h"
 #include "../common/Enums.h"
@@ -34,6 +35,8 @@ public:
     void getBooksByGenre(int genreId);
     void getBooksByCategory(int categoryId);
     void getNewestBooks(int limit = 10);
+    void getBestSellers(int limit = 10);
+    void getPopularBooks(int limit = 10);
     void getFreeBooks();
     void getRecommendedBooks();
     void addBook(const QString &bookName, const QString &description, double price,
@@ -44,6 +47,7 @@ public:
     void deactivateBook(int bookId);
     void reactivateBook(int bookId);
     void applyDiscount(int bookId, double discountPercent, double discountAmount);
+    void applyTimedDiscount(int bookId, double discountPercent, const QDateTime &startDate, const QDateTime &endDate);
     void getPublisherStats();
     void addToCart(int bookId);
     void removeFromCart(int bookId);
@@ -78,6 +82,7 @@ public:
     void getAllBooksAdmin();
     void getBookDetailsForReview(int bookId);
     void deleteBook(int bookId);
+    void updateBookByAdmin(int bookId, const QString &bookName, const QString &description, double price);
     void getAllReviews();
     void deleteReviewByAdmin(int reviewId);
     void getBookCoverImage(int bookId);
@@ -110,3 +115,4 @@ private:
 
 };
 #endif // NETWORKMANAGER_H
+

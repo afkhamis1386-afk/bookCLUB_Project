@@ -288,7 +288,7 @@ QLineEdit:focus {
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="iconSize">
        <size>
@@ -338,7 +338,7 @@ QLineEdit:focus {
          </property>
         </column>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QWidget" name="layoutWidget_users">
         <property name="geometry">
          <rect>
           <x>170</x>
@@ -415,13 +415,13 @@ QLineEdit:focus {
         <column/>
         <column/>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QWidget" name="layoutWidget_books">
         <property name="geometry">
          <rect>
           <x>170</x>
           <y>240</y>
           <width>621</width>
-          <height>151</height>
+          <height>179</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -436,6 +436,13 @@ QLineEdit:focus {
           <widget class="QPushButton" name="deleteBookButton">
            <property name="text">
             <string>حذف کتاب نامعتبر </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="editBookButton">
+           <property name="text">
+            <string>ویرایش کتاب</string>
            </property>
           </widget>
          </item>
@@ -470,7 +477,7 @@ QLineEdit:focus {
         <column/>
         <column/>
        </widget>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QWidget" name="layoutWidget_reviews">
         <property name="geometry">
          <rect>
           <x>220</x>

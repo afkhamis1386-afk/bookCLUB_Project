@@ -13,6 +13,7 @@
 #include "AdminManager.h"
 #include "PublisherManager.h"
 #include "DatabaseManager.h"
+#include "ServerLogRepository.h"
 #include <QDataStream>
 #include <QDebug>
 
@@ -140,6 +141,8 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::GetNewestBooks:
         case RequestType::GetFreeBooks:
         case RequestType::GetRecommendedBooks:
+        case RequestType::GetBestSellers:
+        case RequestType::GetPopularBooks:
             response = handleBookRequest(req);
             break;
         case RequestType::AddBook:
@@ -147,6 +150,7 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::DeactivateBook:
         case RequestType::ReactivateBook:
         case RequestType::ApplyDiscount:
+        case RequestType::ApplyTimedDiscount:
             if (checkRole({UserRole::Publisher}, accessError))
                 response = handleBookRequest(req);
             else
@@ -236,6 +240,7 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::GetAllBooksAdmin:
         case RequestType::GetBookDetailsForReview:
         case RequestType::DeleteBook:
+        case RequestType::UpdateBookByAdmin:
         case RequestType::GetAllReviews:
         case RequestType::DeleteReviewByAdmin:
             if (checkRole({UserRole::Admin}, accessError))
@@ -254,7 +259,11 @@ void ClientHandler::processRequest(const Request &req) {
         }
     }
     sendResponse(response);
-    emit requestLogReceived(requestTypeToString(type), static_cast<int>(response.getStatus()));
+    const QString requestName = requestTypeToString(type);
+    const int statusCode = static_cast<int>(response.getStatus());
+    emit requestLogReceived(requestName, statusCode);
+    ServerLogRepository logRepo;
+    logRepo.insertLog(isAuthenticated ? authenticatedUserId : -1, requestName, statusCode, response.getMessage());
 }
 void ClientHandler::sendResponse(const Response &res) {
     QByteArray data;
@@ -361,6 +370,10 @@ Response ClientHandler::handleBookRequest(const Request &req) {
         return bookManager.getNewestBooks(p.value("limit").toInt() > 0 ? p.value("limit").toInt() : 10);
     case RequestType::GetFreeBooks:
         return bookManager.getFreeBooks();
+    case RequestType::GetBestSellers:
+        return bookManager.getBestSellers(p.value("limit").toInt() > 0 ? p.value("limit").toInt() : 10);
+    case RequestType::GetPopularBooks:
+        return bookManager.getPopularBooks(p.value("limit").toInt() > 0 ? p.value("limit").toInt() : 10);
     case RequestType::GetRecommendedBooks:
         return bookManager.getRecommendedBooks(authenticatedUserId);
     case RequestType::UpdateBook:
@@ -375,6 +388,13 @@ Response ClientHandler::handleBookRequest(const Request &req) {
             p.value("bookId").toInt(),
             p.value("discountPercent").toDouble(),
             p.value("discountAmount").toDouble());
+    case RequestType::ApplyTimedDiscount:
+        return bookManager.applyTimedDiscount(
+            authenticatedUserId,
+            p.value("bookId").toInt(),
+            p.value("discountPercent").toDouble(),
+            p.value("startDate").toDateTime(),
+            p.value("endDate").toDateTime());
     default:
         return Response(ResponseStatus::Error, "درخواست کتاب نامعتبر");
     }
@@ -505,6 +525,12 @@ Response ClientHandler::handleAdminRequest(const Request &req) {
         return adminManager.getBookDetailsForReview(p.value("bookId").toInt());
     case RequestType::DeleteBook:
         return adminManager.removeInvalidBook(p.value("bookId").toInt());
+    case RequestType::UpdateBookByAdmin:
+        return adminManager.updateBook(
+            p.value("bookId").toInt(),
+            p.value("bookName").toString(),
+            p.value("description").toString(),
+            p.value("price").toDouble());
     case RequestType::GetAllReviews:
         return adminManager.getAllReviews();
     case RequestType::DeleteReviewByAdmin: {

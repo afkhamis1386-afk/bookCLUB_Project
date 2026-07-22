@@ -15,6 +15,8 @@ public:
     void loadBooksByGenre(int genreId);
     void loadBooksByCategory(int categoryId);
     void loadNewestBooks(int limit = 10);
+    void loadBestSellers(int limit = 20);
+    void loadPopularBooks(int limit = 20);
     void loadFreeBooks();
     void loadRecommendedBooks();
     void loadCoverImage(int bookId);

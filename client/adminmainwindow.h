@@ -43,7 +43,10 @@ private slots:
     void onBookDetailsForReviewLoaded(const QVariantMap &bookData);
     void onBookDetailsForReviewLoadFailed(const QString &message);
     void onDeleteBookButtonClicked();
+    void onEditBookButtonClicked();
     void onBookDeleted(const QString &message);
+    void onBookUpdated(const QString &message);
+    void onBookUpdateFailed(const QString &message);
     void onBookDeleteFailed(const QString &message);
     void onAllReviewsLoaded(const QVariantList &reviews);
     void onAllReviewsLoadFailed(const QString &message);

@@ -51,6 +51,7 @@ SOURCES += \
     SavedBookManager.cpp \
     SavedBookRepository.cpp \
     ServerApplication.cpp \
+    ServerLogRepository.cpp \
     ServerMonitorManager.cpp \
     serverdashboardwindow.cpp \
     ShelfManager.cpp \
@@ -110,6 +111,7 @@ HEADERS += \
     SavedBookManager.h \
     SavedBookRepository.h \
     ServerApplication.h \
+    ServerLogRepository.h \
     ServerMonitorManager.h \
     serverdashboardwindow.h \
     ShelfManager.h \
