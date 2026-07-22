@@ -143,6 +143,16 @@ void NetworkManager::getNewestBooks(int limit) {
     p["limit"] = limit;
     sendRequest(RequestType::GetNewestBooks, p);
 }
+void NetworkManager::getBestSellers(int limit) {
+    QVariantMap p;
+    p["limit"] = limit;
+    sendRequest(RequestType::GetBestSellers, p);
+}
+void NetworkManager::getPopularBooks(int limit) {
+    QVariantMap p;
+    p["limit"] = limit;
+    sendRequest(RequestType::GetPopularBooks, p);
+}
 void NetworkManager::getFreeBooks() {
     sendRequest(RequestType::GetFreeBooks);
 }
@@ -189,6 +199,14 @@ void NetworkManager::applyDiscount(int bookId, double discountPercent, double di
     p["discountPercent"] = discountPercent;
     p["discountAmount"] = discountAmount;
     sendRequest(RequestType::ApplyDiscount, p);
+}
+void NetworkManager::applyTimedDiscount(int bookId, double discountPercent, const QDateTime &startDate, const QDateTime &endDate) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    p["discountPercent"] = discountPercent;
+    p["startDate"] = startDate;
+    p["endDate"] = endDate;
+    sendRequest(RequestType::ApplyTimedDiscount, p);
 }
 void NetworkManager::getPublisherStats() {
     sendRequest(RequestType::GetPublisherStats);
@@ -351,6 +369,14 @@ void NetworkManager::deleteBook(int bookId) {
     QVariantMap p;
     p["bookId"] = bookId;
     sendRequest(RequestType::DeleteBook, p);
+}
+void NetworkManager::updateBookByAdmin(int bookId, const QString &bookName, const QString &description, double price) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    p["bookName"] = bookName;
+    p["description"] = description;
+    p["price"] = price;
+    sendRequest(RequestType::UpdateBookByAdmin, p);
 }
 void NetworkManager::deleteReviewByAdmin(int reviewId) {
     QVariantMap p;
