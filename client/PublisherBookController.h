@@ -2,6 +2,7 @@
 #define PUBLISHERBOOKCONTROLLER_H
 
 #include <QObject>
+#include <QDateTime>
 #include "NetworkManager.h"
 class PublisherBookController : public QObject {
     Q_OBJECT
@@ -14,6 +15,7 @@ public:
     void deactivateBook(int bookId);
     void reactivateBook(int bookId);
     void applyDiscount(int bookId, double discountPercent, double discountAmount);
+    void applyTimedDiscount(int bookId, double discountPercent, const QDateTime &startDate, const QDateTime &endDate);
 signals:
     void bookAdded(int bookId, const QString &message);
     void bookAddFailed(const QString &message);
@@ -27,6 +29,8 @@ signals:
     void bookReactivateFailed(const QString &message);
     void discountApplied(const QString &message);
     void discountApplyFailed(const QString &message);
+    void timedDiscountApplied(const QString &message);
+    void timedDiscountApplyFailed(const QString &message);
 private slots:
     void onResponseReceived(RequestType type, const Response &response);
 private:
