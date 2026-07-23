@@ -147,6 +147,9 @@ void HomeWindow_c::onCardClicked(int bookId)
         bookDetailsWindow->close();
         this->show();
     });
+    connect(bookDetailsWindow, &BookDetailsWindow_c::cartUpdated, this, [this]() {
+        cartController->refreshCart();
+    });
     bookDetailsWindow->show();
     this->hide();
 }

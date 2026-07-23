@@ -55,6 +55,28 @@ void LoginWindow_c::onForgotPasswordButtonClicked()
 void LoginWindow_c::onLoginSucceeded(UserRole role)
 {
     if(role == UserRole::NormalUser){
+        if (!networkManager->getHasFavoriteGenres()) {
+            if (!genreSelectionWindow) {
+                genreSelectionConfirmed = false;
+                genreSelectionWindow = new GenreSelectionWindow_c(networkManager);
+                genreSelectionWindow->setAttribute(Qt::WA_DeleteOnClose);
+                connect(genreSelectionWindow, &GenreSelectionWindow_c::genresConfirmed, this, [this]() {
+                    genreSelectionConfirmed = true;
+                    HomeWindow_c *homeWindow = new HomeWindow_c(networkManager);
+                    homeWindow->setAttribute(Qt::WA_DeleteOnClose);
+                    homeWindow->show();
+                    genreSelectionWindow->close();
+                });
+                connect(genreSelectionWindow, &QObject::destroyed, this, [this]() {
+                    genreSelectionWindow = nullptr;
+                    if (!genreSelectionConfirmed)
+                        this->show();
+                });
+            }
+            genreSelectionWindow->show();
+            this->hide();
+            return;
+        }
         HomeWindow_c *homeWindow = new HomeWindow_c(networkManager);
         homeWindow->setAttribute(Qt::WA_DeleteOnClose);
         homeWindow->show();
