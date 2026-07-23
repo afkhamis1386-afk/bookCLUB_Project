@@ -46,6 +46,8 @@ BookDetailsWindow_c::~BookDetailsWindow_c() {
     delete ui;
 }
 void BookDetailsWindow_c::onBookDetailsReceived(const QVariantMap &bookData) {
+    if (bookData.value("bookId").toInt() != bookId)
+        return;
     ui->bookNameLabel->setText(bookData.value("bookName").toString());
     ui->descriptionTextEdit->setPlainText(bookData.value("description").toString());
     double finalPrice = bookData.value("finalPrice").toDouble();
