@@ -50,6 +50,7 @@ private slots:
     void onUnreadCountLoaded(int count);
     void onBookDetailsReceived(const QVariantMap &bookData);
     void onNewNotificationArrived(const QVariantMap &notificationData);
+    void onBookLiveUpdateReceived(const QString &updateType, const QVariantMap &data);
 
 private:
     Ui::HomeWindow_c *ui;
@@ -60,6 +61,7 @@ private:
     QWidget *gridContainer;
     QGridLayout *gridLayout;
     QMap<int, BookCardWidget*> cardsByBookId;
+    RequestType currentTab = RequestType::GetRecommendedBooks;
     void clearBookGrid();
     void displayBooks(const QVariantList &bookIds);
     void loadBookNameFromDetails(int bookId, BookCardWidget *card);

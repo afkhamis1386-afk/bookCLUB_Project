@@ -2,7 +2,6 @@
 #include "ui_homewindow_c.h"
 #include "cartwindow_c.h"
 #include "profilewindow_c.h"
-#include "librarywindow_c.h"
 #include <QMessageBox>
 #include <QScrollArea>
 HomeWindow_c::HomeWindow_c(NetworkManager *networkManager, QWidget *parent)
@@ -41,6 +40,7 @@ HomeWindow_c::HomeWindow_c(NetworkManager *networkManager, QWidget *parent)
     connect(notificationController, &NotificationController::unreadCountLoaded, this, &HomeWindow_c::onUnreadCountLoaded);
     connect(notificationController, &NotificationController::newNotificationArrived, this, &HomeWindow_c::onNewNotificationArrived);
     connect(bookStoreController, &BookStoreController::bookDetailsReceived, this, &HomeWindow_c::onBookDetailsReceived);
+    connect(networkManager, &NetworkManager::bookLiveUpdateReceived, this, &HomeWindow_c::onBookLiveUpdateReceived);
     bookStoreController->loadRecommendedBooks();
     cartController->refreshCart();
     notificationController->refreshUnreadCount();
@@ -121,12 +121,20 @@ void HomeWindow_c::onSearchButtonClicked()
     bookStoreController->search(query);
 }
 
-void HomeWindow_c::onRecommendedTabClicked() { bookStoreController->loadRecommendedBooks(); }
-void HomeWindow_c::onNewestTabClicked() { bookStoreController->loadNewestBooks(20); }
-void HomeWindow_c::onFreeTabClicked() { bookStoreController->loadFreeBooks(); }
-void HomeWindow_c::onBestSellersTabClicked() { bookStoreController->loadBestSellers(20); }
-void HomeWindow_c::onPopularTabClicked() { bookStoreController->loadPopularBooks(20); }
-void HomeWindow_c::onAllTabClicked() { bookStoreController->loadAllBooks(); }
+void HomeWindow_c::onRecommendedTabClicked() { currentTab = RequestType::GetRecommendedBooks; bookStoreController->loadRecommendedBooks(); }
+void HomeWindow_c::onNewestTabClicked() { currentTab = RequestType::GetNewestBooks; bookStoreController->loadNewestBooks(20); }
+void HomeWindow_c::onFreeTabClicked() { currentTab = RequestType::GetFreeBooks; bookStoreController->loadFreeBooks(); }
+void HomeWindow_c::onBestSellersTabClicked() { currentTab = RequestType::GetBestSellers; bookStoreController->loadBestSellers(20); }
+void HomeWindow_c::onPopularTabClicked() { currentTab = RequestType::GetPopularBooks; bookStoreController->loadPopularBooks(20); }
+void HomeWindow_c::onAllTabClicked() { currentTab = RequestType::GetBooks; bookStoreController->loadAllBooks(); }
+void HomeWindow_c::onBookLiveUpdateReceived(const QString &updateType, const QVariantMap &data) {
+    Q_UNUSED(data)
+    if (updateType == "newRating" && currentTab == RequestType::GetPopularBooks) {
+        bookStoreController->loadPopularBooks(20);
+    } else if (updateType == "newSale" && currentTab == RequestType::GetBestSellers) {
+        bookStoreController->loadBestSellers(20);
+    }
+}
 void HomeWindow_c::onCardClicked(int bookId)
 {
     if (bookDetailsWindow) {
@@ -169,15 +177,9 @@ void HomeWindow_c::onNotificationsButtonClicked()
 
 void HomeWindow_c::onLibraryButtonClicked()
 {
-        LibraryWindow_c *libraryWindow = new LibraryWindow_c(networkManager);
-        libraryWindow->setAttribute(Qt::WA_DeleteOnClose);
-        connect(libraryWindow, &LibraryWindow_c::backRequested, this, [this, libraryWindow]() {
-        libraryWindow->close();
-        this->show();
-        });
-        libraryWindow->show();
-        this->hide();
-    }
+    QMessageBox::information(this, "کتابخانه من", "صفحه ی کتابخانه در قدم بعدی ساخته می شود.");
+}
+
 void HomeWindow_c::onProfileButtonClicked()
 {
     ProfileWindow_c *profileWindow = new ProfileWindow_c(networkManager);
