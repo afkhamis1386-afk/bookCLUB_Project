@@ -37,6 +37,8 @@ private slots:
     void onSubmitRatingButtonClicked();
     void onAddToCartSucceeded(const QString &message);
     void onAddToCartFailed(const QString &message);
+    void onFreeBookClaimed(const QString &message);
+    void onFreeBookClaimFailed(const QString &message);
     void onBookSaved(const QString &message);
     void onBookSaveFailed(const QString &message);
     void onReviewSubmitted(int reviewId, const QString &message);
@@ -55,6 +57,7 @@ private:
     ReviewController *reviewController;
     RatingController *ratingController;
     SavedBookController *savedBookController;
+    bool isBookFree = false;
     void populateReviewsList(const QVariantList &reviews);
 };
 

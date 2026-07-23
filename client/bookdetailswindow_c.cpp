@@ -24,6 +24,8 @@ BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int boo
     connect(bookStoreController, &BookStoreController::bookDetailsFailed, this, &BookDetailsWindow_c::onBookDetailsFailed);
     connect(bookStoreController, &BookStoreController::coverImageLoaded, this, &BookDetailsWindow_c::onCoverImageLoaded);
     connect(bookStoreController, &BookStoreController::validationError, this, &BookDetailsWindow_c::onValidationError);
+    connect(bookStoreController, &BookStoreController::freeBookClaimed, this, &BookDetailsWindow_c::onFreeBookClaimed);
+    connect(bookStoreController, &BookStoreController::freeBookClaimFailed, this, &BookDetailsWindow_c::onFreeBookClaimFailed);
     connect(cartController, &CartController::addToCartSucceeded, this, &BookDetailsWindow_c::onAddToCartSucceeded);
     connect(cartController, &CartController::addToCartFailed, this, &BookDetailsWindow_c::onAddToCartFailed);
     connect(savedBookController, &SavedBookController::bookSaved, this, &BookDetailsWindow_c::onBookSaved);
@@ -48,12 +50,14 @@ void BookDetailsWindow_c::onBookDetailsReceived(const QVariantMap &bookData) {
     ui->descriptionTextEdit->setPlainText(bookData.value("description").toString());
     double finalPrice = bookData.value("finalPrice").toDouble();
     double price = bookData.value("price").toDouble();
-    if (finalPrice <= 0)
+    isBookFree = (price == 0);
+    if (isBookFree)
         ui->priceLabel->setText("رایگان");
     else if (finalPrice < price)
         ui->priceLabel->setText(QString("%1 تومان (تخفیف از %2)").arg(finalPrice, 0, 'f', 0).arg(price, 0, 'f', 0));
     else
         ui->priceLabel->setText(QString("%1 تومان").arg(price, 0, 'f', 0));
+    ui->addToCartButton->setText(isBookFree ? "دریافت رایگان" : "افزودن به سبد خرید");
     double avgRating = bookData.value("averageRating").toDouble();
     int ratingCount = bookData.value("ratingCount").toInt();
     ui->ratingLabel->setText(QString("امتیاز: %1 از ۵ (%2 رأی)").arg(avgRating, 0, 'f', 1).arg(ratingCount));
@@ -81,7 +85,18 @@ void BookDetailsWindow_c::populateReviewsList(const QVariantList &reviews) {
 }
 void BookDetailsWindow_c::onReviewsLoaded(const QVariantList &reviews) { populateReviewsList(reviews); }
 void BookDetailsWindow_c::onReviewsLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
-void BookDetailsWindow_c::onAddToCartButtonClicked() { cartController->addBook(bookId); }
+void BookDetailsWindow_c::onAddToCartButtonClicked() {
+    if (isBookFree)
+        bookStoreController->claimFreeBook(bookId);
+    else
+        cartController->addBook(bookId);
+}
+void BookDetailsWindow_c::onFreeBookClaimed(const QString &message) {
+    QMessageBox::information(this, "دریافت رایگان", message);
+}
+void BookDetailsWindow_c::onFreeBookClaimFailed(const QString &message) {
+    QMessageBox::warning(this, "دریافت رایگان", message);
+}
 void BookDetailsWindow_c::onSaveBookButtonClicked() { savedBookController->saveBook(bookId); }
 void BookDetailsWindow_c::onBackButtonClicked() { emit backRequested(); }
 void BookDetailsWindow_c::onSubmitReviewButtonClicked() {
