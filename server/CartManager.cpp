@@ -20,6 +20,9 @@ Response CartManager::addBookToCart(int userId, int bookId) {
     if (!book->isAvailableForPurchase()) {
         return Response(ResponseStatus::Error, "این کتاب در حال حاضر برای خرید موجود نیست");
     }
+    if (book->getBookPrice() == 0) {
+        return Response(ResponseStatus::ValidationFailed, "این کتاب رایگان است؛ از دکمه دریافت رایگان استفاده کنید");
+    }
     UserRepository userRepo;
     std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
     if (user && user->hasPurchased(bookId)) {
