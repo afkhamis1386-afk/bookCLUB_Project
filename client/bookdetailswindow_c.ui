@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1001</width>
-    <height>906</height>
+    <width>794</width>
+    <height>836</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,15 +20,15 @@
 }</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="1">
-     <spacer name="verticalSpacer">
+    <item row="0" column="2">
+     <spacer name="verticalSpacer_2">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>19</height>
+        <height>7</height>
        </size>
       </property>
      </spacer>
@@ -40,7 +40,7 @@
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>180</width>
+        <width>76</width>
         <height>20</height>
        </size>
       </property>
@@ -51,7 +51,7 @@
       <property name="minimumSize">
        <size>
         <width>600</width>
-        <height>800</height>
+        <height>750</height>
        </size>
       </property>
       <property name="maximumSize">
@@ -140,118 +140,112 @@ QListWidget::item:selected {
          <x>0</x>
          <y>0</y>
          <width>598</width>
-         <height>798</height>
+         <height>748</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QLabel" name="coverImageLabel">
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>280</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>280</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: #dcdcdc; 
-border-radius: 8px;</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <widget class="QTextEdit" name="descriptionTextEdit">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>150</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color: rgba(0, 0, 0, 100);
-border-radius: 10px;
-color: white;</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="bookNameLabel">
-              <property name="text">
-               <string>نام کتاب :</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="ratingLabel">
-              <property name="text">
-               <string>امتیاز :</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="priceLabel">
-              <property name="text">
-               <string>قیمت :</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="addToCartButton">
-              <property name="text">
-               <string>افزودن به سبد خرید </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="saveBookButton">
-              <property name="text">
-               <string>ذخیره برای بعد</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="backButton">
-              <property name="text">
-               <string>بازگشت</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
+        <item row="4" column="2">
+         <widget class="QPushButton" name="addToCartButton">
+          <property name="text">
+           <string>افزودن به سبد خرید </string>
+          </property>
+         </widget>
         </item>
-        <item row="1" column="0">
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QTextEdit" name="newReviewTextEdit">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgba(0, 0, 0, 100);
+        <item row="3" column="2">
+         <widget class="QLabel" name="priceLabel">
+          <property name="text">
+           <string> قیمت :   </string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="ratingLabel">
+          <property name="text">
+           <string> امتیاز :    </string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0" colspan="3">
+         <widget class="QTextEdit" name="newReviewTextEdit">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgba(0, 0, 0, 100);
 border-radius: 10px;
 color: white;</string>
-            </property>
-           </widget>
-          </item>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="bookNameLabel">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string> نام کتاب :   </string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QTextEdit" name="descriptionTextEdit">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgba(0, 0, 0, 100);
+border-radius: 10px;
+color: white;</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="6">
+         <widget class="QLabel" name="coverImageLabel">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>280</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>280</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+border-radius: 8px;</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <widget class="QPushButton" name="saveBookButton">
+          <property name="text">
+           <string>ذخیره برای بعد</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0" colspan="3">
+         <layout class="QVBoxLayout" name="verticalLayout">
           <item>
            <widget class="QPushButton" name="submitReviewButton">
             <property name="text">
@@ -302,10 +296,40 @@ color: white;</string>
           </item>
           <item>
            <widget class="QListWidget" name="reviewsListWidget">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>200</height>
+             </size>
+            </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgba(0, 0, 0, 100);
 border-radius: 10px;
 color: white;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="statusLabel">
+            <property name="styleSheet">
+             <string notr="true">    background-color: rgba(255, 255, 255, 170);
+    color: #2c3e50; 
+    border: 1px solid rgba(44, 62, 80, 50);
+    border-radius: 12px;
+    padding: 8px 12px; 
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 14px; 
+    font-weight: bold;</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="backButton">
+            <property name="text">
+             <string>بازگشت</string>
             </property>
            </widget>
           </item>
@@ -322,28 +346,21 @@ color: white;</string>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>179</width>
+        <width>76</width>
         <height>20</height>
        </size>
       </property>
      </spacer>
     </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="statusLabel">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <spacer name="verticalSpacer_2">
+    <item row="2" column="1">
+     <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>17</height>
+        <height>7</height>
        </size>
       </property>
      </spacer>
@@ -355,7 +372,7 @@ color: white;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1001</width>
+     <width>794</width>
      <height>25</height>
     </rect>
    </property>

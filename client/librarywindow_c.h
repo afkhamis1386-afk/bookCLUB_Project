@@ -39,6 +39,9 @@ private slots:
     void onMoveBookButtonClicked();
     void onBookMoved(const QString &message);
     void onBookMoveFailed(const QString &message);
+    void onAddBookToShelfButtonClicked();
+    void onBookAddedToShelf(const QString &message);
+    void onBookAddToShelfFailed(const QString &message);
     void onSavedBooksLoaded(const QVariantList &bookIds);
     void onSavedBooksLoadFailed(const QString &message);
     void onRemoveSavedBookButtonClicked();
@@ -58,6 +61,7 @@ private:
     QVariantList currentShelves;
     void populateShelvesList(const QVariantList &shelves);
     void populateMoveToCombo();
+    void populateAddBookCombo(const QVariantList &bookIds);
     int getSelectedShelfId() const;
 };
 

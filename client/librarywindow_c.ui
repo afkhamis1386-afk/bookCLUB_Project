@@ -258,7 +258,7 @@ QComboBox#moveToShelfComboBox QAbstractItemView {
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="shelvesTab">
        <attribute name="title">
@@ -378,6 +378,35 @@ QComboBox QAbstractItemView {
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QComboBox" name="addBookComboBox">
+              <property name="styleSheet">
+               <string notr="true">QComboBox {
+               background-color: rgba(0, 0, 0, 100);
+               color: white;
+               border: 1px solid rgba(255, 255, 255, 30);
+               border-radius: 8px;
+               padding: 5px 10px;
+               font-size: 14px;
+           }
+           QComboBox::drop-down {
+               border: none;
+           }
+           QComboBox QAbstractItemView {
+               background-color: rgba(0, 0, 0, 200);
+               color: white;
+               selection-background-color: rgba(45, 95, 139, 150);
+           }</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="addBookToShelfButton">
+              <property name="text">
+               <string>افزودن کتاب انتخابی به قفسه بالا</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QPushButton" name="moveBookButton">
               <property name="text">

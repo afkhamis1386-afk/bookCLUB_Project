@@ -18,6 +18,7 @@ LibraryWindow_c::LibraryWindow_c(NetworkManager *networkManager, QWidget *parent
     connect(ui->renameShelfButton, &QPushButton::clicked, this, &LibraryWindow_c::onRenameShelfButtonClicked);
     connect(ui->deleteShelfButton, &QPushButton::clicked, this, &LibraryWindow_c::onDeleteShelfButtonClicked);
     connect(ui->moveBookButton, &QPushButton::clicked, this, &LibraryWindow_c::onMoveBookButtonClicked);
+    connect(ui->addBookToShelfButton, &QPushButton::clicked, this, &LibraryWindow_c::onAddBookToShelfButtonClicked);
     connect(ui->shelvesListWidget, &QListWidget::currentRowChanged, this, &LibraryWindow_c::onShelfSelectionChanged);
     connect(ui->removeSavedBookButton, &QPushButton::clicked, this, &LibraryWindow_c::onRemoveSavedBookButtonClicked);
     connect(ui->viewSavedBookButton, &QPushButton::clicked, this, &LibraryWindow_c::onViewSavedBookButtonClicked);
@@ -32,6 +33,8 @@ LibraryWindow_c::LibraryWindow_c(NetworkManager *networkManager, QWidget *parent
     connect(libraryController, &LibraryController::shelfDeleteFailed, this, &LibraryWindow_c::onShelfDeleteFailed);
     connect(libraryController, &LibraryController::bookMoved, this, &LibraryWindow_c::onBookMoved);
     connect(libraryController, &LibraryController::bookMoveFailed, this, &LibraryWindow_c::onBookMoveFailed);
+    connect(libraryController, &LibraryController::bookAddedToShelf, this, &LibraryWindow_c::onBookAddedToShelf);
+    connect(libraryController, &LibraryController::bookAddToShelfFailed, this, &LibraryWindow_c::onBookAddToShelfFailed);
     connect(libraryController, &LibraryController::validationError, this, &LibraryWindow_c::onValidationError);
     connect(savedBookController, &SavedBookController::savedBooksLoaded, this, &LibraryWindow_c::onSavedBooksLoaded);
     connect(savedBookController, &SavedBookController::savedBooksLoadFailed, this, &LibraryWindow_c::onSavedBooksLoadFailed);
@@ -67,7 +70,7 @@ void LibraryWindow_c::populateShelvesList(const QVariantList &shelves)
 void LibraryWindow_c::populateMoveToCombo()
 {
     ui->moveToShelfComboBox->clear();
-    for (const QVariant &v : currentShelves) {
+    for (const QVariant &v : qAsConst(currentShelves)) {
         QVariantMap shelf = v.toMap();
         ui->moveToShelfComboBox->addItem(shelf.value("shelfName").toString(), shelf.value("shelfId").toInt());
     }
@@ -91,7 +94,7 @@ void LibraryWindow_c::onShelfSelectionChanged()
 
     QVariantMap shelf = currentShelves[row].toMap();
     QVariantList bookIds = shelf.value("bookIds").toList();
-    for (const QVariant &v : bookIds)
+    for (const QVariant &v : qAsConst(bookIds))
         ui->shelfBookListWidget->addItem(QString("کتاب #%1").arg(v.toInt()));
 }
 
@@ -199,7 +202,31 @@ void LibraryWindow_c::onPurchasedBooksLoaded(const QVariantList &bookIds)
         item->setData(Qt::UserRole, v.toInt());
         ui->myBooksListWidget->addItem(item);
     }
+    populateAddBookCombo(bookIds);
 }
+void LibraryWindow_c::populateAddBookCombo(const QVariantList &bookIds)
+{
+    ui->addBookComboBox->clear();
+    for (const QVariant &v : bookIds) {
+        ui->addBookComboBox->addItem(QString("کتاب #%1").arg(v.toInt()), v.toInt());
+    }
+}
+void LibraryWindow_c::onAddBookToShelfButtonClicked()
+{
+    int shelfId = getSelectedShelfId();
+    int bookId = ui->addBookComboBox->currentData().toInt();
+    if (shelfId <= 0 || bookId <= 0) {
+        ui->statusLabel->setText("ابتدا قفسه و کتاب را انتخاب کنید");
+        return;
+    }
+    libraryController->addBookToShelf(shelfId, bookId);
+}
+void LibraryWindow_c::onBookAddedToShelf(const QString &message)
+{
+    ui->statusLabel->setText(message);
+    libraryController->refreshShelves();
+}
+void LibraryWindow_c::onBookAddToShelfFailed(const QString &message) { ui->statusLabel->setText(message); }
 void LibraryWindow_c::onPurchasedBooksLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 void LibraryWindow_c::onOpenBookButtonClicked()
 {
@@ -214,4 +241,3 @@ void LibraryWindow_c::onOpenBookButtonClicked()
     connect(readerWindow, &BookReaderWindow_c::backRequested, readerWindow, &QWidget::close);
     readerWindow->show();
 }
-
