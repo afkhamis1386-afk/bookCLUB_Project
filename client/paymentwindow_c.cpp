@@ -2,9 +2,10 @@
 #include "ui_paymentwindow_c.h"
 #include <QRegularExpression>
 
-PaymentWindow_c::PaymentWindow_c(double totalAmount, QWidget *parent)
+PaymentWindow_c::PaymentWindow_c(double totalAmount, const QString &expectedCardHolderName, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::PaymentWindow_c)
+    , expectedCardHolderName(expectedCardHolderName.trimmed())
 {
     ui->setupUi(this);
     setWindowTitle("پرداخت");
@@ -33,8 +34,13 @@ void PaymentWindow_c::onPayButtonClicked()
         ui->statusLabel->setText("شماره کارت باید دقیقاً ۱۶ رقم باشد");
         return;
     }
-    if (ui->cardHolderLineEdit->text().trimmed().isEmpty()) {
+    QString enteredCardHolder = ui->cardHolderLineEdit->text().trimmed();
+    if (enteredCardHolder.isEmpty()) {
         ui->statusLabel->setText("نام دارنده کارت را وارد کنید");
+        return;
+    }
+    if (QString::compare(enteredCardHolder, expectedCardHolderName, Qt::CaseSensitive) != 0) {
+        ui->statusLabel->setText("نام دارنده کارت باید دقیقاً همان نام کاربری حساب شما باشد");
         return;
     }
     static const QRegularExpression expiryRegex(R"(^\d{2}/\d{2}$)");

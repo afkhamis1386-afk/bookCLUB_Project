@@ -14,7 +14,7 @@ class PaymentWindow_c : public QDialog
     Q_OBJECT
 
 public:
-    explicit PaymentWindow_c(double totalAmount, QWidget *parent = nullptr);
+    explicit PaymentWindow_c(double totalAmount, const QString &expectedCardHolderName, QWidget *parent = nullptr);
     ~PaymentWindow_c() override;
 
     QString getCardNumber() const;
@@ -25,6 +25,7 @@ private slots:
 
 private:
     Ui::PaymentWindow_c *ui;
+    QString expectedCardHolderName;
 };
 
 #endif // PAYMENTWINDOW_C_H
