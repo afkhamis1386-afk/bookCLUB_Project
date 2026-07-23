@@ -164,6 +164,12 @@ void ClientHandler::processRequest(const Request &req) {
             else
                 response = accessError;
             break;
+        case RequestType::ClaimFreeBook:
+            if (checkRole({UserRole::NormalUser}, accessError))
+                response = handleBookRequest(req);
+            else
+                response = accessError;
+            break;
         case RequestType::Checkout:
         case RequestType::GetOrderHistory:
             if (checkRole({UserRole::NormalUser}, accessError))
@@ -341,6 +347,8 @@ Response ClientHandler::handleBookRequest(const Request &req) {
         return bookManager.getBookDetails(p.value("bookId").toInt());
     case RequestType::GetPurchasedBooks:
         return bookManager.getPurchasedBooks(authenticatedUserId);
+    case RequestType::ClaimFreeBook:
+        return bookManager.claimFreeBook(authenticatedUserId, p.value("bookId").toInt());
     case RequestType::GetBookCoverImage:
         return bookManager.getCoverImageData(p.value("bookId").toInt());
     case RequestType::GetBookFile:
