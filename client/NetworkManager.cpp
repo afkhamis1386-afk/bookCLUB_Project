@@ -216,6 +216,11 @@ void NetworkManager::addToCart(int bookId) {
     p["bookId"] = bookId;
     sendRequest(RequestType::AddToCart, p);
 }
+void NetworkManager::claimFreeBook(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::ClaimFreeBook, p);
+}
 void NetworkManager::removeFromCart(int bookId) {
     QVariantMap p;
     p["bookId"] = bookId;
