@@ -1,6 +1,7 @@
 #include "OrderManager.h"
 #include "CartRepository.h"
 #include "NotificationManager.h"
+#include "ClientRegistry.h"
 #include "PaymentRepository.h"
 #include "../common/Payment.h"
 #include "OrderRepository.h"
@@ -115,6 +116,9 @@ Response OrderManager::checkout(int userId, const QString &cardNumber) {
     NotificationManager notifManager;
     for (const SoldBookInfo &sold : qAsConst(soldBooks)) {
         notifManager.sendNotification( sold.publisherUserId, NotificationType::NewSaleForPublisher, "فروش جدید", QString("کتاب «%1» شما به فروش رسید").arg(sold.bookName), sold.bookId, userId );
+        QVariantMap saleLiveData;
+        saleLiveData["bookId"] = sold.bookId;
+        ClientRegistry::getInstance()->broadcastLiveUpdate("newSale", saleLiveData);
     }
     QVariantMap data;
     data["orderId"] = newOrderId;
