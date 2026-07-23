@@ -1,5 +1,6 @@
 #include "BookManager.h"
 #include "BookRepository.h"
+#include "OrderRepository.h"
 #include "GenreRepository.h"
 #include "CategoryRepository.h"
 #include "AuthorRepository.h"
@@ -451,6 +452,29 @@ Response BookManager::getPurchasedBooks(int userId){
     QVariantMap data;
     data["bookIds"] = bookList;
     return Response(ResponseStatus::Success, "کتاب های خریداری شده بازیابی شدند", data);
+}
+Response BookManager::claimFreeBook(int userId, int bookId){
+    BookRepository bookRepo;
+    std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
+    if(!book){
+        return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
+    }
+    if(book->getBookPrice() != 0){
+        return Response(ResponseStatus::ValidationFailed, "این کتاب رایگان نیست");
+    }
+    if(!book->isAvailableForPurchase()){
+        return Response(ResponseStatus::Error, "این کتاب در حال حاضر در دسترس نیست");
+    }
+    UserRepository userRepo;
+    std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
+    if(user && user->hasPurchased(bookId)){
+        return Response(ResponseStatus::ValidationFailed, "شما قبلاً این کتاب را دریافت کرده اید");
+    }
+    OrderRepository orderRepo;
+    if(!orderRepo.addBookToLibrary(userId, bookId)){
+        return Response(ResponseStatus::Error, "خطا در افزودن کتاب به کتابخانه شما");
+    }
+    return Response(ResponseStatus::Success, "کتاب رایگان به کتابخانه شما اضافه شد");
 }
 Response BookManager::saveReadingProgress(int userId, int bookId, int lastPage){
     if(lastPage < 1){
