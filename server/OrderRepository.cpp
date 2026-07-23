@@ -66,42 +66,50 @@ int OrderRepository::insertOrder(const Order &order) {
                        << insertItemQuery.lastError().text();
             return -1;
         }
-        QSqlQuery checkLibraryQuery(db);
-        checkLibraryQuery.prepare(
-            "SELECT COUNT(*) "
-            "FROM UserLibrary "
-            "WHERE UserID = :userId AND BookID = :bookId"
-            );
-        checkLibraryQuery.bindValue(":userId", order.getUserId());
-        checkLibraryQuery.bindValue(":bookId", item.getBookId());
-        if (!checkLibraryQuery.exec()) {
-            qWarning() << "خطا در اجرای بررسی کتابخانه شخصی:"
-                       << checkLibraryQuery.lastError().text();
+        if (!addBookToLibrary(order.getUserId(), item.getBookId())) {
             return -1;
-        }
-        if (!checkLibraryQuery.next()) {
-            qWarning() << "نتیجه بررسی کتابخانه شخصی دریافت نشد:"
-                       << checkLibraryQuery.lastError().text();
-            return -1;
-        }
-        const bool alreadyOwned =
-            checkLibraryQuery.value(0).toInt() > 0;
-        if (!alreadyOwned) {
-            QSqlQuery insertLibraryQuery(db);
-            insertLibraryQuery.prepare(
-                "INSERT INTO UserLibrary (UserID, BookID) "
-                "VALUES (:userId, :bookId)"
-                );
-            insertLibraryQuery.bindValue(":userId", order.getUserId());
-            insertLibraryQuery.bindValue(":bookId", item.getBookId());
-            if (!insertLibraryQuery.exec()) {
-                qWarning() << "خطا در انتقال کتاب به کتابخانه شخصی:"
-                           << insertLibraryQuery.lastError().text();
-                return -1;
-            }
         }
     }
     return newOrderId;
+}
+bool OrderRepository::addBookToLibrary(int userId, int bookId) {
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery checkLibraryQuery(db);
+    checkLibraryQuery.prepare(
+        "SELECT COUNT(*) "
+        "FROM UserLibrary "
+        "WHERE UserID = :userId AND BookID = :bookId"
+        );
+    checkLibraryQuery.bindValue(":userId", userId);
+    checkLibraryQuery.bindValue(":bookId", bookId);
+    if (!checkLibraryQuery.exec()) {
+        qWarning() << "خطا در اجرای بررسی کتابخانه شخصی:"
+                   << checkLibraryQuery.lastError().text();
+        return false;
+    }
+    if (!checkLibraryQuery.next()) {
+        qWarning() << "نتیجه بررسی کتابخانه شخصی دریافت نشد:"
+                   << checkLibraryQuery.lastError().text();
+        return false;
+    }
+    const bool alreadyOwned =
+        checkLibraryQuery.value(0).toInt() > 0;
+    if (alreadyOwned) {
+        return true;
+    }
+    QSqlQuery insertLibraryQuery(db);
+    insertLibraryQuery.prepare(
+        "INSERT INTO UserLibrary (UserID, BookID) "
+        "VALUES (:userId, :bookId)"
+        );
+    insertLibraryQuery.bindValue(":userId", userId);
+    insertLibraryQuery.bindValue(":bookId", bookId);
+    if (!insertLibraryQuery.exec()) {
+        qWarning() << "خطا در انتقال کتاب به کتابخانه شخصی:"
+                   << insertLibraryQuery.lastError().text();
+        return false;
+    }
+    return true;
 }
 Order* OrderRepository::loadOrderById(int orderId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();

@@ -50,6 +50,7 @@ public:
     void applyTimedDiscount(int bookId, double discountPercent, const QDateTime &startDate, const QDateTime &endDate);
     void getPublisherStats();
     void addToCart(int bookId);
+    void claimFreeBook(int bookId);
     void removeFromCart(int bookId);
     void getCart();
     void checkout(const QString &cardNumber);

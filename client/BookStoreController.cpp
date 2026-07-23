@@ -105,6 +105,17 @@ void BookStoreController::loadRecommendedBooks() {
     }
     networkManager->getRecommendedBooks();
 }
+void BookStoreController::claimFreeBook(int bookId) {
+    if (bookId <= 0) {
+        emit validationError("شناسه کتاب نامعتبر است");
+        return;
+    }
+    if (!networkManager->isConnected()) {
+        emit freeBookClaimFailed("اتصال به سرور برقرار نیست");
+        return;
+    }
+    networkManager->claimFreeBook(bookId);
+}
 void BookStoreController::onResponseReceived(RequestType type, const Response &response) {
     switch (type) {
     case RequestType::GetBooks:
@@ -156,6 +167,12 @@ void BookStoreController::onResponseReceived(RequestType type, const Response &r
             emit recommendedBooksLoaded(response.getData().value("bookIds").toList());
         else
             emit recommendedBooksLoadFailed(response.getMessage());
+        break;
+    case RequestType::ClaimFreeBook:
+        if (response.isSuccess())
+            emit freeBookClaimed(response.getMessage());
+        else
+            emit freeBookClaimFailed(response.getMessage());
         break;
     default:
         break;

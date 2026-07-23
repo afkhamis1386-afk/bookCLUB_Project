@@ -20,6 +20,7 @@ public:
     void loadFreeBooks();
     void loadRecommendedBooks();
     void loadCoverImage(int bookId);
+    void claimFreeBook(int bookId);
 signals:
     void booksLoaded(const QVariantList &bookIds);
     void booksLoadFailed(const QString &message);
@@ -32,6 +33,8 @@ signals:
     void recommendedBooksLoadFailed(const QString &message);
     void coverImageLoaded(int bookId, const QByteArray &imageData);
     void coverImageLoadFailed(int bookId, const QString &message);
+    void freeBookClaimed(const QString &message);
+    void freeBookClaimFailed(const QString &message);
 private slots:
     void onResponseReceived(RequestType type, const Response &response);
 private:
