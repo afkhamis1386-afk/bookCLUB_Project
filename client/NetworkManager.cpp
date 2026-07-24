@@ -18,6 +18,7 @@ bool NetworkManager::isConnected() const {
 }
 int NetworkManager::getCurrentUserId() const { return currentUserId; }
 UserRole NetworkManager::getCurrentUserRole() const { return currentUserRole; }
+QString NetworkManager::getCurrentUsername() const { return currentUsername; }
 bool NetworkManager::isLoggedIn() const { return loggedIn; }
 void NetworkManager::logout() {
     if (!loggedIn) {
@@ -419,6 +420,7 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
         if (response.isSuccess()) {
             currentUserId = response.getData().value("userId").toInt();
             currentUserRole = static_cast<UserRole>(response.getData().value("role").toInt());
+            currentUsername = response.getData().value("username").toString();
             loggedIn = true;
             emit loginSucceeded(currentUserId, currentUserRole);
         } else {
@@ -429,6 +431,7 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
         if (response.isSuccess()) {
             currentUserId = -1;
             currentUserRole = UserRole::NormalUser;
+            currentUsername.clear();
             loggedIn = false;
         }
     }

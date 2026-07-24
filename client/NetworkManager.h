@@ -14,6 +14,7 @@ public:
     bool isConnected() const;
     int getCurrentUserId() const;
     UserRole getCurrentUserRole() const;
+    QString getCurrentUsername() const;
     bool isLoggedIn() const;
     void logout();
     void registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer);
@@ -110,10 +111,10 @@ private:
     ClientSocket *socket;
     int currentUserId;
     UserRole currentUserRole;
+    QString currentUsername;
     bool loggedIn;
     QVector<RequestType> pendingRequestQueue;
     void sendRequest(RequestType type, const QVariantMap &payload = QVariantMap());
 
 };
 #endif // NETWORKMANAGER_H
-
