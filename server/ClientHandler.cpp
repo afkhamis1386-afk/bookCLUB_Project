@@ -202,6 +202,7 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::RenameShelf:
         case RequestType::DeleteShelf:
         case RequestType::AddBookToShelf:
+        case RequestType::RemoveBookFromShelf:
         case RequestType::MoveBookBetweenShelves:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleShelfRequest(req);
@@ -476,6 +477,8 @@ Response ClientHandler::handleShelfRequest(const Request &req) {
         return shelfManager.deleteShelf(authenticatedUserId, p.value("shelfId").toInt());
     case RequestType::AddBookToShelf:
         return shelfManager.addBookToShelf(authenticatedUserId, p.value("shelfId").toInt(), p.value("bookId").toInt());
+    case RequestType::RemoveBookFromShelf:
+        return shelfManager.removeBookFromShelf(authenticatedUserId, p.value("shelfId").toInt(), p.value("bookId").toInt());
     case RequestType::MoveBookBetweenShelves:
         return shelfManager.moveBookBetweenShelves(authenticatedUserId,p.value("sourceShelfId").toInt(), p.value("destShelfId").toInt(), p.value("bookId").toInt());
     default:
