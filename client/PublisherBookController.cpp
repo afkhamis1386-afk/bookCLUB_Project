@@ -7,7 +7,7 @@ PublisherBookController::PublisherBookController(NetworkManager *networkManager,
 }
 void PublisherBookController::addBook(const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle,
                                       const QString &authorName, const QString &coverImageFilePath,
-                                      const QString &pdfFilePath) {
+                                      const QString &pdfFilePath, double discountPercent) {
     if (bookName.trimmed().isEmpty() || bookName.length() > 60) {
         emit validationError("نام کتاب نامعتبر است (حداکثر ۶۰ کاراکتر)");
         return;
@@ -18,6 +18,10 @@ void PublisherBookController::addBook(const QString &bookName, const QString &de
     }
     if (price < 0) {
         emit validationError("قیمت کتاب نمی تواند منفی باشد");
+        return;
+    }
+    if (discountPercent < 0 || discountPercent > 100) {
+        emit validationError("درصد تخفیف باید بین ۰ تا ۱۰۰ باشد");
         return;
     }
     if (genreTitle.trimmed().isEmpty() || categoryTitle.trimmed().isEmpty() || authorName.trimmed().isEmpty()) {
@@ -53,7 +57,7 @@ void PublisherBookController::addBook(const QString &bookName, const QString &de
     }
     networkManager->addBook(bookName.trimmed(), description.trimmed(), price,
                             genreTitle.trimmed(), categoryTitle.trimmed(), authorName.trimmed(),
-                            coverData, coverExtension, pdfData);
+                            coverData, coverExtension, pdfData, discountPercent);
 }
 void PublisherBookController::updateBook(int bookId, const QString &bookName, const QString &description, double price) {
     if (bookId <= 0) {

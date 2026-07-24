@@ -202,6 +202,7 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::RenameShelf:
         case RequestType::DeleteShelf:
         case RequestType::AddBookToShelf:
+        case RequestType::RemoveBookFromShelf:
         case RequestType::MoveBookBetweenShelves:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleShelfRequest(req);
@@ -369,7 +370,8 @@ Response ClientHandler::handleBookRequest(const Request &req) {
             p.value("authorName").toString(),
             p.value("coverImageData").toByteArray(),
             p.value("coverImageExtension").toString(),
-            p.value("pdfData").toByteArray());
+            p.value("pdfData").toByteArray(),
+            p.value("discountPercent").toDouble());
     case RequestType::GetBooksByGenre:
         return bookManager.getBooksByGenre(p.value("genreId").toInt());
     case RequestType::GetBooksByCategory:
@@ -475,6 +477,8 @@ Response ClientHandler::handleShelfRequest(const Request &req) {
         return shelfManager.deleteShelf(authenticatedUserId, p.value("shelfId").toInt());
     case RequestType::AddBookToShelf:
         return shelfManager.addBookToShelf(authenticatedUserId, p.value("shelfId").toInt(), p.value("bookId").toInt());
+    case RequestType::RemoveBookFromShelf:
+        return shelfManager.removeBookFromShelf(authenticatedUserId, p.value("shelfId").toInt(), p.value("bookId").toInt());
     case RequestType::MoveBookBetweenShelves:
         return shelfManager.moveBookBetweenShelves(authenticatedUserId,p.value("sourceShelfId").toInt(), p.value("destShelfId").toInt(), p.value("bookId").toInt());
     default:

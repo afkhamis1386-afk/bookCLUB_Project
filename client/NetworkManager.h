@@ -44,7 +44,7 @@ public:
     void addBook(const QString &bookName, const QString &description, double price,
                  const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
                  const QByteArray &coverImageData, const QString &coverImageExtension,
-                 const QByteArray &pdfData);
+                 const QByteArray &pdfData, double discountPercent = 0.0);
     void updateBook(int bookId, const QString &bookName, const QString &description, double price);
     void deactivateBook(int bookId);
     void reactivateBook(int bookId);
@@ -72,6 +72,7 @@ public:
     void unsaveBook(int bookId);
     void getSavedBooks();
     void moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId);
+    void removeBookFromShelf(int shelfId, int bookId);
     void getNotifications();
     void markNotificationRead(int notificationId);
     void getUnreadNotificationCount();

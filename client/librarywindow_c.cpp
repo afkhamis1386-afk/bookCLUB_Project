@@ -2,6 +2,7 @@
 #include "ui_librarywindow_c.h"
 #include "bookdetailswindow_c.h"
 #include "bookreaderwindow_c.h"
+#include "windownav.h"
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QListWidgetItem>
@@ -19,8 +20,8 @@ LibraryWindow_c::LibraryWindow_c(NetworkManager *networkManager, QWidget *parent
     connect(ui->createShelfButton, &QPushButton::clicked, this, &LibraryWindow_c::onCreateShelfButtonClicked);
     connect(ui->renameShelfButton, &QPushButton::clicked, this, &LibraryWindow_c::onRenameShelfButtonClicked);
     connect(ui->deleteShelfButton, &QPushButton::clicked, this, &LibraryWindow_c::onDeleteShelfButtonClicked);
-    connect(ui->moveBookButton, &QPushButton::clicked, this, &LibraryWindow_c::onMoveBookButtonClicked);
     connect(ui->addBookToShelfButton, &QPushButton::clicked, this, &LibraryWindow_c::onAddBookToShelfButtonClicked);
+    connect(ui->removeBookFromShelfButton, &QPushButton::clicked, this, &LibraryWindow_c::onRemoveBookFromShelfButtonClicked);
     connect(ui->shelvesListWidget, &QListWidget::currentRowChanged, this, &LibraryWindow_c::onShelfSelectionChanged);
     connect(ui->removeSavedBookButton, &QPushButton::clicked, this, &LibraryWindow_c::onRemoveSavedBookButtonClicked);
     connect(ui->viewSavedBookButton, &QPushButton::clicked, this, &LibraryWindow_c::onViewSavedBookButtonClicked);
@@ -33,10 +34,10 @@ LibraryWindow_c::LibraryWindow_c(NetworkManager *networkManager, QWidget *parent
     connect(libraryController, &LibraryController::shelfRenameFailed, this, &LibraryWindow_c::onShelfRenameFailed);
     connect(libraryController, &LibraryController::shelfDeleted, this, &LibraryWindow_c::onShelfDeleted);
     connect(libraryController, &LibraryController::shelfDeleteFailed, this, &LibraryWindow_c::onShelfDeleteFailed);
-    connect(libraryController, &LibraryController::bookMoved, this, &LibraryWindow_c::onBookMoved);
-    connect(libraryController, &LibraryController::bookMoveFailed, this, &LibraryWindow_c::onBookMoveFailed);
     connect(libraryController, &LibraryController::bookAddedToShelf, this, &LibraryWindow_c::onBookAddedToShelf);
     connect(libraryController, &LibraryController::bookAddToShelfFailed, this, &LibraryWindow_c::onBookAddToShelfFailed);
+    connect(libraryController, &LibraryController::bookRemovedFromShelf, this, &LibraryWindow_c::onBookRemovedFromShelf);
+    connect(libraryController, &LibraryController::bookRemoveFromShelfFailed, this, &LibraryWindow_c::onBookRemoveFromShelfFailed);
     connect(libraryController, &LibraryController::validationError, this, &LibraryWindow_c::onValidationError);
     connect(savedBookController, &SavedBookController::savedBooksLoaded, this, &LibraryWindow_c::onSavedBooksLoaded);
     connect(savedBookController, &SavedBookController::savedBooksLoadFailed, this, &LibraryWindow_c::onSavedBooksLoadFailed);
@@ -45,6 +46,7 @@ LibraryWindow_c::LibraryWindow_c(NetworkManager *networkManager, QWidget *parent
     libraryController->refreshShelves();
     savedBookController->refreshSavedBooks();
     connect(ui->openBookButton, &QPushButton::clicked, this, &LibraryWindow_c::onOpenBookButtonClicked);
+    connect(ui->viewBookDetailButton, &QPushButton::clicked, this, &LibraryWindow_c::onViewBookDetailButtonClicked);
     connect(libraryController, &LibraryController::purchasedBooksLoaded, this, &LibraryWindow_c::onPurchasedBooksLoaded);
     connect(libraryController, &LibraryController::purchasedBooksLoadFailed, this, &LibraryWindow_c::onPurchasedBooksLoadFailed);
     libraryController->refreshPurchasedBooks();
@@ -66,16 +68,8 @@ void LibraryWindow_c::populateShelvesList(const QVariantList &shelves)
         item->setData(Qt::UserRole, shelf.value("shelfId").toInt());
         ui->shelvesListWidget->addItem(item);
     }
-    populateMoveToCombo();
+    populateAddBookCombo();
     ui->shelfBookListWidget->clear();
-}
-void LibraryWindow_c::populateMoveToCombo()
-{
-    ui->moveToShelfComboBox->clear();
-    for (const QVariant &v : qAsConst(currentShelves)) {
-        QVariantMap shelf = v.toMap();
-        ui->moveToShelfComboBox->addItem(shelf.value("shelfName").toString(), shelf.value("shelfId").toInt());
-    }
 }
 
 int LibraryWindow_c::getSelectedShelfId() const
@@ -96,8 +90,14 @@ void LibraryWindow_c::onShelfSelectionChanged()
 
     QVariantMap shelf = currentShelves[row].toMap();
     QVariantList bookIds = shelf.value("bookIds").toList();
-    for (const QVariant &v : qAsConst(bookIds))
-        ui->shelfBookListWidget->addItem(QString("کتاب #%1").arg(v.toInt()));
+    QVariantList bookNames = shelf.value("bookNames").toList();
+    for (int i = 0; i < bookIds.size(); ++i) {
+        int bookId = bookIds[i].toInt();
+        QString bookName = (i < bookNames.size()) ? bookNames[i].toString() : QString("کتاب #%1").arg(bookId);
+        QListWidgetItem *item = new QListWidgetItem(bookName);
+        item->setData(Qt::UserRole, bookId);
+        ui->shelfBookListWidget->addItem(item);
+    }
 }
 
 void LibraryWindow_c::onCreateShelfButtonClicked()
@@ -143,29 +143,51 @@ void LibraryWindow_c::onDeleteShelfButtonClicked()
 void LibraryWindow_c::onShelfDeleted(const QString &message) { ui->statusLabel->setText(message); libraryController->refreshShelves(); }
 void LibraryWindow_c::onShelfDeleteFailed(const QString &message) { ui->statusLabel->setText(message); }
 
-void LibraryWindow_c::onMoveBookButtonClicked()
+void LibraryWindow_c::onAddBookToShelfButtonClicked()
 {
-    int sourceShelfId = getSelectedShelfId();
-    int bookRow = ui->shelfBookListWidget->currentRow();
-    int destShelfId = ui->moveToShelfComboBox->currentData().toInt();
-
-    if (sourceShelfId <= 0 || bookRow < 0) {
+    int shelfId = getSelectedShelfId();
+    int bookId = ui->addBookComboBox->currentData().toInt();
+    if (shelfId <= 0 || bookId <= 0) {
         ui->statusLabel->setText("ابتدا قفسه و کتاب را انتخاب کنید");
         return;
     }
-    QString itemText = ui->shelfBookListWidget->item(bookRow)->text();
-    int bookId = itemText.section('#', 1).toInt();
-
-    libraryController->moveBookBetweenShelves(sourceShelfId, destShelfId, bookId);
+    libraryController->addBookToShelf(shelfId, bookId);
 }
-void LibraryWindow_c::onBookMoved(const QString &message) { ui->statusLabel->setText(message); libraryController->refreshShelves(); }
-void LibraryWindow_c::onBookMoveFailed(const QString &message) { ui->statusLabel->setText(message); }
+void LibraryWindow_c::onBookAddedToShelf(const QString &message)
+{
+    ui->statusLabel->setText(message);
+    libraryController->refreshShelves();
+}
+void LibraryWindow_c::onBookAddToShelfFailed(const QString &message) { ui->statusLabel->setText(message); }
+
+void LibraryWindow_c::onRemoveBookFromShelfButtonClicked()
+{
+    int shelfId = getSelectedShelfId();
+    int bookRow = ui->shelfBookListWidget->currentRow();
+    if (shelfId <= 0 || bookRow < 0) {
+        ui->statusLabel->setText("ابتدا قفسه و کتاب را انتخاب کنید");
+        return;
+    }
+    int bookId = ui->shelfBookListWidget->item(bookRow)->data(Qt::UserRole).toInt();
+    libraryController->removeBookFromShelf(shelfId, bookId);
+}
+void LibraryWindow_c::onBookRemovedFromShelf(const QString &message)
+{
+    ui->statusLabel->setText(message);
+    libraryController->refreshShelves();
+}
+void LibraryWindow_c::onBookRemoveFromShelfFailed(const QString &message) { ui->statusLabel->setText(message); }
+
 void LibraryWindow_c::onSavedBooksLoaded(const QVariantList &bookIds)
 {
     ui->saveBooksListWidget->clear();
     for (const QVariant &v : bookIds) {
-        QListWidgetItem *item = new QListWidgetItem(QString("کتاب #%1").arg(v.toInt()));
-        item->setData(Qt::UserRole, v.toInt());
+        QVariantMap bookData = v.toMap();
+        int bookId = bookData.value("bookId").toInt();
+        QString bookName = bookData.value("bookName").toString();
+        if (bookName.isEmpty()) bookName = QString("کتاب #%1").arg(bookId);
+        QListWidgetItem *item = new QListWidgetItem(bookName);
+        item->setData(Qt::UserRole, bookId);
         ui->saveBooksListWidget->addItem(item);
     }
 }
@@ -192,7 +214,11 @@ void LibraryWindow_c::onViewSavedBookButtonClicked()
     BookDetailsWindow_c *detailsWindow = new BookDetailsWindow_c(networkManager, bookId);
     detailsWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(detailsWindow, &BookDetailsWindow_c::backRequested, detailsWindow, &QWidget::close);
-    detailsWindow->show();
+    connect(detailsWindow, &QObject::destroyed, this, [this]() {
+        this->show();
+    });
+    showFollowingState(detailsWindow, this);
+    this->hide();
 }
 void LibraryWindow_c::onValidationError(const QString &message) { ui->statusLabel->setText(message); }
 void LibraryWindow_c::onBackButtonClicked() { emit backRequested(); }
@@ -200,35 +226,41 @@ void LibraryWindow_c::onPurchasedBooksLoaded(const QVariantList &bookIds)
 {
     ui->myBooksListWidget->clear();
     for (const QVariant &v : bookIds) {
-        QListWidgetItem *item = new QListWidgetItem(QString("کتاب #%1").arg(v.toInt()));
-        item->setData(Qt::UserRole, v.toInt());
+        QVariantMap bookData = v.toMap();
+        int bookId = bookData.value("bookId").toInt();
+        QString bookName = bookData.value("bookName").toString();
+        if (bookName.isEmpty()) bookName = QString("کتاب #%1").arg(bookId);
+        QListWidgetItem *item = new QListWidgetItem(bookName);
+        item->setData(Qt::UserRole, bookId);
         ui->myBooksListWidget->addItem(item);
     }
-    populateAddBookCombo(bookIds);
+    populateAddBookCombo();
 }
-void LibraryWindow_c::populateAddBookCombo(const QVariantList &bookIds)
+void LibraryWindow_c::populateAddBookCombo()
 {
     ui->addBookComboBox->clear();
-    for (const QVariant &v : bookIds) {
-        ui->addBookComboBox->addItem(QString("کتاب #%1").arg(v.toInt()), v.toInt());
+    for (int i = 0; i < ui->myBooksListWidget->count(); ++i) {
+        QListWidgetItem *item = ui->myBooksListWidget->item(i);
+        ui->addBookComboBox->addItem(item->text(), item->data(Qt::UserRole).toInt());
     }
 }
-void LibraryWindow_c::onAddBookToShelfButtonClicked()
+void LibraryWindow_c::onViewBookDetailButtonClicked()
 {
-    int shelfId = getSelectedShelfId();
-    int bookId = ui->addBookComboBox->currentData().toInt();
-    if (shelfId <= 0 || bookId <= 0) {
-        ui->statusLabel->setText("ابتدا قفسه و کتاب را انتخاب کنید");
+    int row = ui->myBooksListWidget->currentRow();
+    if (row < 0) {
+        ui->statusLabel->setText("ابتدا یک کتاب را انتخاب کنید");
         return;
     }
-    libraryController->addBookToShelf(shelfId, bookId);
+    int bookId = ui->myBooksListWidget->item(row)->data(Qt::UserRole).toInt();
+    BookDetailsWindow_c *detailsWindow = new BookDetailsWindow_c(networkManager, bookId);
+    detailsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(detailsWindow, &BookDetailsWindow_c::backRequested, detailsWindow, &QWidget::close);
+    connect(detailsWindow, &QObject::destroyed, this, [this]() {
+        this->show();
+    });
+    showFollowingState(detailsWindow, this);
+    this->hide();
 }
-void LibraryWindow_c::onBookAddedToShelf(const QString &message)
-{
-    ui->statusLabel->setText(message);
-    libraryController->refreshShelves();
-}
-void LibraryWindow_c::onBookAddToShelfFailed(const QString &message) { ui->statusLabel->setText(message); }
 void LibraryWindow_c::onPurchasedBooksLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 void LibraryWindow_c::onOpenBookButtonClicked()
 {
@@ -241,5 +273,9 @@ void LibraryWindow_c::onOpenBookButtonClicked()
     BookReaderWindow_c *readerWindow = new BookReaderWindow_c(networkManager, bookId);
     readerWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(readerWindow, &BookReaderWindow_c::backRequested, readerWindow, &QWidget::close);
-    readerWindow->show();
+    connect(readerWindow, &QObject::destroyed, this, [this]() {
+        this->show();
+    });
+    showFollowingState(readerWindow, this);
+    this->hide();
 }

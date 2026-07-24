@@ -36,12 +36,12 @@ private slots:
     void onDeleteShelfButtonClicked();
     void onShelfDeleted(const QString &message);
     void onShelfDeleteFailed(const QString &message);
-    void onMoveBookButtonClicked();
-    void onBookMoved(const QString &message);
-    void onBookMoveFailed(const QString &message);
     void onAddBookToShelfButtonClicked();
     void onBookAddedToShelf(const QString &message);
     void onBookAddToShelfFailed(const QString &message);
+    void onRemoveBookFromShelfButtonClicked();
+    void onBookRemovedFromShelf(const QString &message);
+    void onBookRemoveFromShelfFailed(const QString &message);
     void onSavedBooksLoaded(const QVariantList &bookIds);
     void onSavedBooksLoadFailed(const QString &message);
     void onRemoveSavedBookButtonClicked();
@@ -53,6 +53,7 @@ private slots:
     void onPurchasedBooksLoaded(const QVariantList &bookIds);
     void onPurchasedBooksLoadFailed(const QString &message);
     void onOpenBookButtonClicked();
+    void onViewBookDetailButtonClicked();
 private:
     Ui::LibraryWindow_c *ui;
     NetworkManager *networkManager;
@@ -60,8 +61,7 @@ private:
     SavedBookController *savedBookController;
     QVariantList currentShelves;
     void populateShelvesList(const QVariantList &shelves);
-    void populateMoveToCombo();
-    void populateAddBookCombo(const QVariantList &bookIds);
+    void populateAddBookCombo();
     int getSelectedShelfId() const;
 };
 

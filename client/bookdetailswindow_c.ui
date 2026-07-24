@@ -20,7 +20,7 @@
 }</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="1" column="3">
+    <item row="1" column="2">
      <spacer name="horizontalSpacer_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -59,7 +59,7 @@
       </property>
      </spacer>
     </item>
-    <item row="0" column="2">
+    <item row="0" column="1">
      <spacer name="verticalSpacer_2">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -72,7 +72,7 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="1" colspan="2">
+    <item row="1" column="1">
      <widget class="QScrollArea" name="scrollArea">
       <property name="minimumSize">
        <size>
@@ -88,7 +88,7 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QScrollArea {
-    background-color: rgba(255, 255, 255, 50); 
+    background-color: rgba(255, 255, 255, 50);
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 150);
 }
@@ -110,7 +110,7 @@ QPushButton {
 }
 
 QPushButton:hover {
-    background-color: #34495e; 
+    background-color: #34495e;
     color: #d4af37;
     font-weight: bold;
 }
@@ -123,7 +123,7 @@ QLabel {
     color: #2c3e50;
     font-family: &quot;Vazirmatn&quot;, &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-size: 18px;
-    font-weight: bold; 
+    font-weight: bold;
     background: transparent;
 }
 
@@ -299,12 +299,12 @@ color: white;
            <widget class="QLabel" name="statusLabel">
             <property name="styleSheet">
              <string notr="true">    background-color: rgba(255, 255, 255, 170);
-    color: #2c3e50; 
+    color: #2c3e50;
     border: 1px solid rgba(44, 62, 80, 50);
     border-radius: 12px;
-    padding: 8px 12px; 
+    padding: 8px 12px;
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
-    font-size: 14px; 
+    font-size: 14px;
     font-weight: bold;</string>
             </property>
             <property name="text">

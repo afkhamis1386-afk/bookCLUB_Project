@@ -25,7 +25,6 @@ PublisherAddBookWindow_c::PublisherAddBookWindow_c(NetworkManager *networkManage
     connect(profileController, &ProfileController::genresLoadFailed, this, &PublisherAddBookWindow_c::onGenresLoadFailed);
     profileController->loadGenres();
 }
-
 PublisherAddBookWindow_c::~PublisherAddBookWindow_c() {
     delete ui;
 }
@@ -57,7 +56,8 @@ void PublisherAddBookWindow_c::onSubmitButtonClicked() {
         ui->categoryTitleLineEdit->text(),
         ui->authorNameLineEdit->text(),
         selectedCoverPath,
-        selectedPdfPath
+        selectedPdfPath,
+        ui->discountPercentSpinBox->value()
         );
 }
 void PublisherAddBookWindow_c::onBookAdded(int bookId, const QString &message) {
@@ -66,6 +66,7 @@ void PublisherAddBookWindow_c::onBookAdded(int bookId, const QString &message) {
     ui->bookNameLineEdit->clear();
     ui->descriptionTextEdit->clear();
     ui->priceDoubleSpinBox->setValue(0);
+    ui->discountPercentSpinBox->setValue(0);
     ui->genreComboBox->setCurrentIndex(0);
     ui->categoryTitleLineEdit->clear();
     ui->authorNameLineEdit->clear();
