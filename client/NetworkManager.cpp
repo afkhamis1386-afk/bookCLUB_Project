@@ -164,7 +164,7 @@ void NetworkManager::getRecommendedBooks() {
 void NetworkManager::addBook(const QString &bookName, const QString &description, double price,
                              const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
                              const QByteArray &coverImageData, const QString &coverImageExtension,
-                             const QByteArray &pdfData) {
+                             const QByteArray &pdfData, double discountPercent) {
     QVariantMap p;
     p["bookName"] = bookName;
     p["description"] = description;
@@ -175,6 +175,7 @@ void NetworkManager::addBook(const QString &bookName, const QString &description
     p["coverImageData"] = coverImageData;
     p["coverImageExtension"] = coverImageExtension;
     p["pdfData"] = pdfData;
+    p["discountPercent"] = discountPercent;
     sendRequest(RequestType::AddBook, p);
 }
 void NetworkManager::updateBook(int bookId, const QString &bookName, const QString &description, double price) {
