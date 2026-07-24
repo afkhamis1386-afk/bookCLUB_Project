@@ -150,9 +150,9 @@ void AdminMainWindow::onViewBookDetailsButtonClicked() {
 }
 void AdminMainWindow::onBookDetailsForReviewLoaded(const QVariantMap &bookData) {
     QMessageBox::information(this, "جزئیات کتاب", QString("نام: %1\nتوضیحات: %2\nقیمت: %3")
-                                 .arg(bookData.value("bookName").toString())
-                                 .arg(bookData.value("description").toString())
-                                 .arg(bookData.value("price").toDouble()));
+                                                      .arg(bookData.value("bookName").toString())
+                                                      .arg(bookData.value("description").toString())
+                                                      .arg(bookData.value("price").toDouble()));
 }
 void AdminMainWindow::onBookDetailsForReviewLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onDeleteBookButtonClicked() {
@@ -204,7 +204,14 @@ void AdminMainWindow::onDeleteReviewButtonClicked() {
 void AdminMainWindow::onReviewDeleted(const QString &message) { ui->statusLabel->setText(message); adminController->loadAllReviews(); }
 void AdminMainWindow::onReviewDeleteFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onValidationError(const QString &message) { ui->statusLabel->setText(message); }
-void AdminMainWindow::onLogoutButtonClicked() { emit logoutRequested(); }
+void AdminMainWindow::onLogoutButtonClicked() {
+    if (QMessageBox::question(this, "خروج از حساب کاربری",
+                              "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
+        networkManager->logout();
+        emit logoutRequested();
+    }
+}
 void AdminMainWindow::onCreateAdminButtonClicked() {
     CreateAdminDialog dialog(networkManager, this);
     dialog.exec();

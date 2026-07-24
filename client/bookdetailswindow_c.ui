@@ -144,7 +144,7 @@ QTextEdit:focus, QComboBox:focus {
 
 QListWidget::item {
     padding: 8px;
-    color: #2c3e50;
+    color: #ffffff;
     border-radius: 6px;
 }
 
@@ -164,7 +164,7 @@ QListWidget::item:selected {
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-30</y>
+         <y>0</y>
          <width>581</width>
          <height>778</height>
         </rect>
@@ -276,7 +276,8 @@ color: white;</string>
             <property name="styleSheet">
              <string notr="true">background-color: rgba(0, 0, 0, 100);
 border-radius: 10px;
-color: white;</string>
+color: white;
+</string>
             </property>
            </widget>
           </item>

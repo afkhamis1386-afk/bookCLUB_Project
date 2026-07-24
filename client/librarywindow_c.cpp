@@ -5,6 +5,8 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QListWidgetItem>
+#include <QScreen>
+#include <QGuiApplication>
 
 LibraryWindow_c::LibraryWindow_c(NetworkManager *networkManager, QWidget *parent)
     : QMainWindow(parent)
