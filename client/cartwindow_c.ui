@@ -45,32 +45,6 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="3">
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>223</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="2" column="2">
-     <spacer name="verticalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>79</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
     <item row="1" column="0">
      <spacer name="horizontalSpacer">
       <property name="orientation">
@@ -84,7 +58,7 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="1" colspan="2">
+    <item row="1" column="1">
      <widget class="QWidget" name="glasswidget" native="true">
       <property name="minimumSize">
        <size>
@@ -94,18 +68,18 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QWidget#glasswidget {
-    background-color: rgba(255, 255, 255, 80); 
+    background-color: rgba(255, 255, 255, 80);
     border: 1px solid rgba(255, 255, 255, 180);
-    border-radius: 20px; 
+    border-radius: 20px;
 }
 QLabel {
     background-color: rgba(255, 255, 255, 170);
-    color: #2c3e50; 
+    color: #2c3e50;
     border: 1px solid rgba(44, 62, 80, 50);
     border-radius: 12px;
-    padding: 8px 12px; 
+    padding: 8px 12px;
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
-    font-size: 14px; 
+    font-size: 14px;
     font-weight: bold;
 }
 QPushButton {
@@ -120,7 +94,7 @@ QPushButton {
 }
 
 QPushButton:hover {
-    background-color: #34495e; 
+    background-color: #34495e;
     color: #d4af37;
 }
 
@@ -130,9 +104,9 @@ QPushButton:pressed {
 QTableWidget {
     background-color: rgba(255, 255, 255, 100);
     color: #2c3e50;
-    border-radius: 15px; 
+    border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 150);
-    gridline-color: rgba(44, 62, 80, 30); 
+    gridline-color: rgba(44, 62, 80, 30);
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-size: 13px;
 }
@@ -145,7 +119,7 @@ QTableWidget::item {
 }
 
 QTableWidget::item:hover {
-    background-color: rgba(44, 62, 80, 20); 
+    background-color: rgba(44, 62, 80, 20);
 }
 
 QTableWidget::item:selected {
@@ -279,6 +253,32 @@ QTableCornerButton::section {
        </layout>
       </widget>
      </widget>
+    </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>223</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>79</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>

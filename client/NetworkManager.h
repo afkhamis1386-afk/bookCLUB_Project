@@ -72,6 +72,7 @@ public:
     void unsaveBook(int bookId);
     void getSavedBooks();
     void moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId);
+    void removeBookFromShelf(int shelfId, int bookId);
     void getNotifications();
     void markNotificationRead(int notificationId);
     void getUnreadNotificationCount();

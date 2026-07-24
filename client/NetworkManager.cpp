@@ -317,6 +317,12 @@ void NetworkManager::moveBookBetweenShelves(int sourceShelfId, int destShelfId, 
     p["bookId"] = bookId;
     sendRequest(RequestType::MoveBookBetweenShelves, p);
 }
+void NetworkManager::removeBookFromShelf(int shelfId, int bookId) {
+    QVariantMap p;
+    p["shelfId"] = shelfId;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::removeBookFromShelf, p);
+}
 void NetworkManager::getNotifications() {
     sendRequest(RequestType::GetNotifications);
 }
