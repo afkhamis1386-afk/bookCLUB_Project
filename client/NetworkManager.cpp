@@ -4,7 +4,7 @@
 
 NetworkManager::NetworkManager(QObject *parent)
     : QObject(parent), socket(new ClientSocket(this)),
-    currentUserId(-1), currentUserRole(UserRole::NormalUser), loggedIn(false) {
+    currentUserId(-1), currentUserRole(UserRole::NormalUser), hasFavoriteGenres(false), loggedIn(false) {
     connect(socket, &ClientSocket::connected, this, &NetworkManager::onSocketConnected);
     connect(socket, &ClientSocket::disconnected, this, &NetworkManager::onSocketDisconnected);
     connect(socket, &ClientSocket::responseReceived, this, &NetworkManager::onSocketResponseReceived);
@@ -19,6 +19,7 @@ bool NetworkManager::isConnected() const {
 int NetworkManager::getCurrentUserId() const { return currentUserId; }
 UserRole NetworkManager::getCurrentUserRole() const { return currentUserRole; }
 QString NetworkManager::getCurrentUsername() const { return currentUsername; }
+bool NetworkManager::getHasFavoriteGenres() const { return hasFavoriteGenres; }
 bool NetworkManager::isLoggedIn() const { return loggedIn; }
 void NetworkManager::logout() {
     if (!loggedIn) {
@@ -421,6 +422,7 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
             currentUserId = response.getData().value("userId").toInt();
             currentUserRole = static_cast<UserRole>(response.getData().value("role").toInt());
             currentUsername = response.getData().value("username").toString();
+            hasFavoriteGenres = response.getData().value("hasFavoriteGenres").toBool();
             loggedIn = true;
             emit loginSucceeded(currentUserId, currentUserRole);
         } else {
@@ -432,6 +434,7 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
             currentUserId = -1;
             currentUserRole = UserRole::NormalUser;
             currentUsername.clear();
+            hasFavoriteGenres = false;
             loggedIn = false;
         }
     }
