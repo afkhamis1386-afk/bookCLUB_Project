@@ -242,7 +242,7 @@ QComboBox::down-arrow {
        <property name="geometry">
         <rect>
          <x>660</x>
-         <y>530</y>
+         <y>540</y>
          <width>111</width>
          <height>66</height>
         </rect>
@@ -255,7 +255,7 @@ QComboBox::down-arrow {
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>550</y>
+         <y>555</y>
          <width>90</width>
          <height>47</height>
         </rect>
@@ -277,11 +277,30 @@ QComboBox::down-arrow {
         <double>100000000.000000000000000</double>
        </property>
       </widget>
+      <widget class="QDoubleSpinBox" name="discountPercentSpinBox">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>330</y>
+         <width>191</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>درصد تخفیف (۰ تا ۱۰۰)</string>
+       </property>
+       <property name="suffix">
+        <string> %</string>
+       </property>
+       <property name="maximum">
+        <double>100.000000000000000</double>
+       </property>
+      </widget>
       <widget class="QLabel" name="statusLabel">
        <property name="geometry">
         <rect>
          <x>160</x>
-         <y>530</y>
+         <y>545</y>
          <width>341</width>
          <height>41</height>
         </rect>
@@ -303,19 +322,6 @@ QComboBox::down-arrow {
         <string>... pdf انتخاب فایل</string>
        </property>
       </widget>
-      <widget class="QLabel" name="pdfPathLabel">
-       <property name="geometry">
-        <rect>
-         <x>420</x>
-         <y>240</y>
-         <width>131</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>   فایلی انتخاب نشده</string>
-       </property>
-      </widget>
       <widget class="QPushButton" name="selectCoverButton">
        <property name="geometry">
         <rect>
@@ -329,31 +335,66 @@ QComboBox::down-arrow {
         <string>...انتخاب عکس جلد </string>
        </property>
       </widget>
-      <widget class="QLabel" name="coverPathLabel">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>190</y>
-         <width>141</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>   فایلی انتخاب نشده</string>
-       </property>
-      </widget>
       <widget class="QTextEdit" name="descriptionTextEdit">
        <property name="geometry">
         <rect>
          <x>160</x>
-         <y>330</y>
+         <y>380</y>
          <width>611</width>
-         <height>191</height>
+         <height>141</height>
         </rect>
        </property>
        <property name="placeholderText">
         <string>-</string>
        </property>
+      </widget>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>180</y>
+         <width>132</width>
+         <height>191</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="coverPathLabel">
+          <property name="text">
+           <string>   فایلی انتخاب نشده</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="pdfPathLabel">
+          <property name="text">
+           <string>   فایلی انتخاب نشده</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="pricelabel">
+          <property name="text">
+           <string>   قیمت </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="discountLabel">
+          <property name="styleSheet">
+           <string notr="true">QLabel#discountLabel {
+    color: #2c3e50;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 10pt;
+    background: transparent;
+}</string>
+          </property>
+          <property name="text">
+           <string>  درصد تخفیف </string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
