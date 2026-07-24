@@ -20,6 +20,7 @@ public:
 
 signals:
     void backRequested();
+    void logoutRequested();
 
 private slots:
     void onAccountInfoLoaded(const QVariantMap &accountData);
@@ -32,6 +33,7 @@ private slots:
     void onEditGenresButtonClicked();
     void onValidationError(const QString &message);
     void onBackButtonClicked();
+    void onLogoutButtonClicked();
 
 private:
     Ui::ProfileWindow_c *ui;

@@ -113,7 +113,8 @@ HEADERS += \
     profilewindow_c.h \
     publisheraddbookwindow_c.h \
     publishermainwindow.h \
-    registerwindow_c.h
+    registerwindow_c.h \
+    windownav.h
 
 FORMS += \
     GenreSelectionWindow_c.ui \

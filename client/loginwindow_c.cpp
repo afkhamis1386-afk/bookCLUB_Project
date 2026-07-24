@@ -3,6 +3,7 @@
 #include "homewindow_c.h"
 #include "adminmainwindow.h"
 #include "publishermainwindow.h"
+#include "windownav.h"
 #include <QMessageBox>
 LoginWindow_c::LoginWindow_c(NetworkManager *networkManager, QWidget *parent)
     : QMainWindow(parent)
@@ -37,7 +38,7 @@ void LoginWindow_c::onGoToRegisterButtonClicked()
             this->show();
         });
     }
-    registerWindow->show();
+    showFollowingState(registerWindow, this);
     this->hide();
 }
 void LoginWindow_c::onForgotPasswordButtonClicked()
@@ -49,7 +50,7 @@ void LoginWindow_c::onForgotPasswordButtonClicked()
             this->show();
         });
     }
-    forgotPasswordWindow->show();
+    showFollowingState(forgotPasswordWindow, this);
     this->hide();
 }
 void LoginWindow_c::onLoginSucceeded(UserRole role)
@@ -62,9 +63,7 @@ void LoginWindow_c::onLoginSucceeded(UserRole role)
                 genreSelectionWindow->setAttribute(Qt::WA_DeleteOnClose);
                 connect(genreSelectionWindow, &GenreSelectionWindow_c::genresConfirmed, this, [this]() {
                     genreSelectionConfirmed = true;
-                    HomeWindow_c *homeWindow = new HomeWindow_c(networkManager);
-                    homeWindow->setAttribute(Qt::WA_DeleteOnClose);
-                    homeWindow->show();
+                    openHomeWindow();
                     genreSelectionWindow->close();
                 });
                 connect(genreSelectionWindow, &QObject::destroyed, this, [this]() {
@@ -73,23 +72,21 @@ void LoginWindow_c::onLoginSucceeded(UserRole role)
                         this->show();
                 });
             }
-            genreSelectionWindow->show();
+            showFollowingState(genreSelectionWindow, this);
             this->hide();
             return;
         }
-        HomeWindow_c *homeWindow = new HomeWindow_c(networkManager);
-        homeWindow->setAttribute(Qt::WA_DeleteOnClose);
-        homeWindow->show();
-        this->hide();
+        openHomeWindow();
     }
     else if (role == UserRole::Admin) {
         AdminMainWindow *adminWindow = new AdminMainWindow(networkManager);
         adminWindow->setAttribute(Qt::WA_DeleteOnClose);
         connect(adminWindow, &AdminMainWindow::logoutRequested, this, [this, adminWindow]() {
             adminWindow->close();
+            clearLoginFields();
             this->show();
         });
-        adminWindow->show();
+        showFollowingState(adminWindow, this);
         this->hide();
     }
     else {
@@ -97,9 +94,10 @@ void LoginWindow_c::onLoginSucceeded(UserRole role)
         publisherWindow->setAttribute(Qt::WA_DeleteOnClose);
         connect(publisherWindow, &PublisherMainWindow::logoutRequested, this, [this, publisherWindow]() {
             publisherWindow->close();
+            clearLoginFields();
             this->show();
         });
-        publisherWindow->show();
+        showFollowingState(publisherWindow, this);
         this->hide();
     }
 }
@@ -111,4 +109,24 @@ void LoginWindow_c::onLoginFailed(const QString &message)
 void LoginWindow_c::onValidationError(const QString &message)
 {
     ui->statusLabel->setText(message);
+}
+
+void LoginWindow_c::openHomeWindow()
+{
+    HomeWindow_c *homeWindow = new HomeWindow_c(networkManager);
+    homeWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(homeWindow, &HomeWindow_c::logoutRequested, this, [this, homeWindow]() {
+        homeWindow->close();
+        clearLoginFields();
+        this->show();
+    });
+    showFollowingState(homeWindow, this);
+    this->hide();
+}
+
+void LoginWindow_c::clearLoginFields()
+{
+    ui->usernameLineEdit->clear();
+    ui->passwordLineEdit->clear();
+    ui->statusLabel->clear();
 }

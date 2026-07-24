@@ -3,6 +3,8 @@
 #include "cartwindow_c.h"
 #include "profilewindow_c.h"
 #include "librarywindow_c.h"
+#include "notificationwindow_c.h"
+#include "windownav.h"
 #include <QMessageBox>
 #include <QScrollArea>
 HomeWindow_c::HomeWindow_c(NetworkManager *networkManager, QWidget *parent)
@@ -147,10 +149,7 @@ void HomeWindow_c::onCardClicked(int bookId)
         bookDetailsWindow->close();
         this->show();
     });
-    connect(bookDetailsWindow, &BookDetailsWindow_c::cartUpdated, this, [this]() {
-        cartController->refreshCart();
-    });
-    bookDetailsWindow->show();
+    showFollowingState(bookDetailsWindow, this);
     this->hide();
 }
 void HomeWindow_c::onCartButtonClicked()
@@ -162,7 +161,7 @@ void HomeWindow_c::onCartButtonClicked()
         cartController->refreshCart();
         this->show();
     });
-    cartWindow->show();
+    showFollowingState(cartWindow, this);
     this->hide();
 }
 
@@ -175,7 +174,7 @@ void HomeWindow_c::onNotificationsButtonClicked()
         notificationController->refreshUnreadCount();
         this->show();
     });
-    notificationWindow->show();
+    showFollowingState(notificationWindow, this);
     this->hide();
 }
 void HomeWindow_c::onLibraryButtonClicked()
@@ -187,7 +186,7 @@ void HomeWindow_c::onLibraryButtonClicked()
         this->show();
     });
 
-    libraryWindow->show();
+    showFollowingState(libraryWindow, this);
     this->hide();
 }
 void HomeWindow_c::onProfileButtonClicked()
@@ -198,7 +197,11 @@ void HomeWindow_c::onProfileButtonClicked()
         profileWindow->close();
         this->show();
     });
-    profileWindow->show();
+    connect(profileWindow, &ProfileWindow_c::logoutRequested, this, [this, profileWindow]() {
+        profileWindow->close();
+        emit logoutRequested();
+    });
+    showFollowingState(profileWindow, this);
     this->hide();
 }
 void HomeWindow_c::onCartLoaded(const QVariantMap &cartData)

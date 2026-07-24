@@ -10,7 +10,6 @@
 #include "NotificationController.h"
 #include "bookcardwidget.h"
 #include "bookdetailswindow_c.h"
-#include "notificationwindow_c.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,6 +24,9 @@ class HomeWindow_c : public QMainWindow
 public:
     explicit HomeWindow_c(NetworkManager *networkManager, QWidget *parent = nullptr);
     ~HomeWindow_c() override;
+
+signals:
+    void logoutRequested();
 
 private slots:
     void onSearchButtonClicked();

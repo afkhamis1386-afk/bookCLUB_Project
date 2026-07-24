@@ -1,9 +1,11 @@
 #include "profilewindow_c.h"
 #include "ui_profilewindow_c.h"
 #include "GenreSelectionWindow_c.h"
+#include "windownav.h"
 #include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QDateTime>
+#include <QMessageBox>
 ProfileWindow_c::ProfileWindow_c(NetworkManager *networkManager, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::ProfileWindow_c)
@@ -20,6 +22,7 @@ ProfileWindow_c::ProfileWindow_c(NetworkManager *networkManager, QWidget *parent
     connect(ui->changePasswordButton, &QPushButton::clicked, this, &ProfileWindow_c::onChangePasswordButtonClicked);
     connect(ui->editGenresButton, &QPushButton::clicked, this, &ProfileWindow_c::onEditGenresButtonClicked);
     connect(ui->backButton, &QPushButton::clicked, this, &ProfileWindow_c::onBackButtonClicked);
+    connect(ui->logoutButton, &QPushButton::clicked, this, &ProfileWindow_c::onLogoutButtonClicked);
     connect(profileController, &ProfileController::accountInfoLoaded, this, &ProfileWindow_c::onAccountInfoLoaded);
     connect(profileController, &ProfileController::accountInfoLoadFailed, this, &ProfileWindow_c::onAccountInfoLoadFailed);
     connect(profileController, &ProfileController::orderHistoryLoaded, this, &ProfileWindow_c::onOrderHistoryLoaded);
@@ -87,7 +90,11 @@ void ProfileWindow_c::onEditGenresButtonClicked()
     GenreSelectionWindow_c *genreWindow = new GenreSelectionWindow_c(networkManager);
     genreWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(genreWindow, &GenreSelectionWindow_c::genresConfirmed, genreWindow, &QWidget::close);
-    genreWindow->show();
+    connect(genreWindow, &QObject::destroyed, this, [this]() {
+        this->show();
+    });
+    showFollowingState(genreWindow, this);
+    this->hide();
 }
 
 void ProfileWindow_c::onValidationError(const QString &message)
@@ -98,4 +105,13 @@ void ProfileWindow_c::onValidationError(const QString &message)
 void ProfileWindow_c::onBackButtonClicked()
 {
     emit backRequested();
+}
+
+void ProfileWindow_c::onLogoutButtonClicked()
+{
+    if (QMessageBox::question(this, "خروج از حساب کاربری", "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
+         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
+        networkManager->logout();
+        emit logoutRequested();
+    }
 }
