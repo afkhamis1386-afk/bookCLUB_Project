@@ -369,7 +369,8 @@ Response ClientHandler::handleBookRequest(const Request &req) {
             p.value("authorName").toString(),
             p.value("coverImageData").toByteArray(),
             p.value("coverImageExtension").toString(),
-            p.value("pdfData").toByteArray());
+            p.value("pdfData").toByteArray(),
+            p.value("discountPercent").toDouble());
     case RequestType::GetBooksByGenre:
         return bookManager.getBooksByGenre(p.value("genreId").toInt());
     case RequestType::GetBooksByCategory:
