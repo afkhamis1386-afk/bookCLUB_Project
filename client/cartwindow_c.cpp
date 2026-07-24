@@ -79,7 +79,7 @@ void CartWindow_c::onRemoveFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
 void CartWindow_c::onCheckoutButtonClicked() {
-    PaymentWindow_c paymentDialog(currentFinalPrice, this);
+    PaymentWindow_c paymentDialog(currentFinalPrice, networkManager->getCurrentUsername(), this);
     if (paymentDialog.exec() == QDialog::Accepted) {
         cartController->checkout(paymentDialog.getCardNumber());
     }
