@@ -451,8 +451,14 @@ Response BookManager::getPurchasedBooks(int userId){
         return Response(ResponseStatus::NotFound, "کاربر یافت نشد");
     }
     QVariantList bookList;
-    for(int bookId : user->getPurchaseHistory())
-        bookList.append(bookId);
+    BookRepository bookRepo;
+    for(int bookId : user->getPurchaseHistory()){
+        QVariantMap bookData;
+        bookData["bookId"] = bookId;
+        std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
+        bookData["bookName"] = book ? book->getBookName() : QString("کتاب #%1").arg(bookId);
+        bookList.append(bookData);
+    }
     QVariantMap data;
     data["bookIds"] = bookList;
     return Response(ResponseStatus::Success, "کتاب های خریداری شده بازیابی شدند", data);

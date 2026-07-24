@@ -45,6 +45,7 @@ enum class RequestType {
     DeleteShelf,
     AddBookToShelf,
     MoveBookBetweenShelves,
+    RemoveBookFromShelf,
     AddBook,
     UpdateBook,
     DeactivateBook,
@@ -117,6 +118,7 @@ inline QString requestTypeToString(RequestType type){
     case RequestType::DeleteShelf: return "DeleteShelf";
     case RequestType::AddBookToShelf: return "AddBookToShelf";
     case RequestType::MoveBookBetweenShelves: return "MoveBookBetweenShelves";
+    case RequestType::RemoveBookFromShelf: return "RemoveBookFromShelf";
     case RequestType::AddBook: return "AddBook";
     case RequestType::UpdateBook: return "UpdateBook";
     case RequestType::DeactivateBook: return "DeactivateBook";
