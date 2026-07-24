@@ -24,6 +24,7 @@ public:
     ~BookDetailsWindow_c() override;
 signals:
     void backRequested();
+    void cartUpdated();
 private slots:
     void onBookDetailsReceived(const QVariantMap &bookData);
     void onBookDetailsFailed(const QString &message);
@@ -43,11 +44,17 @@ private slots:
     void onBookSaveFailed(const QString &message);
     void onReviewSubmitted(int reviewId, const QString &message);
     void onReviewSubmitFailed(const QString &message);
+    void onReviewEdited(const QString &message);
+    void onReviewEditFailed(const QString &message);
+    void onReviewDeleted(const QString &message);
+    void onReviewDeleteFailed(const QString &message);
     void onRatingSubmitted(double newAverage, int ratingCount, const QString &message);
     void onRatingSubmitFailed(const QString &message);
     void onValidationError(const QString &message);
     void onRatingSummaryLoaded(double averageRating, int ratingCount);
     void onBookLiveUpdateReceived(const QString &updateType, const QVariantMap &data);
+    void onEditReviewClicked();
+    void onDeleteReviewClicked();
 private:
     Ui::BookDetailsWindow_c *ui;
     NetworkManager *networkManager;
@@ -58,7 +65,10 @@ private:
     RatingController *ratingController;
     SavedBookController *savedBookController;
     bool isBookFree = false;
+    int selectedReviewId = -1;
+    QVariantMap currentReviewsData;
     void populateReviewsList(const QVariantList &reviews);
+    void showEditReviewDialog(int reviewId, const QString &currentText);
 };
 
 #endif // BOOKDETAILSWINDOW_C_H

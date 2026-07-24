@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>794</width>
+    <width>1254</width>
     <height>836</height>
    </rect>
   </property>
@@ -20,15 +20,15 @@
 }</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="2">
-     <spacer name="verticalSpacer_2">
+    <item row="1" column="3">
+     <spacer name="horizontalSpacer_2">
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Horizontal</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>20</width>
-        <height>7</height>
+        <width>76</width>
+        <height>20</height>
        </size>
       </property>
      </spacer>
@@ -42,6 +42,32 @@
        <size>
         <width>76</width>
         <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>7</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="2">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>7</height>
        </size>
       </property>
      </spacer>
@@ -138,33 +164,12 @@ QListWidget::item:selected {
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
-         <width>598</width>
-         <height>748</height>
+         <y>-30</y>
+         <width>581</width>
+         <height>778</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="4" column="2">
-         <widget class="QPushButton" name="addToCartButton">
-          <property name="text">
-           <string>افزودن به سبد خرید </string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="2">
-         <widget class="QLabel" name="priceLabel">
-          <property name="text">
-           <string> قیمت :   </string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QLabel" name="ratingLabel">
-          <property name="text">
-           <string> امتیاز :    </string>
-          </property>
-         </widget>
-        </item>
         <item row="6" column="0" colspan="3">
          <widget class="QTextEdit" name="newReviewTextEdit">
           <property name="minimumSize">
@@ -186,6 +191,20 @@ color: white;</string>
           </property>
          </widget>
         </item>
+        <item row="4" column="2">
+         <widget class="QPushButton" name="addToCartButton">
+          <property name="text">
+           <string>افزودن به سبد خرید </string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="ratingLabel">
+          <property name="text">
+           <string> امتیاز :    </string>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="2">
          <widget class="QLabel" name="bookNameLabel">
           <property name="styleSheet">
@@ -193,54 +212,6 @@ color: white;</string>
           </property>
           <property name="text">
            <string> نام کتاب :   </string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QTextEdit" name="descriptionTextEdit">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color: rgba(0, 0, 0, 100);
-border-radius: 10px;
-color: white;</string>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" rowspan="6">
-         <widget class="QLabel" name="coverImageLabel">
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>280</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>200</width>
-            <height>280</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">
-border-radius: 8px;</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="2">
-         <widget class="QPushButton" name="saveBookButton">
-          <property name="text">
-           <string>ذخیره برای بعد</string>
           </property>
          </widget>
         </item>
@@ -310,6 +281,20 @@ color: white;</string>
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="editReviewButton">
+            <property name="text">
+             <string>ویرایش نظر</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="deleteReviewButton">
+            <property name="text">
+             <string>حذف نظر</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="statusLabel">
             <property name="styleSheet">
              <string notr="true">    background-color: rgba(255, 255, 255, 170);
@@ -335,35 +320,64 @@ color: white;</string>
           </item>
          </layout>
         </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QTextEdit" name="descriptionTextEdit">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgba(0, 0, 0, 100);
+border-radius: 10px;
+color: white;</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="6">
+         <widget class="QLabel" name="coverImageLabel">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>280</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>280</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+border-radius: 8px;</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QLabel" name="priceLabel">
+          <property name="text">
+           <string> قیمت :   </string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <widget class="QPushButton" name="saveBookButton">
+          <property name="text">
+           <string>ذخیره برای بعد</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
-    </item>
-    <item row="1" column="3">
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>76</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="2" column="1">
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>7</height>
-       </size>
-      </property>
-     </spacer>
     </item>
    </layout>
   </widget>
@@ -372,7 +386,7 @@ color: white;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>794</width>
+     <width>1254</width>
      <height>25</height>
     </rect>
    </property>

@@ -2,6 +2,11 @@
 #include "ui_bookdetailswindow_c.h"
 #include <QMessageBox>
 #include <QPixmap>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QTextEdit>
+#include <QPushButton>
 
 BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int bookId, QWidget *parent)
     : QMainWindow(parent)
@@ -20,6 +25,8 @@ BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int boo
     connect(ui->backButton, &QPushButton::clicked, this, &BookDetailsWindow_c::onBackButtonClicked);
     connect(ui->submitReviewButton, &QPushButton::clicked, this, &BookDetailsWindow_c::onSubmitReviewButtonClicked);
     connect(ui->submitRatingButton, &QPushButton::clicked, this, &BookDetailsWindow_c::onSubmitRatingButtonClicked);
+    connect(ui->editReviewButton, &QPushButton::clicked, this, &BookDetailsWindow_c::onEditReviewClicked);
+    connect(ui->deleteReviewButton, &QPushButton::clicked, this, &BookDetailsWindow_c::onDeleteReviewClicked);
     connect(bookStoreController, &BookStoreController::bookDetailsReceived, this, &BookDetailsWindow_c::onBookDetailsReceived);
     connect(bookStoreController, &BookStoreController::bookDetailsFailed, this, &BookDetailsWindow_c::onBookDetailsFailed);
     connect(bookStoreController, &BookStoreController::coverImageLoaded, this, &BookDetailsWindow_c::onCoverImageLoaded);
@@ -34,6 +41,10 @@ BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int boo
     connect(reviewController, &ReviewController::reviewsLoadFailed, this, &BookDetailsWindow_c::onReviewsLoadFailed);
     connect(reviewController, &ReviewController::reviewSubmitted, this, &BookDetailsWindow_c::onReviewSubmitted);
     connect(reviewController, &ReviewController::reviewSubmitFailed, this, &BookDetailsWindow_c::onReviewSubmitFailed);
+    connect(reviewController, &ReviewController::reviewEdited, this, &BookDetailsWindow_c::onReviewEdited);
+    connect(reviewController, &ReviewController::reviewEditFailed, this, &BookDetailsWindow_c::onReviewEditFailed);
+    connect(reviewController, &ReviewController::reviewDeleted, this, &BookDetailsWindow_c::onReviewDeleted);
+    connect(reviewController, &ReviewController::reviewDeleteFailed, this, &BookDetailsWindow_c::onReviewDeleteFailed);
     connect(ratingController, &RatingController::ratingSubmitted, this, &BookDetailsWindow_c::onRatingSubmitted);
     connect(ratingController, &RatingController::ratingSubmitFailed, this, &BookDetailsWindow_c::onRatingSubmitFailed);
     connect(ratingController, &RatingController::ratingSummaryLoaded, this, &BookDetailsWindow_c::onRatingSummaryLoaded);
@@ -75,17 +86,31 @@ void BookDetailsWindow_c::onCoverImageLoaded(int loadedBookId, const QByteArray 
 }
 void BookDetailsWindow_c::populateReviewsList(const QVariantList &reviews) {
     ui->reviewsListWidget->clear();
+    int currentUserId = networkManager->getCurrentUserId();
     for (const QVariant &v : reviews) {
         QVariantMap review = v.toMap();
-        ui->reviewsListWidget->addItem("💬 " + review.value("commentText").toString());
+        int userId = review.value("userId").toInt();
+        QString commentText = review.value("commentText").toString();
+        bool isOwnReview = (userId == currentUserId);
+        QString prefix = isOwnReview ? "📝 " : "💬 ";
+        ui->reviewsListWidget->addItem(prefix + commentText);
         QVariantList replies = review.value("replies").toList();
         for (const QVariant &rv : qAsConst(replies)) {
             QVariantMap reply = rv.toMap();
-            ui->reviewsListWidget->addItem("     ↳ " + reply.value("commentText").toString());
+            int replyUserId = reply.value("userId").toInt();
+            bool isOwnReply = (replyUserId == currentUserId);
+            QString replyPrefix = isOwnReply ? "     📝 " : "     ↳ ";
+            ui->reviewsListWidget->addItem(replyPrefix + reply.value("commentText").toString());
         }
     }
 }
-void BookDetailsWindow_c::onReviewsLoaded(const QVariantList &reviews) { populateReviewsList(reviews); }
+void BookDetailsWindow_c::onReviewsLoaded(const QVariantList &reviews) {
+    currentReviewsData.clear();
+    for (int i = 0; i < reviews.size(); ++i) {
+        currentReviewsData[QString::number(i)] = reviews[i].toMap();
+    }
+    populateReviewsList(reviews);
+}
 void BookDetailsWindow_c::onReviewsLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 void BookDetailsWindow_c::onAddToCartButtonClicked() {
     if (isBookFree)
@@ -109,7 +134,7 @@ void BookDetailsWindow_c::onSubmitRatingButtonClicked() {
     int ratingValue = ui->ratingComboBox->currentIndex() + 1;
     ratingController->submitRating(bookId, ratingValue);
 }
-void BookDetailsWindow_c::onAddToCartSucceeded(const QString &message) { ui->statusLabel->setText(message); }
+void BookDetailsWindow_c::onAddToCartSucceeded(const QString &message) { ui->statusLabel->setText(message); emit cartUpdated(); }
 void BookDetailsWindow_c::onAddToCartFailed(const QString &message) { ui->statusLabel->setText(message); }
 void BookDetailsWindow_c::onBookSaved(const QString &message) { ui->statusLabel->setText(message); }
 void BookDetailsWindow_c::onBookSaveFailed(const QString &message) { ui->statusLabel->setText(message); }
@@ -137,4 +162,82 @@ void BookDetailsWindow_c::onBookLiveUpdateReceived(const QString &updateType, co
     } else if (updateType == "newRating") {
         ratingController->loadRatingSummary(bookId);
     }
+}
+void BookDetailsWindow_c::onReviewEdited(const QString &message) {
+    ui->statusLabel->setText(message);
+    reviewController->loadReviewsForBook(bookId);
+}
+void BookDetailsWindow_c::onReviewEditFailed(const QString &message) {
+    ui->statusLabel->setText(message);
+}
+void BookDetailsWindow_c::onReviewDeleted(const QString &message) {
+    ui->statusLabel->setText(message);
+    reviewController->loadReviewsForBook(bookId);
+}
+void BookDetailsWindow_c::onReviewDeleteFailed(const QString &message) {
+    ui->statusLabel->setText(message);
+}
+void BookDetailsWindow_c::onEditReviewClicked() {
+    int row = ui->reviewsListWidget->currentRow();
+    if (row < 0 || row >= currentReviewsData.size()) {
+        ui->statusLabel->setText("لطفاً یک نظر را انتخاب کنید");
+        return;
+    }
+    QVariantMap review = currentReviewsData.value(QString::number(row)).toMap();
+    int reviewId = review.value("reviewId").toInt();
+    int userId = review.value("userId").toInt();
+    if (userId != networkManager->getCurrentUserId()) {
+        ui->statusLabel->setText("شما فقط می توانید نظرات خود را ویرایش کنید");
+        return;
+    }
+    showEditReviewDialog(reviewId, review.value("commentText").toString());
+}
+void BookDetailsWindow_c::onDeleteReviewClicked() {
+    int row = ui->reviewsListWidget->currentRow();
+    if (row < 0 || row >= currentReviewsData.size()) {
+        ui->statusLabel->setText("لطفاً یک نظر را انتخاب کنید");
+        return;
+    }
+    QVariantMap review = currentReviewsData.value(QString::number(row)).toMap();
+    int reviewId = review.value("reviewId").toInt();
+    int userId = review.value("userId").toInt();
+    if (userId != networkManager->getCurrentUserId()) {
+        ui->statusLabel->setText("شما فقط می توانید نظرات خود را حذف کنید");
+        return;
+    }
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this, "حذف نظر", "آیا از حذف نظر خود مطمئن هستید؟",
+        QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        reviewController->deleteReview(reviewId);
+    }
+}
+void BookDetailsWindow_c::showEditReviewDialog(int reviewId, const QString &currentText) {
+    QDialog dialog(this);
+    dialog.setWindowTitle("ویرایش نظر");
+    dialog.setMinimumWidth(400);
+    QVBoxLayout *layout = new QVBoxLayout(&dialog);
+    QTextEdit *textEdit = new QTextEdit(&dialog);
+    textEdit->setPlainText(currentText);
+    textEdit->setStyleSheet("background-color: white; color: black; border: 1px solid #ccc; border-radius: 5px; padding: 5px;");
+    layout->addWidget(textEdit);
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    QPushButton *saveButton = new QPushButton("ذخیره", &dialog);
+    QPushButton *cancelButton = new QPushButton("لغو", &dialog);
+    saveButton->setStyleSheet("background-color: #2c3e50; color: white; border-radius: 5px; padding: 8px 16px;");
+    cancelButton->setStyleSheet("background-color: #95a5a6; color: white; border-radius: 5px; padding: 8px 16px;");
+    buttonLayout->addWidget(saveButton);
+    buttonLayout->addWidget(cancelButton);
+    layout->addLayout(buttonLayout);
+    connect(saveButton, &QPushButton::clicked, [&]() {
+        QString newText = textEdit->toPlainText().trimmed();
+        if (!newText.isEmpty() && newText.length() <= 1000) {
+            reviewController->editReview(reviewId, newText);
+            dialog.accept();
+        } else {
+            QMessageBox::warning(&dialog, "خطا", "متن نظر نمی تواند خالی باشد و باید حداکثر ۱۰۰۰ کاراکتر باشد");
+        }
+    });
+    connect(cancelButton, &QPushButton::clicked, &dialog, &QDialog::reject);
+    dialog.exec();
 }
