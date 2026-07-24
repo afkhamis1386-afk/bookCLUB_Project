@@ -103,6 +103,10 @@ Response AuthManager::buildLoginSuccessResponse(int userId, const QString &usern
     if (role == UserRole::Publisher) {
         data["publicationName"] = publicationName;
     }
+    if (role == UserRole::NormalUser) {
+        UserRepository userRepo;
+        data["hasFavoriteGenres"] = !userRepo.getFavoriteGenreIds(userId).isEmpty();
+    }
     return Response(ResponseStatus::Success, "ورود موفقیت آمیز بود", data);
 }
 Response AuthManager::registerNormalUser(const QString &username, const QString &plainPassword, const QString &plainAnswer) {
