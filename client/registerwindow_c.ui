@@ -25,35 +25,31 @@ QFrame#mainFrame {
     border-radius: 20px;
 }
 
-
-QStackedWidget#publisherFieldsStack, 
-#publisherFieldsStack QWidget, 
-#publisherFieldsStack #page, 
-#publisherFieldsStack #page_2, 
+QStackedWidget#publisherFieldsStack,
+#publisherFieldsStack QWidget,
+#publisherFieldsStack #page,
+#publisherFieldsStack #page_2,
 #publisherFieldsStack #page_3 {
     background: transparent;
     border: none;
 }
 
-
-QLineEdit, 
+QLineEdit,
 #publisherFieldsStack QLineEdit {
-    background-color: rgba(255, 255, 255, 200); 
-    border: 1px solid rgba(44, 62, 80, 60);    
-    border-radius: 8px;                       
+    background-color: rgba(255, 255, 255, 200);
+    border: 1px solid rgba(44, 62, 80, 60);
+    border-radius: 8px;
     padding: 6px 10px;
     color: #2c3e50;
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-size: 11pt;
 }
 
-
-QLineEdit:focus, 
+QLineEdit:focus,
 #publisherFieldsStack QLineEdit:focus {
     border: 2px solid #2c3e50;
     background-color: #ffffff;
 }
-
 
 QTextEdit#shortDescriptionTextEdit {
     background-color: rgba(255, 255, 255, 200);
@@ -65,7 +61,6 @@ QTextEdit#shortDescriptionTextEdit:focus {
     border: 2px solid #2c3e50;
     background-color: #ffffff;
 }
-
 
 QGroupBox#roleGroupBox {
     background-color: rgba(255, 255, 255, 80);
@@ -87,7 +82,6 @@ QRadioButton {
     background: transparent;
 }
 
-
 QPushButton#registerButton {
     background-color: #2c3e50;
     color: #ffffff;
@@ -101,7 +95,6 @@ QPushButton#registerButton {
 QPushButton#registerButton:hover {
     background-color: #34495e;
 }
-
 
 QPushButton#backToLoginButton {
     background-color: transparent;
@@ -118,21 +111,69 @@ QPushButton#backToLoginButton:hover {
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item row="0" column="0" alignment="Qt::AlignCenter">
      <widget class="QFrame" name="mainFrame">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>700</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
-        <width>600</width>
+        <width>500</width>
         <height>700</height>
        </size>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>12</number>
+       </property>
+       <property name="leftMargin">
+        <number>25</number>
+       </property>
+       <property name="topMargin">
+        <number>25</number>
+       </property>
+       <property name="rightMargin">
+        <number>25</number>
+       </property>
+       <property name="bottomMargin">
+        <number>25</number>
+       </property>
        <item>
         <widget class="QGroupBox" name="roleGroupBox">
          <property name="title">
-          <string>                         نوع حساب  </string>
+          <string>                     نوع حساب  </string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="spacing">
+           <number>8</number>
+          </property>
+          <property name="leftMargin">
+           <number>12</number>
+          </property>
+          <property name="topMargin">
+           <number>12</number>
+          </property>
+          <property name="rightMargin">
+           <number>12</number>
+          </property>
+          <property name="bottomMargin">
+           <number>12</number>
+          </property>
           <item>
            <widget class="QRadioButton" name="normalUserRadio">
             <property name="text">
@@ -193,11 +234,26 @@ QPushButton#backToLoginButton:hover {
        <item>
         <widget class="QStackedWidget" name="publisherFieldsStack">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page"/>
          <widget class="QWidget" name="page_2">
           <layout class="QVBoxLayout" name="verticalLayout_2">
+           <property name="spacing">
+            <number>8</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QLineEdit" name="firstNameLineEdit">
              <property name="placeholderText">
@@ -282,5 +338,22 @@ QPushButton#backToLoginButton:hover {
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>publisherRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>publisherFieldsStack</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>0</x>
+     <y>0</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

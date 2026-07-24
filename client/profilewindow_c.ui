@@ -42,13 +42,12 @@ QTabBar {
     qproperty-drawBase: 0;
 }
 
-/* تقسیم متوازن و خودکار تب ها در تمام عرض پنل */
 QTabBar::tab {
     background: rgba(30, 41, 59, 0.85);
     border: 1px solid rgba(30, 41, 59, 0.9);
     border-bottom: none;
     color: #f8fafc;
-    min-width: 260px; /* افزایش ابعاد تب ها متناسب با پنل بزرگتر */
+    min-width: 258px;
     padding: 12px 0px;
     font-size: 15px;
     font-weight: bold;
@@ -57,13 +56,13 @@ QTabBar::tab {
     margin-right: -1px;
 }
 
-/* اصلاح گردی گوشه بالا سمت راست برای تب اول (RTL) */
+/* گرد کردن دقیق گوشه بالا سمت چپ برای تب اول */
 QTabBar::tab:first {
     border-top-left-radius: 20px;
     border-top-right-radius: 0px;
 }
 
-/* اصلاح گردی گوشه بالا سمت چپ برای تب آخر (RTL) */
+/* گرد کردن دقیق گوشه بالا سمت راست برای تب آخر */
 QTabBar::tab:last {
     border-top-right-radius: 20px;
     border-top-left-radius: 0px;
@@ -133,17 +132,6 @@ QPushButton:hover {
     border: 1px solid #020617;
 }
 
-QPushButton#backButton {
-    background-color: #1e293b;
-    color: #ffffff;
-    border: 1px solid #0f172a;
-}
-
-QPushButton#backButton:hover {
-    background-color: #0f172a;
-    color: #fde047;
-}
-
 QLineEdit {
     background: rgba(255, 255, 255, 0.85);
     border: 1.5px solid rgba(30, 41, 59, 0.4);
@@ -166,7 +154,7 @@ QLineEdit:focus {
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_main">
-    <item row="0" column="0">
+    <item row="0" column="1">
      <spacer name="topSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -174,12 +162,12 @@ QLineEdit:focus {
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>20</height>
+        <height>40</height>
        </size>
       </property>
      </spacer>
     </item>
-    <item row="1" column="0">
+    <item row="1" column="0" rowspan="3">
      <spacer name="leftSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -196,14 +184,14 @@ QLineEdit:focus {
      <widget class="QTabWidget" name="profileTabWidget">
       <property name="minimumSize">
        <size>
-        <width>785</width>
-        <height>510</height>
+        <width>780</width>
+        <height>480</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>785</width>
-        <height>510</height>
+        <width>780</width>
+        <height>480</height>
        </size>
       </property>
       <property name="currentIndex">
@@ -213,34 +201,117 @@ QLineEdit:focus {
        <attribute name="title">
         <string>اطلاعات حساب</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="usernameLabel">
-          <property name="text">
-           <string>نام کاربری:</string>
-          </property>
-         </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_account">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <!-- سطر ۱: نام کاربری (راست‌چین شده) -->
+        <item>
+         <layout class="QHBoxLayout" name="row1Layout">
+          <item>
+           <spacer name="row1Spacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="usernameLabel">
+            <property name="text">
+             <string>نام کاربری:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="registerDateLabel">
-          <property name="text">
-           <string>تاریخ عضویت:</string>
-          </property>
-         </widget>
+        <!-- سطر ۲: تاریخ عضویت (راست‌چین شده) -->
+        <item>
+         <layout class="QHBoxLayout" name="row2Layout">
+          <item>
+           <spacer name="row2Spacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="registerDateLabel">
+            <property name="text">
+             <string>تاریخ عضویت:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="purchasedCountLabel">
-          <property name="text">
-           <string>تعداد کتاب های خریداری شده:</string>
-          </property>
-         </widget>
+        <!-- سطر ۳: تعداد کتاب‌ها (راست‌چین شده) -->
+        <item>
+         <layout class="QHBoxLayout" name="row3Layout">
+          <item>
+           <spacer name="row3Spacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="purchasedCountLabel">
+            <property name="text">
+             <string>تعداد کتاب های خریداری شده:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
-        <item row="3" column="0">
+        <item>
+         <spacer name="infoSpacer1">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>15</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QPushButton" name="editGenresButton">
           <property name="text">
            <string>تغییر ژانرهای مورد علاقه</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="accountSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -248,8 +319,11 @@ QLineEdit:focus {
        <attribute name="title">
         <string>تغییر رمز عبور</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout_password">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <item>
          <widget class="QLineEdit" name="oldPasswordLineEdit">
           <property name="echoMode">
            <enum>QLineEdit::Password</enum>
@@ -259,7 +333,7 @@ QLineEdit:focus {
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item>
          <widget class="QLineEdit" name="newPasswordLineEdit">
           <property name="echoMode">
            <enum>QLineEdit::Password</enum>
@@ -269,12 +343,25 @@ QLineEdit:focus {
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item>
          <widget class="QPushButton" name="changePasswordButton">
           <property name="text">
            <string>تغییر رمز عبور</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="passwordSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -291,33 +378,13 @@ QLineEdit:focus {
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>true</bool>
           </attribute>
-          <column>
-           <property name="text">
-            <string>شماره سفارش</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>تاریخ</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>مبلغ نهایی</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>وضعیت</string>
-           </property>
-          </column>
          </widget>
         </item>
        </layout>
       </widget>
      </widget>
     </item>
-    <item row="1" column="2">
+    <item row="1" column="2" rowspan="3">
      <spacer name="rightSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -331,10 +398,23 @@ QLineEdit:focus {
      </spacer>
     </item>
     <item row="2" column="1">
-     <widget class="QPushButton" name="backButton">
-      <property name="text">
-       <string>بازگشت</string>
-      </property>
+     <widget class="QWidget" name="bottomButtonsWidget" native="true">
+      <layout class="QHBoxLayout" name="bottomButtonsLayout">
+       <item>
+        <widget class="QPushButton" name="backButton">
+         <property name="text">
+          <string>بازگشت</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="logoutButton">
+         <property name="text">
+          <string>خروج از حساب کاربری</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item row="3" column="1">
@@ -347,7 +427,7 @@ QLineEdit:focus {
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
+    <item row="4" column="1">
      <spacer name="bottomSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -355,7 +435,7 @@ QLineEdit:focus {
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>20</height>
+        <height>40</height>
        </size>
       </property>
      </spacer>

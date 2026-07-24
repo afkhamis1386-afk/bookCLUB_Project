@@ -29,6 +29,8 @@ private slots:
     void onValidationError(const QString &message);
 
 private:
+    void openHomeWindow();
+    void clearLoginFields();
     Ui::LoginWindow_c *ui;
     NetworkManager *networkManager;
     LoginController *loginController;

@@ -1,6 +1,7 @@
 #include "publishermainwindow.h"
 #include "publisheraddbookwindow_c.h"
 #include "ui_publishermainwindow.h"
+#include "windownav.h"
 #include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QInputDialog>
@@ -115,7 +116,7 @@ void PublisherMainWindow::onAddNewBookButtonClicked()
         dashboardController->refreshDashboard();
         this->show();
     });
-    addBookWindow->show();
+    showFollowingState(addBookWindow, this);
     this->hide();
 }
 void PublisherMainWindow::onEditBookButtonClicked()
@@ -200,4 +201,10 @@ void PublisherMainWindow::onAccountInfoLoaded(const QVariantMap &accountData)
 }
 void PublisherMainWindow::onAccountInfoLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 
-void PublisherMainWindow::onLogoutButtonClicked() { emit logoutRequested(); }
+void PublisherMainWindow::onLogoutButtonClicked() {
+    if (QMessageBox::question(this, "خروج از حساب کاربری", "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
+    QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
+        networkManager->logout();
+        emit logoutRequested();
+    }
+}
