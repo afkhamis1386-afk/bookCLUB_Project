@@ -53,20 +53,16 @@ void LibraryController::addBookToShelf(int shelfId, int bookId){
     }
     networkManager->addBookToShelf(shelfId, bookId);
 }
-void LibraryController::moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId){
-    if(sourceShelfId <= 0 || destShelfId <= 0 || bookId <= 0){
+void LibraryController::removeBookFromShelf(int shelfId, int bookId){
+    if(shelfId <= 0 || bookId <= 0){
         emit validationError("ورودی نامعتبر است");
         return;
     }
-    if(sourceShelfId == destShelfId){
-        emit validationError("قفسه مبدا و مقصد نمی توانند یکسان باشند");
-        return;
-    }
     if(!networkManager->isConnected()){
-        emit bookMoveFailed("اتصال به سرور برقرار نیست");
+        emit bookRemoveFromShelfFailed("اتصال به سرور برقرار نیست");
         return;
     }
-    networkManager->moveBookBetweenShelves(sourceShelfId, destShelfId, bookId);
+    networkManager->removeBookFromShelf(shelfId, bookId);
 }
 void LibraryController::refreshPurchasedBooks() {
     if (!networkManager->isConnected()) {
@@ -107,11 +103,11 @@ void LibraryController::onResponseReceived(RequestType type, const Response &res
         else
             emit bookAddToShelfFailed(response.getMessage());
         break;
-    case RequestType::MoveBookBetweenShelves:
+    case RequestType::RemoveBookFromShelf:
         if(response.isSuccess())
-            emit bookMoved(response.getMessage());
+            emit bookRemovedFromShelf(response.getMessage());
         else
-            emit bookMoveFailed(response.getMessage());
+            emit bookRemoveFromShelfFailed(response.getMessage());
         break;
     case RequestType::GetPurchasedBooks:
         if (response.isSuccess())

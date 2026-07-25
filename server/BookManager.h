@@ -7,7 +7,7 @@ class BookManager {
 public:
     BookManager();
     Response addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-    const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData);
+                     const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData, double discountPercent = 0.0);
     Response getCoverImageData(int bookId);
     Response updateBook(int publisherUserId, int bookId, const QString &bookName, const QString &description, double price);
     Response applyDiscount(int publisherUserId, int bookId, double discountPercent, double discountAmount);

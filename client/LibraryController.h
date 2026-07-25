@@ -13,7 +13,7 @@ public:
     void renameShelf(int shelfId, const QString &newName);
     void deleteShelf(int shelfId);
     void addBookToShelf(int shelfId, int bookId);
-    void moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId);
+    void removeBookFromShelf(int shelfId, int bookId);
     void refreshPurchasedBooks();
 
 signals:
@@ -27,8 +27,8 @@ signals:
     void shelfDeleteFailed(const QString &message);
     void bookAddedToShelf(const QString &message);
     void bookAddToShelfFailed(const QString &message);
-    void bookMoved(const QString &message);
-    void bookMoveFailed(const QString &message);
+    void bookRemovedFromShelf(const QString &message);
+    void bookRemoveFromShelfFailed(const QString &message);
     void validationError(const QString &message);
     void purchasedBooksLoaded(const QVariantList &bookIds);
     void purchasedBooksLoadFailed(const QString &message);

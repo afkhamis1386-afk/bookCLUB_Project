@@ -8,6 +8,7 @@
 #include "BookStoreController.h"
 #include "CartController.h"
 #include "NotificationController.h"
+#include "ProfileController.h"
 #include "bookcardwidget.h"
 #include "bookdetailswindow_c.h"
 
@@ -53,6 +54,8 @@ private slots:
     void onBookDetailsReceived(const QVariantMap &bookData);
     void onNewNotificationArrived(const QVariantMap &notificationData);
     void onBookLiveUpdateReceived(const QString &updateType, const QVariantMap &data);
+    void onGenresLoaded(const QVariantList &genres);
+    void onGenreFilterChanged(int index);
 
 private:
     Ui::HomeWindow_c *ui;
@@ -60,6 +63,8 @@ private:
     BookStoreController *bookStoreController;
     CartController *cartController;
     NotificationController *notificationController;
+    ProfileController *profileController;
+    QMap<int, QString> genreNamesById;
     QWidget *gridContainer;
     QGridLayout *gridLayout;
     QMap<int, BookCardWidget*> cardsByBookId;
@@ -67,6 +72,7 @@ private:
     void clearBookGrid();
     void displayBooks(const QVariantList &bookIds);
     void loadBookNameFromDetails(int bookId, BookCardWidget *card);
+    void resetGenreFilterUi();
     BookDetailsWindow_c *bookDetailsWindow = nullptr;
 };
 

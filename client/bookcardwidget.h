@@ -14,6 +14,7 @@ public:
     int getBookId() const;
     void setCoverImage(const QByteArray &imageData);
     void setBookInfo(const QString &bookName, double price);
+    void setGenreName(const QString &genreName);
 
 signals:
     void clicked(int bookId);
@@ -26,6 +27,7 @@ private:
     QLabel *coverLabel;
     QLabel *nameLabel;
     QLabel *priceLabel;
+    QLabel *genreLabel;
 };
 
 #endif // BOOKCARDWIDGET_H

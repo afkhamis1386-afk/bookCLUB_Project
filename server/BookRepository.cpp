@@ -175,7 +175,11 @@ QVector<int> BookRepository::getAllActiveBookIds(){
     QVector<int> ids;
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
-    query.prepare("SELECT BookID FROM Books WHERE IsActive = 1 AND IsDeleted = 0");
+    query.prepare(
+        "SELECT b.BookID FROM Books b "
+        "JOIN Genres g ON b.GenreID = g.GenreID "
+        "WHERE b.IsActive = 1 AND b.IsDeleted = 0 "
+        "ORDER BY g.GenreTitle ASC, b.BookName ASC");
     if(query.exec()){
         while(query.next())
             ids.append(query.value(0).toInt());
@@ -188,7 +192,8 @@ QVector<int> BookRepository::getBooksByGenre(int genreId){
     QSqlQuery query(db);
     query.prepare(
         "SELECT BookID FROM Books WHERE GenreID = :genreId "
-        "AND IsActive = 1 AND IsDeleted = 0");
+        "AND IsActive = 1 AND IsDeleted = 0 "
+        "ORDER BY BookName ASC");
     query.bindValue(":genreId", genreId);
     if(query.exec()){
         while (query.next())

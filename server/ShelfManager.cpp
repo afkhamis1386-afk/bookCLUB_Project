@@ -1,8 +1,10 @@
 #include "ShelfManager.h"
 #include "ShelfRepository.h"
+#include "BookRepository.h"
 #include "DatabaseManager.h"
 #include "UserRepository.h"
 #include "../common/Shelf.h"
+#include "../common/Book.h"
 #include "../common/normaluser.h"
 #include <QSqlDatabase>
 #include <memory>
@@ -65,6 +67,16 @@ Response ShelfManager::addBookToShelf(int userId, int shelfId, int bookId) {
     }
     return Response(ResponseStatus::Success, "کتاب به قفسه اضافه شد");
 }
+Response ShelfManager::removeBookFromShelf(int userId, int shelfId, int bookId) {
+    ShelfRepository shelfRepo;
+    if(!shelfRepo.shelfBelongsToUser(shelfId, userId)){
+        return Response(ResponseStatus::Unauthorized, "شما اجازه حذف کتاب از این قفسه را ندارید");
+    }
+    if(!shelfRepo.removeBookFromShelf(shelfId, bookId)){
+        return Response(ResponseStatus::Error, "کتاب در این قفسه یافت نشد");
+    }
+    return Response(ResponseStatus::Success, "کتاب از قفسه حذف شد");
+}
 Response ShelfManager::moveBookBetweenShelves(int userId, int sourceShelfId, int destShelfId, int bookId){
     ShelfRepository shelfRepo;
     if(!shelfRepo.shelfBelongsToUser(sourceShelfId, userId)){
@@ -100,6 +112,7 @@ Response ShelfManager::getUserShelves(int userId){
     ShelfRepository shelfRepo;
     QVector<int> shelfIds = shelfRepo.getShelfIdsByUser(userId);
     QVariantList shelfList;
+    BookRepository bookRepo;
     for(int shelfId : qAsConst(shelfIds)){
         std::unique_ptr<Shelf> shelf(shelfRepo.loadShelfById(shelfId));
         if (!shelf) continue;
@@ -108,9 +121,14 @@ Response ShelfManager::getUserShelves(int userId){
         shelfData["shelfName"] = shelf->getShelfName();
         shelfData["bookCount"] = shelf->getBookCount();
         QVariantList bookIdList;
-        for(int bookId : shelf->getBookIds())
+        QVariantList bookNameList;
+        for(int bookId : shelf->getBookIds()){
             bookIdList.append(bookId);
+            std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
+            bookNameList.append(book ? book->getBookName() : QString("کتاب #%1").arg(bookId));
+        }
         shelfData["bookIds"] = bookIdList;
+        shelfData["bookNames"] = bookNameList;
         shelfList.append(shelfData);
     }
     QVariantMap data;

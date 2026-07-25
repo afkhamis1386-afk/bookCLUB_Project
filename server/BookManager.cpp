@@ -33,7 +33,7 @@ static QString storageRootPath(){
     if(!pdfs.exists()) pdfs.mkpath(".");
     return path;
 }
-Response BookManager::addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,  const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData)
+Response BookManager::addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,  const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData, double discountPercent)
 {
     if(bookName.trimmed().isEmpty() || bookName.length() > 60){
         return Response(ResponseStatus::ValidationFailed, "نام کتاب نامعتبر است (حداکثر ۶۰ کاراکتر)");
@@ -43,6 +43,9 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     }
     if(price < 0){
         return Response(ResponseStatus::ValidationFailed, "قیمت کتاب نمی تواند منفی باشد");
+    }
+    if(discountPercent < 0 || discountPercent > 100){
+        return Response(ResponseStatus::ValidationFailed, "درصد تخفیف باید بین ۰ تا ۱۰۰ باشد");
     }
     if(pdfData.isEmpty()){
         return Response(ResponseStatus::ValidationFailed, "فایل PDF کتاب الزامی است");
@@ -107,6 +110,7 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     pdfFile.write(pdfData);
     pdfFile.close();
     Book newBook(bookName.trimmed(), description.trimmed(), price, genreId, categoryId, authorId, publisherUserId, coverRelativePath, pdfRelativePath);
+    newBook.setDiscountPercent(discountPercent);
     BookRepository bookRepo;
     int newBookId = bookRepo.insertBook(newBook);
     if(newBookId == -1){
@@ -447,8 +451,14 @@ Response BookManager::getPurchasedBooks(int userId){
         return Response(ResponseStatus::NotFound, "کاربر یافت نشد");
     }
     QVariantList bookList;
-    for(int bookId : user->getPurchaseHistory())
-        bookList.append(bookId);
+    BookRepository bookRepo;
+    for(int bookId : user->getPurchaseHistory()){
+        QVariantMap bookData;
+        bookData["bookId"] = bookId;
+        std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
+        bookData["bookName"] = book ? book->getBookName() : QString("کتاب #%1").arg(bookId);
+        bookList.append(bookData);
+    }
     QVariantMap data;
     data["bookIds"] = bookList;
     return Response(ResponseStatus::Success, "کتاب های خریداری شده بازیابی شدند", data);

@@ -9,6 +9,7 @@ public:
     Response renameShelf(int userId, int shelfId, const QString &newName);
     Response deleteShelf(int userId, int shelfId);
     Response addBookToShelf(int userId, int shelfId, int bookId);
+    Response removeBookFromShelf(int userId, int shelfId, int bookId);
     Response moveBookBetweenShelves(int userId, int sourceShelfId, int destShelfId, int bookId);
     Response getUserShelves(int userId);
 };
