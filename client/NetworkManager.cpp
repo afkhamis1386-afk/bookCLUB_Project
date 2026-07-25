@@ -321,7 +321,7 @@ void NetworkManager::removeBookFromShelf(int shelfId, int bookId) {
     QVariantMap p;
     p["shelfId"] = shelfId;
     p["bookId"] = bookId;
-    sendRequest(RequestType::removeBookFromShelf, p);
+    sendRequest(RequestType::RemoveBookFromShelf, p);
 }
 void NetworkManager::getNotifications() {
     sendRequest(RequestType::GetNotifications);

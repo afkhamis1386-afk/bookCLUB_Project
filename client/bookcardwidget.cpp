@@ -5,13 +5,12 @@
 BookCardWidget::BookCardWidget(int bookId, QWidget *parent)
     : QWidget(parent), bookId(bookId)
 {
-    setFixedSize(160, 270);
+    setFixedSize(160, 290);
     setCursor(Qt::PointingHandCursor);
     setAttribute(Qt::WA_StyledBackground, true);
-    setStyleSheet(
-        "BookCardWidget { background-color: rgba(255,255,255,220); border-radius: 10px; }"
-        "BookCardWidget:hover { background-color: rgba(255,255,255,255); }"
-        );
+    setStyleSheet( "BookCardWidget { background-color: rgba(255,255,255,220); border-radius: 10px; }"
+    "BookCardWidget:hover { background-color: rgba(255,255,255,255); }"
+     );
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(8, 8, 8, 8);
     coverLabel = new QLabel(this);
@@ -25,11 +24,15 @@ BookCardWidget::BookCardWidget(int bookId, QWidget *parent)
     nameLabel->setAlignment(Qt::AlignCenter);
     nameLabel->setStyleSheet("font-weight: bold; font-size: 10pt; color: #2c3e50;");
     nameLabel->setMaximumHeight(40);
+    genreLabel = new QLabel(this);
+    genreLabel->setAlignment(Qt::AlignCenter);
+    genreLabel->setStyleSheet("color: #8a8a8a; font-size: 8pt; font-style: italic;");
     priceLabel = new QLabel(this);
     priceLabel->setAlignment(Qt::AlignCenter);
     priceLabel->setStyleSheet("color: #34495e; font-size: 9pt;");
     layout->addWidget(coverLabel);
     layout->addWidget(nameLabel);
+    layout->addWidget(genreLabel);
     layout->addWidget(priceLabel);
 }
 int BookCardWidget::getBookId() const
@@ -51,6 +54,10 @@ void BookCardWidget::setBookInfo(const QString &bookName, double price)
         priceLabel->setText("رایگان");
     else
         priceLabel->setText(QString::number(price, 'f', 0) + " تومان");
+}
+void BookCardWidget::setGenreName(const QString &genreName)
+{
+    genreLabel->setText(genreName);
 }
 void BookCardWidget::mousePressEvent(QMouseEvent *event)
 {

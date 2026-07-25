@@ -27,10 +27,10 @@
 }
 
 QFrame#mainFrame {
-    background-color: rgba(15, 23, 42, 0.45);  
+    background-color: rgba(15, 23, 42, 0.45);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px; 
-    margin: 15px; 
+    border-radius: 20px;
+    margin: 15px;
 }
 
 QLineEdit#searchLineEdit {
@@ -45,18 +45,18 @@ QLineEdit#searchLineEdit {
 }
 QLineEdit#searchLineEdit:focus {
     background-color: rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(147, 197, 253, 0.8); 
+    border: 1px solid rgba(147, 197, 253, 0.8);
 }
 
 #topBarWidget QPushButton {
     background-color: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 8px;
-    padding: 7px 14px; 
+    padding: 7px 14px;
     color: #ffffff;
     font-family: &quot;Segoe UI&quot;, &quot;Vazirmatn&quot;;
     font-size: 13px;
-    font-weight: bold; 
+    font-weight: bold;
 }
 #topBarWidget QPushButton:hover {
     background-color: rgba(255, 255, 255, 0.22);
@@ -67,7 +67,7 @@ QLineEdit#searchLineEdit:focus {
 }
 
 QPushButton#searchButton {
-    background-color: rgba(147, 197, 253, 0.3); 
+    background-color: rgba(147, 197, 253, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 QPushButton#searchButton:hover {
@@ -77,8 +77,8 @@ QPushButton#searchButton:hover {
 #tabsWidget QPushButton {
     background-color: transparent;
     border: none;
-    border-bottom: 3px solid transparent; 
-    color: #e2e8f0; 
+    border-bottom: 3px solid transparent;
+    color: #e2e8f0;
     font-family: &quot;Segoe UI&quot;, &quot;Vazirmatn&quot;;
     font-size: 14px;
     font-weight: bold;
@@ -93,8 +93,32 @@ QPushButton#searchButton:hover {
     border-bottom: 3px solid #ffffff;
 }
 
+/* استایل کامبو با فلش استاندارد و تمیز */
+QComboBox#genreFilterComboBox {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 5px 12px;
+    color: #ffffff;
+    font-family: &quot;Segoe UI&quot;, &quot;Vazirmatn&quot;;
+    font-size: 13px;
+    font-weight: bold;
+}
+QComboBox#genreFilterComboBox:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+QComboBox#genreFilterComboBox QAbstractItemView {
+    background-color: #0f172a;
+    color: #ffffff;
+    selection-background-color: rgba(147, 197, 253, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 4px;
+}
+
 QLabel#statusLabel {
-    background-color: rgba(147, 197, 253, 0.1); 
+    background-color: rgba(147, 197, 253, 0.1);
     border: 1px solid rgba(147, 197, 253, 0.35);
     border-radius: 8px;
     color: #93c5fd;
@@ -106,7 +130,7 @@ QLabel#statusLabel {
 }
 
 QScrollArea#booksScrollArea {
-    background-color: rgba(255, 255, 255, 0.04);  
+    background-color: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
 }
@@ -189,6 +213,9 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
              <string>همه</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="genreFilterComboBox"/>
           </item>
           <item>
            <widget class="QPushButton" name="freeTabButton">
