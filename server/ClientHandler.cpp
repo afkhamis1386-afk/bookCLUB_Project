@@ -327,7 +327,6 @@ Response ClientHandler::handleAuthRequest(const Request &req) {
         return adminManager.createAdmin(
             p.value("username").toString(),
             p.value("password").toString(),
-            p.value("securityAnswer").toString(),
             p.value("firstName").toString(),
             p.value("lastName").toString(),
             true);
@@ -553,7 +552,6 @@ Response ClientHandler::handleAdminRequest(const Request &req) {
         return adminManager.createAdmin(
             p.value("username").toString(),
             p.value("password").toString(),
-            p.value("securityAnswer").toString(),
             p.value("firstName").toString(),
             p.value("lastName").toString(),
             false);
