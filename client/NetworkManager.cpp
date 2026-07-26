@@ -447,8 +447,7 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
     }
     emit responseReceived(matchedType, response);
 }
-void NetworkManager::bootstrapFirstAdmin(const QString &username, const QString &password, const QString &securityAnswer,
-                                         const QString &firstName, const QString &lastName) {
+void NetworkManager::bootstrapFirstAdmin(const QString &username, const QString &password, const QString &securityAnswer, const QString &firstName, const QString &lastName) {
     QVariantMap p;
     p["username"] = username;
     p["password"] = password;
@@ -457,12 +456,10 @@ void NetworkManager::bootstrapFirstAdmin(const QString &username, const QString 
     p["lastName"] = lastName;
     sendRequest(RequestType::BootstrapFirstAdmin, p);
 }
-void NetworkManager::createAdditionalAdmin(const QString &username, const QString &password, const QString &securityAnswer,
-                                           const QString &firstName, const QString &lastName) {
+void NetworkManager::createAdditionalAdmin(const QString &username, const QString &password, const QString &firstName, const QString &lastName) {
     QVariantMap p;
     p["username"] = username;
     p["password"] = password;
-    p["securityAnswer"] = securityAnswer;
     p["firstName"] = firstName;
     p["lastName"] = lastName;
     sendRequest(RequestType::CreateAdditionalAdmin, p);
