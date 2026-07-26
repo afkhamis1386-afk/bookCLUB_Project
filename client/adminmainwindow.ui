@@ -26,15 +26,15 @@ QTabWidget {
 }
 
 QTabWidget::pane {
-    border: 2px solid rgba(112, 146, 190, 0.8); 
-    background: rgba(255, 255, 255, 0.65); 
+    border: 2px solid rgba(112, 146, 190, 0.8);
+    background: rgba(255, 255, 255, 0.65);
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
-    margin-top: -2px; 
+    margin-top: -2px;
     padding: 20px;
-border-radius: 20px;
+    border-radius: 20px;
 }
 
 QTabBar {
@@ -45,11 +45,10 @@ QTabBar {
 }
 
 QTabBar::tab {
-    background: rgba(255, 255, 255, 0.35);  
+    background: rgba(255, 255, 255, 0.35);
     border: 2px solid rgba(112, 146, 190, 0.8);
     border-bottom: none;
-    color: #2c3e50; 
-
+    color: #2c3e50;
     padding: 12px 0px;
     font-size: 14px;
     font-weight: bold;
@@ -82,7 +81,7 @@ QTabBar::tab:hover {
 }
 
 QTableWidget {
-    background: rgba(255, 255, 255, 0.45);  
+    background: rgba(255, 255, 255, 0.45);
     border: 2px solid rgba(112, 146, 190, 0.7);
     gridline-color: rgba(112, 146, 190, 0.25);
     border-radius: 14px;
@@ -91,35 +90,40 @@ QTableWidget {
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;, sans-serif;
 }
 
-QTableWidget QHeaderView::vertical {
-    width: 0px;
-}
-
+/* --- تنظیمات جدید هدر جدول --- */
 QHeaderView {
-    background-color: rgba(112, 146, 190, 0.85); 
+    background-color: transparent;
     border: none;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
 }
 
-QHeaderView::section {
-    background-color: transparent;
+QHeaderView::section:horizontal {
+    background-color: #2c3e50; 
     color: #ffffff;
-    padding: 12px 0px;
+    padding: 10px 0px;
     font-weight: bold;
     font-size: 13px;
-    border: none;
+    border: 1px solid rgba(112, 146, 190, 0.3);
     text-align: center;
-    min-width: 123px;
-    max-width: 123px;
 }
 
-QHeaderView::section:first {
+QHeaderView::section:horizontal:first {
     border-top-left-radius: 12px;
 }
 
-QHeaderView::section:last {
+QHeaderView::section:horizontal:last {
     border-top-right-radius: 12px;
+}
+
+QHeaderView::section:vertical {
+    background-color: #2c3e50; 
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 12px;
+    border: 1px solid rgba(112, 146, 190, 0.3);
+    text-align: center;
+    min-width: 35px; 
+    max-width: 35px; 
+    padding: 2px;
 }
 
 QTableWidget::item {
@@ -138,7 +142,7 @@ QTableWidget::item:selected {
 
 QTableWidget QScrollBar:horizontal {
     border: none;
-    background: rgba(112, 146, 190, 0.2); 
+    background: rgba(112, 146, 190, 0.2);
     height: 10px;
     margin: 0px;
     border-bottom-left-radius: 8px;
@@ -146,14 +150,14 @@ QTableWidget QScrollBar:horizontal {
 }
 
 QTableWidget QScrollBar::handle:horizontal {
-    background: #a6c8e0; 
+    background: #a6c8e0;
     min-width: 30px;
     border-radius: 5px;
     margin: 1px;
 }
 
 QTableWidget QScrollBar::handle:horizontal:hover {
-    background: #7baad0; 
+    background: #7baad0;
 }
 
 QTableWidget QScrollBar::add-line:horizontal,
@@ -163,14 +167,14 @@ QTableWidget QScrollBar::sub-line:horizontal {
     width: 0px;
 }
 
-QTableWidget QScrollBar::add-page:horizontal, 
+QTableWidget QScrollBar::add-page:horizontal,
 QTableWidget QScrollBar::sub-page:horizontal {
     background: none;
 }
 
 QTableWidget QScrollBar:vertical {
     border: none;
-    background: rgba(112, 146, 190, 0.2); 
+    background: rgba(112, 146, 190, 0.2);
     width: 10px;
     margin: 0px;
     border-top-right-radius: 8px;
@@ -178,14 +182,14 @@ QTableWidget QScrollBar:vertical {
 }
 
 QTableWidget QScrollBar::handle:vertical {
-    background: #a6c8e0; 
+    background: #a6c8e0;
     min-height: 30px;
     border-radius: 5px;
     margin: 1px;
 }
 
 QTableWidget QScrollBar::handle:vertical:hover {
-    background: #7baad0; 
+    background: #7baad0;
 }
 
 QTableWidget QScrollBar::add-line:vertical,
@@ -197,8 +201,9 @@ QTableWidget QScrollBar::add-page:vertical,
 QTableWidget QScrollBar::sub-page:vertical {
     background: none;
 }
+
 QPushButton {
-    background-color: #2c3e50; 
+    background-color: #2c3e50;
     color: #ffffff;
     border: none;
     border-radius: 10px;
@@ -209,22 +214,22 @@ QPushButton {
 }
 
 QPushButton:hover {
-    background-color: #34495e; 
+    background-color: #34495e;
     color: #d4af37;
     font-weight: bold;
 }
+
 QPushButton:pressed {
     background-color: #1a252f;
 }
-QPushButton#backButton,
-QPushButton#logoutButton {
+
+QPushButton#backButton {
     background-color: rgba(255, 255, 255, 0.6); 
     color: #2c3e50;
     border: 2px solid rgba(112, 146, 190, 0.8);
 }
 
-QPushButton#backButton:hover,
-QPushButton#logoutButton:hover {
+QPushButton#backButton:hover {
     background-color: rgba(255, 255, 255, 0.8);
     color: #000000;
 }
@@ -257,10 +262,111 @@ QLineEdit:focus {
     color: #2c3e50;
     font-size: 14px;
     font-weight: bold;
+}
+
+QComboBox#userRoleFilterComboBox {
+    background-color: #2c3e50;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+QComboBox#userRoleFilterComboBox:hover {
+    background-color: #34495e;
+    color: #d4af37;
+}
+
+QComboBox#userRoleFilterComboBox::drop-down {
+    border: none;
+    width: 30px;
+}
+
+QComboBox#userRoleFilterComboBox QAbstractItemView {
+    background-color: #2c3e50;
+    color: #ffffff;
+    selection-background-color: #34495e;
+    selection-color: #d4af37;
+    border: 1.5px solid rgba(112, 146, 190, 0.7);
+    border-radius: 8px;
+    outline: none;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="3" column="2">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>271</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1" colspan="2">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QPushButton" name="logoutButton">
+        <property name="text">
+         <string>خروج از حساب</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="statusLabel">
+        <property name="text">
+         <string>                             -</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>272</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>325</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="3">
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>324</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
     <item row="1" column="1" colspan="2">
      <widget class="QTabWidget" name="adminTabWidget">
       <property name="minimumSize">
@@ -303,10 +409,10 @@ QLineEdit:focus {
        <widget class="QTableWidget" name="usersTableWidget">
         <property name="geometry">
          <rect>
-          <x>170</x>
-          <y>30</y>
-          <width>621</width>
-          <height>192</height>
+          <x>120</x>
+          <y>80</y>
+          <width>701</width>
+          <height>161</height>
          </rect>
         </property>
         <property name="columnCount">
@@ -341,8 +447,8 @@ QLineEdit:focus {
        <widget class="QWidget" name="layoutWidget_users">
         <property name="geometry">
          <rect>
-          <x>170</x>
-          <y>240</y>
+          <x>160</x>
+          <y>250</y>
           <width>621</width>
           <height>271</height>
          </rect>
@@ -392,6 +498,49 @@ QLineEdit:focus {
          </item>
         </layout>
        </widget>
+       <widget class="QLineEdit" name="userSearchLineEdit">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>17</y>
+          <width>471</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="placeholderText">
+         <string>          اساس نام کاربری , نام یا نام خانوادگی  </string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="userRoleFilterComboBox">
+        <property name="geometry">
+         <rect>
+          <x>641</x>
+          <y>17</y>
+          <width>141</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <item>
+         <property name="text">
+          <string> همه نقش ها    </string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>کاربر عادی   </string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ناشر   </string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ادمین   </string>
+         </property>
+        </item>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -400,9 +549,9 @@ QLineEdit:focus {
        <widget class="QTableWidget" name="booksTableWidget">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>130</x>
           <y>30</y>
-          <width>621</width>
+          <width>691</width>
           <height>192</height>
          </rect>
         </property>
@@ -463,15 +612,16 @@ QLineEdit:focus {
        <widget class="QTableWidget" name="reviewsTableWidget">
         <property name="geometry">
          <rect>
-          <x>220</x>
+          <x>170</x>
           <y>30</y>
-          <width>501</width>
+          <width>631</width>
           <height>192</height>
          </rect>
         </property>
         <property name="columnCount">
-         <number>4</number>
+         <number>5</number>
         </property>
+        <column/>
         <column/>
         <column/>
         <column/>
@@ -480,7 +630,7 @@ QLineEdit:focus {
        <widget class="QWidget" name="layoutWidget_reviews">
         <property name="geometry">
          <rect>
-          <x>220</x>
+          <x>240</x>
           <y>240</y>
           <width>501</width>
           <height>99</height>
@@ -505,76 +655,6 @@ QLineEdit:focus {
        </widget>
       </widget>
      </widget>
-    </item>
-    <item row="0" column="1">
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>272</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="3">
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>324</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="3" column="2">
-     <spacer name="verticalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>271</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="2" column="1" colspan="2">
-     <layout class="QVBoxLayout" name="verticalLayout_4">
-      <item>
-       <widget class="QPushButton" name="logoutButton">
-        <property name="text">
-         <string>خروج از حساب</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="statusLabel">
-        <property name="text">
-         <string>                             -</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>325</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
     </item>
    </layout>
   </widget>

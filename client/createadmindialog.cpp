@@ -22,7 +22,6 @@ void CreateAdminDialog::onAccepted() {
     adminController->createAdmin(
         ui->usernameLineEdit->text(),
         ui->passwordLineEdit->text(),
-        ui->securityAnswerLineEdit->text(),
         ui->firstNameLineEdit->text(),
         ui->lastNameLineEdit->text()
         );

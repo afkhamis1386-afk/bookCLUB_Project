@@ -56,14 +56,18 @@ private slots:
     void onValidationError(const QString &message);
     void onLogoutButtonClicked();
     void onCreateAdminButtonClicked();
+    void onUserSearchOrFilterChanged();
 
 private:
     Ui::AdminMainWindow *ui;
     NetworkManager *networkManager;
     AdminController *adminController;
+    QVariantList allUsersCache;
     int getSelectedUserId() const;
     int getSelectedBookId() const;
     int getSelectedReviewId() const;
+    void renderUsersTable(const QVariantList &users);
+    void applyUserSearchAndFilter();
 };
 
 #endif // ADMINMAINWINDOW_H

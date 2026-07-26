@@ -421,7 +421,7 @@ QLineEdit:focus {
       </widget>
       <widget class="QWidget" name="savedBooksTab">
        <attribute name="title">
-        <string>                              کتاب های ذخیره شده             </string>
+        <string>                               کتاب های ذخیره شده                       </string>
        </attribute>
        <widget class="QListWidget" name="saveBooksListWidget">
         <property name="geometry">

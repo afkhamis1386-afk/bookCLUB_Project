@@ -93,7 +93,7 @@ public:
     void getBookFile(int bookId);
     void getPurchasedBooks();
     void bootstrapFirstAdmin(const QString &username, const QString &password, const QString &securityAnswer, const QString &firstName, const QString &lastName);
-    void createAdditionalAdmin(const QString &username, const QString &password, const QString &securityAnswer,const QString &firstName, const QString &lastName);
+    void createAdditionalAdmin(const QString &username, const QString &password, const QString &firstName, const QString &lastName);
 
 signals:
     void connected();

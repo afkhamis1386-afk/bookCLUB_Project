@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QInputDialog>
 #include <QLineEdit>
+#include <QComboBox>
 AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::AdminMainWindow)
@@ -23,8 +24,8 @@ AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent
     ui->booksTableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->booksTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->booksTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->reviewsTableWidget->setColumnCount(4);
-    ui->reviewsTableWidget->setHorizontalHeaderLabels({"شناسه", "کاربر", "کتاب", "متن نظر"});
+    ui->reviewsTableWidget->setColumnCount(5);
+    ui->reviewsTableWidget->setHorizontalHeaderLabels({"شناسه", "کاربر", "کتاب", "متن نظر", "وضعیت"});
     ui->reviewsTableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->reviewsTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->reviewsTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -64,6 +65,8 @@ AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent
     connect(adminController, &AdminController::reviewDeleteFailed, this, &AdminMainWindow::onReviewDeleteFailed);
     connect(adminController, &AdminController::validationError, this, &AdminMainWindow::onValidationError);
     connect(ui->createAdminButton, &QPushButton::clicked, this, &AdminMainWindow::onCreateAdminButtonClicked);
+    connect(ui->userSearchLineEdit, &QLineEdit::textChanged, this, &AdminMainWindow::onUserSearchOrFilterChanged);
+    connect(ui->userRoleFilterComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &AdminMainWindow::onUserSearchOrFilterChanged);
     adminController->loadAllUsers();
     adminController->loadAllBooks();
     adminController->loadAllReviews();
@@ -87,6 +90,10 @@ int AdminMainWindow::getSelectedReviewId() const {
     return ui->reviewsTableWidget->item(row, 0)->text().toInt();
 }
 void AdminMainWindow::onUsersLoaded(const QVariantList &users) {
+    allUsersCache = users;
+    applyUserSearchAndFilter();
+}
+void AdminMainWindow::renderUsersTable(const QVariantList &users) {
     ui->usersTableWidget->setRowCount(users.size());
     for (int i = 0; i < users.size(); ++i) {
         QVariantMap u = users[i].toMap();
@@ -97,6 +104,30 @@ void AdminMainWindow::onUsersLoaded(const QVariantList &users) {
         ui->usersTableWidget->setItem(i, 4, new QTableWidgetItem(u.value("isActive").toBool() ? "فعال" : "غیرفعال"));
         ui->usersTableWidget->setItem(i, 5, new QTableWidgetItem(u.value("registerDate").toDateTime().toString("yyyy/MM/dd")));
     }
+}
+void AdminMainWindow::applyUserSearchAndFilter() {
+    const QString searchText = ui->userSearchLineEdit->text().trimmed();
+    const int roleFilterIndex = ui->userRoleFilterComboBox->currentIndex();
+    QVariantList filtered;
+    for (const QVariant &v : allUsersCache) {
+        QVariantMap u = v.toMap();
+        const QString role = u.value("role").toString();
+        if (roleFilterIndex == 1 && role != "NormalUser") continue;
+        if (roleFilterIndex == 2 && role != "Publisher") continue;
+        if (roleFilterIndex == 3 && role != "Admin") continue;
+        if (!searchText.isEmpty()) {
+            const QString username = u.value("username").toString();
+            const QString publicationName = u.value("publicationName").toString();
+            const bool matches = username.contains(searchText, Qt::CaseInsensitive)
+                                 || publicationName.contains(searchText, Qt::CaseInsensitive);
+            if (!matches) continue;
+        }
+        filtered.append(u);
+    }
+    renderUsersTable(filtered);
+}
+void AdminMainWindow::onUserSearchOrFilterChanged() {
+    applyUserSearchAndFilter();
 }
 void AdminMainWindow::onUsersLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onBlockUserButtonClicked() {
@@ -188,6 +219,7 @@ void AdminMainWindow::onAllReviewsLoaded(const QVariantList &reviews) {
         ui->reviewsTableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(r.value("userId").toInt())));
         ui->reviewsTableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(r.value("bookId").toInt())));
         ui->reviewsTableWidget->setItem(i, 3, new QTableWidgetItem(r.value("commentText").toString()));
+        ui->reviewsTableWidget->setItem(i, 4, new QTableWidgetItem(r.value("isDeleted").toBool() ? "حذف شده" : "فعال"));
     }
 }
 void AdminMainWindow::onAllReviewsLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
@@ -195,6 +227,12 @@ void AdminMainWindow::onDeleteReviewButtonClicked() {
     int id = getSelectedReviewId();
     if (id <= 0) {
         ui->statusLabel->setText("ابتدا یک نظر را انتخاب کنید");
+        return;
+    }
+    int row = ui->reviewsTableWidget->currentRow();
+    if (row >= 0 && ui->reviewsTableWidget->item(row, 4)
+        && ui->reviewsTableWidget->item(row, 4)->text() == "حذف شده") {
+        ui->statusLabel->setText("این نظر قبلاً حذف شده است");
         return;
     }
     if (QMessageBox::question(this, "حذف نظر", "مطمئن هستید؟") == QMessageBox::Yes) {
