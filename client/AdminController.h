@@ -24,7 +24,7 @@ public:
     void updateBook(int bookId, const QString &bookName, const QString &description, double price);
     void loadAllReviews();
     void deleteReview(int reviewId);
-    void createAdmin(const QString &username, const QString &password, const QString &securityAnswer, const QString &firstName, const QString &lastName);
+    void createAdmin(const QString &username, const QString &password, const QString &firstName, const QString &lastName);
 
 signals:
     void usersLoaded(const QVariantList &users);

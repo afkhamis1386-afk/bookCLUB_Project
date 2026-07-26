@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>950</width>
-    <height>680</height>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
   <property name="styleSheet">
    <string notr="true">
 #centralwidget {
-    background-image: url(":/wallhaven-49kq3d.jpg");
+    background-image: url(&quot;:/wallhaven-49kq3d.jpg&quot;);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -55,7 +55,7 @@ QTabBar::tab {
     padding: 12px 0px;
     font-size: 14px;
     font-weight: bold;
-    font-family: "Segoe UI", "Tahoma", sans-serif;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;, sans-serif;
     text-align: center;
     margin-right: -1px;
 }
@@ -92,7 +92,7 @@ QTableWidget, QListWidget {
     border-radius: 12px;
     color: #0f172a;
     font-size: 13px;
-    font-family: "Segoe UI", "Tahoma", sans-serif;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;, sans-serif;
 }
 
 QHeaderView {
@@ -124,7 +124,7 @@ QPushButton {
     padding: 10px 18px;
     font-weight: bold;
     font-size: 14px;
-    font-family: "Segoe UI", "Tahoma", sans-serif;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;, sans-serif;
 }
 
 /* تغییر رنگ متن تمام دکمه ها به طلایی در حالت Hover */
@@ -138,7 +138,7 @@ QLabel {
     color: #0f172a;
     font-size: 14px;
     font-weight: bold;
-    font-family: "Segoe UI", "Tahoma", sans-serif;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;, sans-serif;
 }
 </string>
   </property>
@@ -185,7 +185,7 @@ QLabel {
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="dashboardTab">
        <attribute name="title">

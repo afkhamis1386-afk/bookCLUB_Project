@@ -77,7 +77,8 @@ enum class RequestType {
     GetBestSellers,
     ApplyTimedDiscount,
     UpdateBookByAdmin,
-    ClaimFreeBook
+    ClaimFreeBook,
+    CancelTimedDiscount
 };
 inline QString requestTypeToString(RequestType type){
     switch (type) {
@@ -151,6 +152,7 @@ inline QString requestTypeToString(RequestType type){
     case RequestType::ApplyTimedDiscount: return "ApplyTimedDiscount";
     case RequestType::UpdateBookByAdmin: return "UpdateBookByAdmin";
     case RequestType::ClaimFreeBook: return "ClaimFreeBook";
+    case RequestType::CancelTimedDiscount: return "CancelTimedDiscount";
     }
     return "Unknown";
 }
