@@ -114,13 +114,6 @@ QPushButton:pressed {
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QLineEdit" name="securityAnswerLineEdit">
-      <property name="placeholderText">
-       <string>                                   پاسخ سوال امنیتی</string>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
  </widget>
