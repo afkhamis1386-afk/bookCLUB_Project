@@ -60,6 +60,25 @@ TimedDiscount* TimedDiscountRepository::getActiveDiscountForBook(int bookId){
         query.value(3).toDateTime(),
         query.value(4).toDateTime());
 }
+TimedDiscount* TimedDiscountRepository::getCurrentOrUpcomingDiscountForBook(int bookId){
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare(
+        "SELECT TOP 1 DiscountID, BookID, DiscountPercent, StartDate, EndDate "
+        "FROM TimedDiscount "
+        "WHERE BookID = :bookId AND EndDate > GETDATE() "
+        "ORDER BY StartDate DESC");
+    query.bindValue(":bookId", bookId);
+    if(!query.exec() || !query.next()){
+        return nullptr;
+    }
+    return new TimedDiscount(
+        query.value(0).toInt(),
+        query.value(1).toInt(),
+        query.value(2).toDouble(),
+        query.value(3).toDateTime(),
+        query.value(4).toDateTime());
+}
 QVector<int> TimedDiscountRepository::getAllDiscountIdsForBook(int bookId){
     QVector<int> ids;
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();

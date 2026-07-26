@@ -8,6 +8,7 @@ public:
     int insertTimedDiscount(const TimedDiscount &discount);
     TimedDiscount* loadDiscountById(int discountId);
     TimedDiscount* getActiveDiscountForBook(int bookId);
+    TimedDiscount* getCurrentOrUpcomingDiscountForBook(int bookId);
     QVector<int> getAllDiscountIdsForBook(int bookId);
     bool updateDates(int discountId, const QDateTime &startDate, const QDateTime &endDate);
     bool deleteDiscount(int discountId);

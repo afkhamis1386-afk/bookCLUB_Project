@@ -152,7 +152,8 @@ Response BookManager::getCoverImageData(int bookId){
     file.close();
     return Response(ResponseStatus::Success, "عکس جلد بازیابی شد", data);
 }
-Response BookManager::updateBook(int publisherUserId, int bookId, const QString &bookName, const QString &description, double price){
+Response BookManager::updateBook(int publisherUserId, int bookId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+    const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData){
     BookRepository bookRepo;
     std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
     if(!book){
@@ -170,9 +171,81 @@ Response BookManager::updateBook(int publisherUserId, int bookId, const QString 
     if(!book->setBookPrice(price)){
         return Response(ResponseStatus::ValidationFailed, "قیمت کتاب نامعتبر است");
     }
+    static const qint64 MAX_PDF_SIZE = 100 * 1024 * 1024;
+    static const qint64 MAX_COVER_SIZE = 10 * 1024 * 1024;
+    if(pdfData.size() > MAX_PDF_SIZE){
+        return Response(ResponseStatus::ValidationFailed, "حجم فایل PDF بیش از حد مجاز است");
+    }
+    if(coverImageData.size() > MAX_COVER_SIZE){
+        return Response(ResponseStatus::ValidationFailed, "حجم عکس جلد بیش از حد مجاز است");
+    }
+    if(!genreTitle.trimmed().isEmpty()){
+        GenreRepository genreRepo;
+        QVector<Genre> allGenres = genreRepo.getAllGenres();
+        int genreId = -1;
+        for(const Genre &g : qAsConst(allGenres)){
+            if(g.getGenreTitle() == genreTitle.trimmed()){
+                genreId = g.getGenreId();
+                break;
+            }
+        }
+        if(genreId == -1){
+            return Response(ResponseStatus::ValidationFailed, "ژانر انتخاب شده معتبر نیست");
+        }
+        book->setGenreId(genreId);
+    }
+    if(!categoryTitle.trimmed().isEmpty()){
+        CategoryRepository categoryRepo;
+        int categoryId = categoryRepo.getOrCreateCategory(categoryTitle.trimmed());
+        if(categoryId == -1){
+            return Response(ResponseStatus::ValidationFailed, "دسته بندی انتخاب شده معتبر نیست (حداکثر ۵۰ کاراکتر)");
+        }
+        book->setCategoryId(categoryId);
+    }
+    if(!authorName.trimmed().isEmpty()){
+        AuthorRepository authorRepo;
+        int authorId = authorRepo.getOrCreateAuthor(authorName.trimmed());
+        if(authorId == -1){
+            return Response(ResponseStatus::Error, "خطا در ثبت نویسنده");
+        }
+        book->setAuthorId(authorId);
+    }
+    QString root = storageRootPath();
+    QString newCoverRelativePath, newPdfRelativePath;
+    QString uniqueId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    if(!coverImageData.isEmpty()){
+        QString ext = coverImageExtension.trimmed().isEmpty() ? "jpg" : coverImageExtension.trimmed();
+        newCoverRelativePath = QString("covers/%1.%2").arg(uniqueId, ext);
+        QFile coverFile(root + "/" + newCoverRelativePath);
+        if(!coverFile.open(QIODevice::WriteOnly)){
+            return Response(ResponseStatus::Error, "خطا در ذخیره عکس جلد روی سرور");
+        }
+        coverFile.write(coverImageData);
+        coverFile.close();
+    }
+    if(!pdfData.isEmpty()){
+        newPdfRelativePath = QString("pdfs/%1.pdf").arg(uniqueId);
+        QFile pdfFile(root + "/" + newPdfRelativePath);
+        if(!pdfFile.open(QIODevice::WriteOnly)){
+            if(!newCoverRelativePath.isEmpty()) QFile::remove(root + "/" + newCoverRelativePath);
+            return Response(ResponseStatus::Error, "خطا در ذخیره فایل PDF روی سرور");
+        }
+        pdfFile.write(pdfData);
+        pdfFile.close();
+    }
+    QString oldCoverPath = book->getCoverImagePath();
+    QString oldPdfPath = book->getPdfFilePath();
+    if(!newCoverRelativePath.isEmpty()) book->setCoverImagePath(newCoverRelativePath);
+    if(!newPdfRelativePath.isEmpty()) book->setPdfFilePath(newPdfRelativePath);
     if(!bookRepo.updateBook(*book)){
+        if(!newCoverRelativePath.isEmpty()) QFile::remove(root + "/" + newCoverRelativePath);
+        if(!newPdfRelativePath.isEmpty()) QFile::remove(root + "/" + newPdfRelativePath);
         return Response(ResponseStatus::Error, "خطا در به روزرسانی کتاب");
     }
+    if(!newCoverRelativePath.isEmpty() && !oldCoverPath.isEmpty() && oldCoverPath != newCoverRelativePath)
+        QFile::remove(root + "/" + oldCoverPath);
+    if(!newPdfRelativePath.isEmpty() && !oldPdfPath.isEmpty() && oldPdfPath != newPdfRelativePath)
+        QFile::remove(root + "/" + oldPdfPath);
     return Response(ResponseStatus::Success, "کتاب با موفقیت ویرایش شد");
 }
 Response BookManager::applyDiscount(int publisherUserId, int bookId, double discountPercent, double discountAmount){
@@ -248,6 +321,25 @@ Response BookManager::applyTimedDiscount(int publisherUserId, int bookId, double
     QVariantMap data;
     data["discountId"] = newDiscountId;
     return Response(ResponseStatus::Success, "تخفیف زمان دار با موفقیت اعمال شد", data);
+}
+Response BookManager::cancelTimedDiscount(int publisherUserId, int bookId){
+    BookRepository bookRepo;
+    std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
+    if(!book){
+        return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
+    }
+    if(book->getPublisherUserId() != publisherUserId){
+        return Response(ResponseStatus::Unauthorized, "شما اجازه لغو تخفیف این کتاب را ندارید");
+    }
+    TimedDiscountRepository timedDiscountRepo;
+    std::unique_ptr<TimedDiscount> current(timedDiscountRepo.getCurrentOrUpcomingDiscountForBook(bookId));
+    if(!current){
+        return Response(ResponseStatus::Success, "تخفیف زمان دار فعال یا آینده ای برای این کتاب وجود ندارد");
+    }
+    if(!timedDiscountRepo.deleteDiscount(current->getDiscountId())){
+        return Response(ResponseStatus::Error, "خطا در لغو تخفیف زمان دار");
+    }
+    return Response(ResponseStatus::Success, "تخفیف زمان دار با موفقیت لغو شد");
 }
 Response BookManager::deactivateBook(int publisherUserId, int bookId){
     BookRepository bookRepo;
@@ -384,6 +476,12 @@ Response BookManager::getBookDetails(int bookId){
     RatingRepository ratingRepo;
     double avgRating = ratingRepo.getAverageRating(bookId);
     int ratingCount = ratingRepo.getRatingCount(bookId);
+    GenreRepository genreRepo;
+    std::unique_ptr<Genre> genre(genreRepo.loadGenreById(book->getGenreId()));
+    CategoryRepository categoryRepo;
+    std::unique_ptr<Category> category(categoryRepo.loadCategoryById(book->getCategoryId()));
+    AuthorRepository authorRepo;
+    std::unique_ptr<Author> author(authorRepo.loadAuthorById(book->getAuthorId()));
     QVariantMap data;
     data["bookId"] = book->getBookId();
     data["bookName"] = book->getBookName();
@@ -394,10 +492,29 @@ Response BookManager::getBookDetails(int bookId){
     data["genreId"] = book->getGenreId();
     data["categoryId"] = book->getCategoryId();
     data["authorId"] = book->getAuthorId();
+    data["genreTitle"] = genre ? genre->getGenreTitle() : QString();
+    data["categoryTitle"] = category ? category->getCategoryTitle() : QString();
+    data["authorName"] = author ? author->getAuthorName() : QString();
     data["publisherUserId"] = book->getPublisherUserId();
     data["averageRating"] = avgRating;
     data["ratingCount"] = ratingCount;
     data["isActive"] = book->getIsActive();
+    data["discountPercent"] = book->getDiscountPercent();
+    data["discountAmount"] = book->getDiscountAmount();
+    if(activeDiscount){
+        data["timedDiscountId"] = activeDiscount->getDiscountId();
+        data["timedDiscountPercent"] = activeDiscount->getDiscountPercent();
+        data["timedDiscountStart"] = activeDiscount->getStartDate();
+        data["timedDiscountEnd"] = activeDiscount->getEndDate();
+    } else {
+        std::unique_ptr<TimedDiscount> upcoming(timedDiscountRepo.getCurrentOrUpcomingDiscountForBook(bookId));
+        if(upcoming){
+            data["timedDiscountId"] = upcoming->getDiscountId();
+            data["timedDiscountPercent"] = upcoming->getDiscountPercent();
+            data["timedDiscountStart"] = upcoming->getStartDate();
+            data["timedDiscountEnd"] = upcoming->getEndDate();
+        }
+    }
     return Response(ResponseStatus::Success, "جزئیات کتاب بازیابی شد", data);
 }
 Response BookManager::getBookFileData(int userId, int bookId){

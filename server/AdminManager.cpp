@@ -237,7 +237,7 @@ Response AdminManager::getAllReviews(){
     data["reviews"] = reviewList;
     return Response(ResponseStatus::Success, "لیست تمامی نظرات بازیابی شد", data);
 }
-Response AdminManager::createAdmin(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName, const QString &lastName, bool requireNoExistingAdmin) {
+Response AdminManager::createAdmin(const QString &username, const QString &plainPassword, const QString &firstName, const QString &lastName, bool requireNoExistingAdmin) {
     AdminRepository adminRepo;
     if(requireNoExistingAdmin && adminRepo.anyAdminExists()){
         return Response(ResponseStatus::Error, "این مسیر فقط برای راه اندازی اولیه سیستم است و دیگر در دسترس نیست");
@@ -251,7 +251,7 @@ Response AdminManager::createAdmin(const QString &username, const QString &plain
     if(firstName.trimmed().isEmpty() || lastName.trimmed().isEmpty()) {
         return Response(ResponseStatus::ValidationFailed, "نام و نام خانوادگی الزامی است");
     }
-    Admin newAdmin(username, plainPassword, plainAnswer, firstName, lastName);
+    Admin newAdmin(username, plainPassword, QString(), firstName, lastName);
     int newAdminId = adminRepo.insertAdmin(newAdmin);
     if(newAdminId == -1){
         return Response(ResponseStatus::Error, "خطا در ثبت ادمین (شاید نام کاربری تکراری است)");

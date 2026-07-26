@@ -4,7 +4,6 @@
 #include "windownav.h"
 #include <QTableWidgetItem>
 #include <QHeaderView>
-#include <QInputDialog>
 #include <QMessageBox>
 #include <QDateTime>
 
@@ -17,8 +16,8 @@ PublisherMainWindow::PublisherMainWindow(NetworkManager *networkManager, QWidget
     , profileController(new ProfileController(networkManager, this))
 {
     ui->setupUi(this);
-    ui->myBooksTableWidget->setColumnCount(5);
-    ui->myBooksTableWidget->setHorizontalHeaderLabels({"شناسه", "نام کتاب", "میانگین امتیاز", "تعداد فروش", "وضعیت"});
+    ui->myBooksTableWidget->setColumnCount(7);
+    ui->myBooksTableWidget->setHorizontalHeaderLabels({"شناسه", "نام کتاب", "میانگین امتیاز", "تعداد فروش", "وضعیت", "تخفیف عادی", "تخفیف زمان دار"});
     ui->myBooksTableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->myBooksTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->myBooksTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -26,18 +25,10 @@ PublisherMainWindow::PublisherMainWindow(NetworkManager *networkManager, QWidget
     connect(ui->refreshDashboardButton, &QPushButton::clicked, dashboardController, &PublisherDashboardController::refreshDashboard);
     connect(ui->addNewBookButton, &QPushButton::clicked, this, &PublisherMainWindow::onAddNewBookButtonClicked);
     connect(ui->editBookButton, &QPushButton::clicked, this, &PublisherMainWindow::onEditBookButtonClicked);
-    connect(ui->applyDiscountButton, &QPushButton::clicked, this, &PublisherMainWindow::onApplyDiscountButtonClicked);
-    connect(ui->applyTimedDiscountButton, &QPushButton::clicked, this, &PublisherMainWindow::onApplyTimedDiscountButtonClicked);
     connect(ui->toggleBookActiveButton, &QPushButton::clicked, this, &PublisherMainWindow::onToggleBookActiveButtonClicked);
     connect(ui->logoutButton, &QPushButton::clicked, this, &PublisherMainWindow::onLogoutButtonClicked);
     connect(dashboardController, &PublisherDashboardController::dashboardLoaded, this, &PublisherMainWindow::onDashboardLoaded);
     connect(dashboardController, &PublisherDashboardController::dashboardLoadFailed, this, &PublisherMainWindow::onDashboardLoadFailed);
-    connect(bookController, &PublisherBookController::bookUpdated, this, &PublisherMainWindow::onBookUpdated);
-    connect(bookController, &PublisherBookController::bookUpdateFailed, this, &PublisherMainWindow::onBookUpdateFailed);
-    connect(bookController, &PublisherBookController::discountApplied, this, &PublisherMainWindow::onDiscountApplied);
-    connect(bookController, &PublisherBookController::discountApplyFailed, this, &PublisherMainWindow::onDiscountApplyFailed);
-    connect(bookController, &PublisherBookController::timedDiscountApplied, this, &PublisherMainWindow::onTimedDiscountApplied);
-    connect(bookController, &PublisherBookController::timedDiscountApplyFailed, this, &PublisherMainWindow::onTimedDiscountApplyFailed);
     connect(bookController, &PublisherBookController::bookDeactivated, this, &PublisherMainWindow::onBookDeactivated);
     connect(bookController, &PublisherBookController::bookDeactivateFailed, this, &PublisherMainWindow::onBookDeactivateFailed);
     connect(bookController, &PublisherBookController::bookReactivated, this, &PublisherMainWindow::onBookReactivated);
@@ -66,6 +57,22 @@ void PublisherMainWindow::populateBooksTable(const QVariantList &books)
         ui->myBooksTableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(b.value("averageRating").toDouble(), 'f', 1)));
         ui->myBooksTableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(b.value("soldCount").toInt())));
         ui->myBooksTableWidget->setItem(i, 4, new QTableWidgetItem(b.value("isActive").toBool() ? "فعال" : "غیرفعال"));
+
+        double discountPercent = b.value("discountPercent").toDouble();
+        QString normalDiscountText = discountPercent > 0 ? QString("%1 %").arg(discountPercent, 0, 'f', 0) : "ندارد";
+        ui->myBooksTableWidget->setItem(i, 5, new QTableWidgetItem(normalDiscountText));
+
+        QString timedDiscountText = "ندارد";
+        if (b.contains("timedDiscountPercent")) {
+            double timedPercent = b.value("timedDiscountPercent").toDouble();
+            QDateTime start = b.value("timedDiscountStart").toDateTime();
+            QDateTime end = b.value("timedDiscountEnd").toDateTime();
+            timedDiscountText = QString("%1 % (از %2 تا %3)")
+                                    .arg(timedPercent, 0, 'f', 0)
+                                    .arg(start.toString("yyyy/MM/dd HH:mm"))
+                                    .arg(end.toString("yyyy/MM/dd HH:mm"));
+        }
+        ui->myBooksTableWidget->setItem(i, 6, new QTableWidgetItem(timedDiscountText));
     }
 }
 
@@ -124,49 +131,15 @@ void PublisherMainWindow::onEditBookButtonClicked()
     int bookId = getSelectedBookId();
     if(bookId <= 0) { ui->statusLabel->setText("ابتدا یک کتاب را انتخاب کنید"); return; }
 
-    bool ok;
-    QString newName = QInputDialog::getText(this, "ویرایش کتاب", "نام جدید کتاب:", QLineEdit::Normal, "", &ok);
-    if(!ok || newName.trimmed().isEmpty()) return;
-
-    QString newDescription = QInputDialog::getMultiLineText(this, "ویرایش کتاب", "توضیحات جدید:", "", &ok);
-    if(!ok) return;
-
-    double newPrice = QInputDialog::getDouble(this, "ویرایش کتاب", "قیمت جدید:", 0, 0, 100000000, 0, &ok);
-    if(!ok) return;
-
-    bookController->updateBook(bookId, newName, newDescription, newPrice);
-}
-
-void PublisherMainWindow::onApplyDiscountButtonClicked()
-{
-    int bookId = getSelectedBookId();
-    if(bookId <= 0) { ui->statusLabel->setText("ابتدا یک کتاب را انتخاب کنید"); return; }
-
-    bool ok;
-    double percent = QInputDialog::getDouble(this, "اعمال تخفیف", "درصد تخفیف (۰ اگر مبلغی است):", 0, 0, 100, 0, &ok);
-    if(!ok) return;
-    double amount = QInputDialog::getDouble(this, "اعمال تخفیف", "مبلغ تخفیف (۰ اگر درصدی است):", 0, 0, 100000000, 0, &ok);
-    if(!ok) return;
-
-    bookController->applyDiscount(bookId, percent, amount);
-}
-
-void PublisherMainWindow::onApplyTimedDiscountButtonClicked()
-{
-    int bookId = getSelectedBookId();
-    if(bookId <= 0) { ui->statusLabel->setText("ابتدا یک کتاب را انتخاب کنید"); return; }
-
-    bool ok;
-    double percent = QInputDialog::getDouble(this, "تخفیف زمان دار", "درصد تخفیف:", 0, 0.01, 100, 2, &ok);
-    if(!ok) return;
-    int startInHours = QInputDialog::getInt(this, "تخفیف زمان دار", "شروع تخفیف (چند ساعت بعد از الان):", 0, 0, 8760, 1, &ok);
-    if(!ok) return;
-    int durationHours = QInputDialog::getInt(this, "تخفیف زمان دار", "مدت تخفیف (ساعت):", 24, 1, 8760, 1, &ok);
-    if(!ok) return;
-
-    QDateTime startDate = QDateTime::currentDateTime().addSecs(static_cast<qint64>(startInHours) * 3600);
-    QDateTime endDate = startDate.addSecs(static_cast<qint64>(durationHours) * 3600);
-    bookController->applyTimedDiscount(bookId, percent, startDate, endDate);
+    PublisherAddBookWindow_c *editBookWindow = new PublisherAddBookWindow_c(networkManager, bookId);
+    editBookWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(editBookWindow, &PublisherAddBookWindow_c::backRequested, this, [this, editBookWindow]() {
+        editBookWindow->close();
+        dashboardController->refreshDashboard();
+        this->show();
+    });
+    showFollowingState(editBookWindow, this);
+    this->hide();
 }
 
 void PublisherMainWindow::onToggleBookActiveButtonClicked()
@@ -181,12 +154,6 @@ void PublisherMainWindow::onToggleBookActiveButtonClicked()
         bookController->reactivateBook(bookId);
 }
 
-void PublisherMainWindow::onBookUpdated(const QString &message) { ui->statusLabel->setText(message); dashboardController->refreshDashboard(); }
-void PublisherMainWindow::onBookUpdateFailed(const QString &message) { ui->statusLabel->setText(message); }
-void PublisherMainWindow::onDiscountApplied(const QString &message) { ui->statusLabel->setText(message); dashboardController->refreshDashboard(); }
-void PublisherMainWindow::onDiscountApplyFailed(const QString &message) { ui->statusLabel->setText(message); }
-void PublisherMainWindow::onTimedDiscountApplied(const QString &message) { ui->statusLabel->setText(message); dashboardController->refreshDashboard(); }
-void PublisherMainWindow::onTimedDiscountApplyFailed(const QString &message) { ui->statusLabel->setText(message); }
 void PublisherMainWindow::onBookDeactivated(const QString &message) { ui->statusLabel->setText(message); dashboardController->refreshDashboard(); }
 void PublisherMainWindow::onBookDeactivateFailed(const QString &message) { ui->statusLabel->setText(message); }
 void PublisherMainWindow::onBookReactivated(const QString &message) { ui->statusLabel->setText(message); dashboardController->refreshDashboard(); }
@@ -203,7 +170,7 @@ void PublisherMainWindow::onAccountInfoLoadFailed(const QString &message) { ui->
 
 void PublisherMainWindow::onLogoutButtonClicked() {
     if (QMessageBox::question(this, "خروج از حساب کاربری", "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
-    QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
+        QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
         networkManager->logout();
         emit logoutRequested();
     }
