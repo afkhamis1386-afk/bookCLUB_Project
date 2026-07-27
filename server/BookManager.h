@@ -1,6 +1,7 @@
 #ifndef BOOKMANAGER_H
 #define BOOKMANAGER_H
 #include "../common/Response.h"
+#include "../common/Enums.h"
 #include <QString>
 #include <QDateTime>
 class BookManager {
@@ -9,11 +10,11 @@ public:
     Response addBook(int publisherUserId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
     const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData, double discountPercent = 0.0);
     Response getCoverImageData(int bookId);
-    Response updateBook(int publisherUserId, int bookId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+    Response updateBook(int actingUserId, UserRole actingRole, int bookId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
     const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData);
-    Response applyDiscount(int publisherUserId, int bookId, double discountPercent, double discountAmount);
-    Response applyTimedDiscount(int publisherUserId, int bookId, double discountPercent, const QDateTime &startDate, const QDateTime &endDate);
-    Response cancelTimedDiscount(int publisherUserId, int bookId);
+    Response applyDiscount(int actingUserId, UserRole actingRole, int bookId, double discountPercent, double discountAmount);
+    Response applyTimedDiscount(int actingUserId, UserRole actingRole, int bookId, double discountPercent, const QDateTime &startDate, const QDateTime &endDate);
+    Response cancelTimedDiscount(int actingUserId, UserRole actingRole, int bookId);
     Response deactivateBook(int publisherUserId, int bookId);
     Response reactivateBook(int publisherUserId, int bookId);
     Response getStorefrontBooks();

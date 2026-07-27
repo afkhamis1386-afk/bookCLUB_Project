@@ -2,6 +2,7 @@
 #include "UserRepository.h"
 #include "PublisherRepository.h"
 #include "BookRepository.h"
+#include "AuthorRepository.h"
 #include "ReviewRepository.h"
 #include "GenreRepository.h"
 #include "../common/normaluser.h"
@@ -23,7 +24,7 @@ Response AdminManager::getAllUsers(){
     QHash<int, QString> genreTitlesById;
     const QVector<Genre> allGenres = genreRepo.getAllGenres();
     for(const Genre &genre : allGenres)
-        genreTitlesById.insert(genre.getGenreId(), genre.getGenreTitle());
+    genreTitlesById.insert(genre.getGenreId(), genre.getGenreTitle());
 
     for(int userId : qAsConst(normalUserIds)){
         std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
@@ -35,9 +36,9 @@ Response AdminManager::getAllUsers(){
         userData["firstName"] = user->getFirstName();
         userData["lastName"] = user->getLastName();
         QVariantList favoriteGenreTitles;
-        for (int genreId : user->getFavoriteGenres()) {
+        for(int genreId : user->getFavoriteGenres()) {
             const auto title = genreTitlesById.constFind(genreId);
-            if (title != genreTitlesById.constEnd())
+            if(title != genreTitlesById.constEnd())
                 favoriteGenreTitles.append(title.value());
         }
         userData["favoriteGenreTitles"] = favoriteGenreTitles;
@@ -108,7 +109,7 @@ Response AdminManager::getNormalUserDetails(int userId){
     data["favoriteGenres"] = genreList;
     QVariantList genreTitles;
     GenreRepository genreRepo;
-    for (int genreId : user->getFavoriteGenres()) {
+    for(int genreId : user->getFavoriteGenres()) {
         std::unique_ptr<Genre> genre(genreRepo.loadGenreById(genreId));
         if (genre)
             genreTitles.append(genre->getGenreTitle());
@@ -224,11 +225,26 @@ Response AdminManager::getBookDetailsForReview(int bookId){
     if(!book){
         return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
     }
+
+    AuthorRepository authorRepo;
+    std::unique_ptr<Author> author(authorRepo.loadAuthorById(book->getAuthorId()));
+    if(!author){
+        return Response(ResponseStatus::Error, "اطلاعات نویسنده کتاب یافت نشد");
+    }
+
+    GenreRepository genreRepo;
+    std::unique_ptr<Genre> genre(genreRepo.loadGenreById(book->getGenreId()));
+    if(!genre){
+        return Response(ResponseStatus::Error, "اطلاعات ژانر کتاب یافت نشد");
+    }
+
     QVariantMap data;
     data["bookId"] = book->getBookId();
     data["bookName"] = book->getBookName();
-    data["description"] = book->getBookDescription();
+    data["authorName"] = author->getAuthorName();
     data["price"] = book->getBookPrice();
+    data["genreTitle"] = genre->getGenreTitle();
+    data["description"] = book->getBookDescription();
     data["publisherUserId"] = book->getPublisherUserId();
     data["isActive"] = book->getIsActive();
     data["isDeleted"] = book->getIsDeleted();
