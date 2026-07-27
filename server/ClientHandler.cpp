@@ -151,6 +151,7 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::ReactivateBook:
         case RequestType::ApplyDiscount:
         case RequestType::ApplyTimedDiscount:
+        case RequestType::CancelTimedDiscount:
             if (checkRole({UserRole::Publisher}, accessError))
                 response = handleBookRequest(req);
             else
@@ -386,7 +387,18 @@ Response ClientHandler::handleBookRequest(const Request &req) {
     case RequestType::GetRecommendedBooks:
         return bookManager.getRecommendedBooks(authenticatedUserId);
     case RequestType::UpdateBook:
-        return bookManager.updateBook(authenticatedUserId, p.value("bookId").toInt(), p.value("bookName").toString(), p.value("description").toString(), p.value("price").toDouble());
+        return bookManager.updateBook(
+            authenticatedUserId,
+            p.value("bookId").toInt(),
+            p.value("bookName").toString(),
+            p.value("description").toString(),
+            p.value("price").toDouble(),
+            p.value("genreTitle").toString(),
+            p.value("categoryTitle").toString(),
+            p.value("authorName").toString(),
+            p.value("coverImageData").toByteArray(),
+            p.value("coverImageExtension").toString(),
+            p.value("pdfData").toByteArray());
     case RequestType::DeactivateBook:
         return bookManager.deactivateBook(authenticatedUserId, p.value("bookId").toInt());
     case RequestType::ReactivateBook:
@@ -404,6 +416,8 @@ Response ClientHandler::handleBookRequest(const Request &req) {
             p.value("discountPercent").toDouble(),
             p.value("startDate").toDateTime(),
             p.value("endDate").toDateTime());
+    case RequestType::CancelTimedDiscount:
+        return bookManager.cancelTimedDiscount(authenticatedUserId, p.value("bookId").toInt());
     default:
         return Response(ResponseStatus::Error, "درخواست کتاب نامعتبر");
     }
