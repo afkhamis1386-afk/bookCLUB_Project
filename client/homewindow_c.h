@@ -1,6 +1,7 @@
 #ifndef HOMEWINDOW_C_H
 #define HOMEWINDOW_C_H
 #include <QMainWindow>
+#include <QShowEvent>
 #include <QGridLayout>
 #include <QListWidgetItem>
 #include <QWidget>
@@ -26,6 +27,9 @@ public:
     explicit HomeWindow_c(NetworkManager *networkManager, QWidget *parent = nullptr);
     ~HomeWindow_c() override;
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
 signals:
     void logoutRequested();
 
@@ -50,6 +54,7 @@ private slots:
     void onCoverImageLoaded(int bookId, const QByteArray &imageData);
     void onCardClicked(int bookId);
     void onCartLoaded(const QVariantMap &cartData);
+    void onCartChanged();
     void onUnreadCountLoaded(int count);
     void onBookDetailsReceived(const QVariantMap &bookData);
     void onNewNotificationArrived(const QVariantMap &notificationData);

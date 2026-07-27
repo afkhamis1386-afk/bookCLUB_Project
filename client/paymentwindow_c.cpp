@@ -35,21 +35,32 @@ void PaymentWindow_c::onPayButtonClicked()
         return;
     }
     QString enteredCardHolder = ui->cardHolderLineEdit->text().trimmed();
-    if (enteredCardHolder.isEmpty()) {
+    if(enteredCardHolder.isEmpty()){
         ui->statusLabel->setText("نام دارنده کارت را وارد کنید");
         return;
     }
-    if (QString::compare(enteredCardHolder, expectedCardHolderName, Qt::CaseSensitive) != 0) {
+    if(QString::compare(enteredCardHolder, expectedCardHolderName, Qt::CaseSensitive) != 0){
         ui->statusLabel->setText("نام دارنده کارت باید دقیقاً همان نام کاربری حساب شما باشد");
         return;
     }
-    static const QRegularExpression expiryRegex(R"(^\d{2}/\d{2}$)");
-    if (!expiryRegex.match(ui->expiryLineEdit->text().trimmed()).hasMatch()) {
+    static const QRegularExpression expiryRegex(R"(^(\d{2})/(\d{2})$)");
+    QRegularExpressionMatch expiryMatch = expiryRegex.match(ui->expiryLineEdit->text().trimmed());
+    if(!expiryMatch.hasMatch()) {
         ui->statusLabel->setText("تاریخ انقضا را به صورت MM/YY وارد کنید");
         return;
     }
+    int expiryMonth = expiryMatch.captured(1).toInt();
+    int expiryYear = expiryMatch.captured(2).toInt();
+    if(expiryMonth < 1 || expiryMonth > 12){
+        ui->statusLabel->setText("ماه تاریخ انقضا باید بین ۰۱ تا ۱۲ باشد");
+        return;
+    }
+    if(expiryYear <= 5){
+        ui->statusLabel->setText("تاریخ انقضای کارت نامعتبر یا منقضی شده است (سال باید بزرگ تر از ۰۵ باشد)");
+        return;
+    }
     static const QRegularExpression cvvRegex(R"(^\d{3,4}$)");
-    if (!cvvRegex.match(ui->cvvLineEdit->text().trimmed()).hasMatch()) {
+    if(!cvvRegex.match(ui->cvvLineEdit->text().trimmed()).hasMatch()) {
         ui->statusLabel->setText("CVV2 نامعتبر است");
         return;
     }

@@ -44,6 +44,21 @@ Response AdminManager::getAllUsers(){
         userData["publicationName"] = publisher->getPublicationName();
         userList.append(userData);
     }
+    AdminRepository adminRepoForList;
+    QVector<int> adminIds = adminRepoForList.getAllAdminIds();
+    for(int userId : qAsConst(adminIds)){
+        std::unique_ptr<Admin> admin(adminRepoForList.loadAdminById(userId));
+        if (!admin) continue;
+        QVariantMap userData;
+        userData["userId"] = admin->getUserId();
+        userData["username"] = admin->getUsername();
+        userData["role"] = "Admin";
+        userData["isBlocked"] = admin->getIsBlocked();
+        userData["isDeleted"] = admin->getIsDeleted();
+        userData["isActive"] = admin->getIsActive();
+        userData["registerDate"] = admin->getRegisterDate();
+        userList.append(userData);
+    }
     QVariantMap data;
     data["users"] = userList;
     return Response(ResponseStatus::Success, "لیست کاربران بازیابی شد", data);
