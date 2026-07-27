@@ -122,6 +122,67 @@ bool PublisherRepository::updateProfile(int userId, const QString &firstName, co
     }
     return true;
 }
+bool PublisherRepository::updateAccount(int userId, const QString &encryptedUsername,
+                                        const QString &newPasswordHash, const QString &newSecurityAnswerHash,
+                                        const QString &firstName, const QString &lastName,
+                                        const QString &email, const QString &shortDescription,
+                                        const QString &publicationName, const QString &publisherLicenseNumber) {
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    if (!db.transaction()) {
+        qWarning() << "خطا در شروع تراکنش ویرایش حساب ناشر:" << db.lastError().text();
+        return false;
+    }
+
+    QString updateUserSql = "UPDATE Users SET Username = :username";
+    if (!newPasswordHash.isEmpty())
+        updateUserSql += ", PasswordHash = :passwordHash";
+    updateUserSql += " WHERE UserID = :userId AND RoleID = :roleId";
+
+    QSqlQuery updateUser(db);
+    updateUser.prepare(updateUserSql);
+    updateUser.bindValue(":username", encryptedUsername);
+    if (!newPasswordHash.isEmpty())
+        updateUser.bindValue(":passwordHash", newPasswordHash);
+    updateUser.bindValue(":userId", userId);
+    updateUser.bindValue(":roleId", static_cast<int>(UserRole::Publisher) + 1);
+    if (!updateUser.exec()) {
+        qWarning() << "خطا در ویرایش جدول Users برای ناشر:" << updateUser.lastError().text();
+        db.rollback();
+        return false;
+    }
+
+    QString updatePublisherSql =
+        "UPDATE Publishers SET FirstName = :firstName, LastName = :lastName, "
+        "Email = :email, ShortDescription = :shortDesc, PublicationName = :pubName, "
+        "PublisherLicenseNumber = :licenseNumber";
+    if (!newSecurityAnswerHash.isEmpty())
+        updatePublisherSql += ", SecurityAnswerHash = :answerHash";
+    updatePublisherSql += " WHERE UserID = :userId";
+
+    QSqlQuery updatePublisher(db);
+    updatePublisher.prepare(updatePublisherSql);
+    updatePublisher.bindValue(":firstName", firstName);
+    updatePublisher.bindValue(":lastName", lastName);
+    updatePublisher.bindValue(":email", email);
+    updatePublisher.bindValue(":shortDesc", shortDescription);
+    updatePublisher.bindValue(":pubName", publicationName);
+    updatePublisher.bindValue(":licenseNumber", publisherLicenseNumber);
+    if (!newSecurityAnswerHash.isEmpty())
+        updatePublisher.bindValue(":answerHash", newSecurityAnswerHash);
+    updatePublisher.bindValue(":userId", userId);
+    if (!updatePublisher.exec()) {
+        qWarning() << "خطا در ویرایش جدول Publishers:" << updatePublisher.lastError().text();
+        db.rollback();
+        return false;
+    }
+
+    if (!db.commit()) {
+        qWarning() << "خطا در نهایی سازی ویرایش حساب ناشر:" << db.lastError().text();
+        db.rollback();
+        return false;
+    }
+    return true;
+}
 QVector<int> PublisherRepository::getAllPublisherIds() {
     QVector<int> ids;
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
@@ -136,20 +197,30 @@ QVector<int> PublisherRepository::getAllPublisherIds() {
     }
     return ids;
 }
-bool PublisherRepository::isEmailTaken(const QString &email) {
+bool PublisherRepository::isEmailTaken(const QString &email, int excludedUserId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
-    query.prepare("SELECT COUNT(*) FROM Publishers WHERE Email = :email");
+    QString sql = "SELECT COUNT(*) FROM Publishers WHERE Email = :email";
+    if (excludedUserId >= 0)
+        sql += " AND UserID <> :excludedUserId";
+    query.prepare(sql);
     query.bindValue(":email", email);
+    if (excludedUserId >= 0)
+        query.bindValue(":excludedUserId", excludedUserId);
     if (query.exec() && query.next())
         return query.value(0).toInt() > 0;
     return false;
 }
-bool PublisherRepository::isLicenseNumberTaken(const QString &licenseNumber) {
+bool PublisherRepository::isLicenseNumberTaken(const QString &licenseNumber, int excludedUserId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
-    query.prepare("SELECT COUNT(*) FROM Publishers WHERE PublisherLicenseNumber = :license");
+    QString sql = "SELECT COUNT(*) FROM Publishers WHERE PublisherLicenseNumber = :license";
+    if (excludedUserId >= 0)
+        sql += " AND UserID <> :excludedUserId";
+    query.prepare(sql);
     query.bindValue(":license", licenseNumber);
+    if (excludedUserId >= 0)
+        query.bindValue(":excludedUserId", excludedUserId);
     if (query.exec() && query.next())
         return query.value(0).toInt() > 0;
     return false;
@@ -157,20 +228,20 @@ bool PublisherRepository::isLicenseNumberTaken(const QString &licenseNumber) {
 double PublisherRepository::getTotalRevenue(int publisherUserId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
-        query.prepare(
-            "SELECT ISNULL(SUM( "
-            "    CASE "
-            "        WHEN (oi.UnitPrice * (1 - oi.DiscountPercent / 100.0) - oi.DiscountAmount) < 0 "
-            "            THEN 0 "
-            "        ELSE (oi.UnitPrice * (1 - oi.DiscountPercent / 100.0) - oi.DiscountAmount) "
-            "    END "
-            "), 0) "
-            "FROM OrderItems oi "
-            "JOIN Books b ON oi.BookID = b.BookID "
-            "JOIN Orders o ON oi.OrderID = o.OrderID "
-            "JOIN Statuses s ON o.StatusID = s.StatusID "
-            "WHERE b.PublisherUserID = :publisherId "
-            "AND s.StatusTitle IN ('Paid', 'Completed')"
+    query.prepare(
+        "SELECT ISNULL(SUM( "
+        "    CASE "
+        "        WHEN (oi.UnitPrice * (1 - oi.DiscountPercent / 100.0) - oi.DiscountAmount) < 0 "
+        "            THEN 0 "
+        "        ELSE (oi.UnitPrice * (1 - oi.DiscountPercent / 100.0) - oi.DiscountAmount) "
+        "    END "
+        "), 0) "
+        "FROM OrderItems oi "
+        "JOIN Books b ON oi.BookID = b.BookID "
+        "JOIN Orders o ON oi.OrderID = o.OrderID "
+        "JOIN Statuses s ON o.StatusID = s.StatusID "
+        "WHERE b.PublisherUserID = :publisherId "
+        "AND s.StatusTitle IN ('Paid', 'Completed')"
         );
     query.bindValue(":publisherId", publisherUserId);
     if (query.exec() && query.next())

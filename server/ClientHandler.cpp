@@ -120,6 +120,12 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::GetAccountInfo:
             response = handleAuthRequest(req);
             break;
+        case RequestType::UpdateAccount:
+            if (checkRole({UserRole::NormalUser, UserRole::Publisher}, accessError))
+                response = handleAuthRequest(req);
+            else
+                response = accessError;
+            break;
         case RequestType::GetAllGenres:
         case RequestType::GetAllCategories:
             response = handleAuthRequest(req);
@@ -301,13 +307,16 @@ Response ClientHandler::handleAuthRequest(const Request &req) {
         }
         return authManager.registerNormalUser(
             p.value("username").toString(), p.value("password").toString(),
-            p.value("securityAnswer").toString());
+            p.value("securityAnswer").toString(), p.value("firstName").toString(),
+            p.value("lastName").toString());
     case RequestType::Login:
         return authManager.login(p.value("username").toString(), p.value("password").toString());
     case RequestType::ChangePassword:
         return authManager.changePassword(authenticatedUserId, authenticatedRole, p.value("oldPassword").toString(), p.value("newPassword").toString());
     case RequestType::GetAccountInfo:
         return authManager.getAccountInfo(authenticatedUserId, authenticatedRole);
+    case RequestType::UpdateAccount:
+        return authManager.updateAccount(authenticatedUserId, authenticatedRole, p);
     case RequestType::RecoverPassword:
         return authManager.recoverPassword(p.value("username").toString(), p.value("securityAnswer").toString(), p.value("newPassword").toString());
     case RequestType::GetAllGenres:

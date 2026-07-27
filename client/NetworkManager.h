@@ -18,7 +18,8 @@ public:
     bool getHasFavoriteGenres() const;
     bool isLoggedIn() const;
     void logout();
-    void registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer);
+    void registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer,
+                            const QString &firstName, const QString &lastName);
     void registerPublisher(const QString &username, const QString &password, const QString &securityAnswer,
                            const QString &firstName, const QString &lastName, const QString &email,
                            const QString &publicationName, const QString &licenseNumber,
@@ -27,6 +28,7 @@ public:
     void changePassword(const QString &oldPassword, const QString &newPassword);
     void recoverPassword(const QString &username, const QString &securityAnswer, const QString &newPassword);
     void getAccountInfo();
+    void updateAccount(const QVariantMap &accountData);
     void getAllGenres();
     void getAllCategories();
     void setFavoriteGenres(const QVector<int> &genreIds);
@@ -97,7 +99,6 @@ public:
     void getPurchasedBooks();
     void bootstrapFirstAdmin(const QString &username, const QString &password, const QString &securityAnswer, const QString &firstName, const QString &lastName);
     void createAdditionalAdmin(const QString &username, const QString &password, const QString &firstName, const QString &lastName);
-
 signals:
     void connected();
     void disconnected();
@@ -124,3 +125,4 @@ private:
 
 };
 #endif // NETWORKMANAGER_H
+

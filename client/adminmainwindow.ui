@@ -401,7 +401,7 @@ QComboBox#userRoleFilterComboBox QAbstractItemView {
        </size>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -451,60 +451,6 @@ QComboBox#userRoleFilterComboBox QAbstractItemView {
          </property>
         </column>
        </widget>
-       <widget class="QWidget" name="layoutWidget_users">
-        <property name="geometry">
-         <rect>
-          <x>160</x>
-          <y>250</y>
-          <width>621</width>
-          <height>271</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QPushButton" name="blockUserButton">
-           <property name="text">
-            <string>مسدودسازی</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="unblockUserButton">
-           <property name="text">
-            <string>رفع مسدودیت</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="toggleActiveButton">
-           <property name="text">
-            <string>فعال/غیرفعال سازی</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="deleteUserButton">
-           <property name="text">
-            <string>حذف حساب</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="refreshUsersButton">
-           <property name="text">
-            <string>به روزرسانی</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="createAdminButton">
-           <property name="text">
-            <string>ایجاد ادمین جدید</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
        <widget class="QLineEdit" name="userSearchLineEdit">
         <property name="geometry">
          <rect>
@@ -515,7 +461,7 @@ QComboBox#userRoleFilterComboBox QAbstractItemView {
          </rect>
         </property>
         <property name="placeholderText">
-         <string>          اساس نام کاربری , نام یا نام خانوادگی  </string>
+         <string>         بر اساس نام کاربری , نام یا نام خانوادگی  </string>
         </property>
        </widget>
        <widget class="QComboBox" name="userRoleFilterComboBox">
@@ -547,6 +493,85 @@ QComboBox#userRoleFilterComboBox QAbstractItemView {
           <string>ادمین   </string>
          </property>
         </item>
+       </widget>
+       <widget class="QPushButton" name="createAdminButton">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>450</y>
+          <width>619</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>ایجاد ادمین جدید</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>586</x>
+          <y>260</y>
+          <width>231</width>
+          <height>133</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QPushButton" name="viewUserDetailsButton">
+           <property name="text">
+            <string>مشاهده اطلاعات کامل کاربر</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="blockUserButton">
+           <property name="text">
+            <string>مسدودسازی</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="unblockUserButton">
+           <property name="text">
+            <string>رفع مسدودیت</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>260</y>
+          <width>231</width>
+          <height>133</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QPushButton" name="toggleActiveButton">
+           <property name="text">
+            <string>فعال/غیرفعال سازی</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="deleteUserButton">
+           <property name="text">
+            <string>حذف حساب</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="refreshUsersButton">
+           <property name="text">
+            <string>به روزرسانی</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_3">
@@ -652,7 +677,8 @@ QComboBox#userRoleFilterComboBox QAbstractItemView {
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="refreshReviewsButton"><property name="text">
+          <widget class="QPushButton" name="refreshReviewsButton">
+           <property name="text">
             <string>به روزرسانی</string>
            </property>
           </widget>

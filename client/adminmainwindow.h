@@ -18,13 +18,12 @@ class AdminMainWindow : public QMainWindow
 public:
     explicit AdminMainWindow(NetworkManager *networkManager, QWidget *parent = nullptr);
     ~AdminMainWindow() override;
-
 signals:
     void logoutRequested();
-
 private slots:
     void onUsersLoaded(const QVariantList &users);
     void onUsersLoadFailed(const QString &message);
+    void onViewUserDetailsButtonClicked();
     void onBlockUserButtonClicked();
     void onUnblockUserButtonClicked();
     void onToggleActiveButtonClicked();
@@ -57,7 +56,6 @@ private slots:
     void onLogoutButtonClicked();
     void onCreateAdminButtonClicked();
     void onUserSearchOrFilterChanged();
-
 private:
     Ui::AdminMainWindow *ui;
     NetworkManager *networkManager;
@@ -71,3 +69,4 @@ private:
 };
 
 #endif // ADMINMAINWINDOW_H
+

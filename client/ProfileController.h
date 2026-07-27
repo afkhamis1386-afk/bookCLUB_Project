@@ -11,12 +11,12 @@ class ProfileController : public QObject {
 
 public:
     explicit ProfileController(NetworkManager *networkManager, QObject *parent = nullptr);
-
     void loadGenres();
     void loadCategories();
     void setFavoriteGenres(const QVector<int> &genreIds);
     void changePassword(const QString &oldPassword, const QString &newPassword);
     void loadAccountInfo();
+    void updateAccount(const QVariantMap &accountData);
     void loadOrderHistory();
 signals:
     void genresLoaded(const QVariantList &genres);
@@ -29,10 +29,11 @@ signals:
     void passwordChangeFailed(const QString &message);
     void accountInfoLoaded(const QVariantMap &accountData);
     void accountInfoLoadFailed(const QString &message);
+    void accountUpdated(const QString &message);
+    void accountUpdateFailed(const QString &message);
     void orderHistoryLoaded(const QVariantList &orders);
     void orderHistoryLoadFailed(const QString &message);
     void validationError(const QString &message);
-
 private slots:
     void onResponseReceived(RequestType type, const Response &response);
 
