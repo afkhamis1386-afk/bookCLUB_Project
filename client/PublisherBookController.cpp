@@ -59,7 +59,9 @@ void PublisherBookController::addBook(const QString &bookName, const QString &de
                             genreTitle.trimmed(), categoryTitle.trimmed(), authorName.trimmed(),
                             coverData, coverExtension, pdfData, discountPercent);
 }
-void PublisherBookController::updateBook(int bookId, const QString &bookName, const QString &description, double price) {
+void PublisherBookController::updateBook(int bookId, const QString &bookName, const QString &description, double price,
+                                         const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+                                         const QString &coverImageFilePath, const QString &pdfFilePath) {
     if (bookId <= 0) {
         emit validationError("شناسه کتاب نامعتبر است");
         return;
@@ -76,11 +78,34 @@ void PublisherBookController::updateBook(int bookId, const QString &bookName, co
         emit validationError("قیمت کتاب نمی تواند منفی باشد");
         return;
     }
+    QByteArray pdfData;
+    if (!pdfFilePath.trimmed().isEmpty()) {
+        QFile pdfFile(pdfFilePath);
+        if (!pdfFile.open(QIODevice::ReadOnly)) {
+            emit bookFileReadFailed("امکان باز کردن فایل PDF انتخاب شده وجود ندارد");
+            return;
+        }
+        pdfData = pdfFile.readAll();
+        pdfFile.close();
+    }
+    QByteArray coverData;
+    QString coverExtension;
+    if (!coverImageFilePath.trimmed().isEmpty()) {
+        QFile coverFile(coverImageFilePath);
+        if (!coverFile.open(QIODevice::ReadOnly)) {
+            emit bookFileReadFailed("امکان باز کردن عکس جلد انتخاب شده وجود ندارد");
+            return;
+        }
+        coverData = coverFile.readAll();
+        coverFile.close();
+        coverExtension = QFileInfo(coverImageFilePath).suffix();
+    }
     if (!networkManager->isConnected()) {
         emit bookUpdateFailed("اتصال به سرور برقرار نیست");
         return;
     }
-    networkManager->updateBook(bookId, bookName.trimmed(), description.trimmed(), price);
+    networkManager->updateBook(bookId, bookName.trimmed(), description.trimmed(), price, genreTitle.trimmed(), categoryTitle.trimmed(), authorName.trimmed(),
+                               coverData, coverExtension, pdfData);
 }
 void PublisherBookController::deactivateBook(int bookId) {
     if (bookId <= 0) {
@@ -128,6 +153,16 @@ void PublisherBookController::applyTimedDiscount(int bookId, double discountPerc
     if (!networkManager->isConnected()) { emit timedDiscountApplyFailed("اتصال به سرور برقرار نیست"); return; }
     networkManager->applyTimedDiscount(bookId, discountPercent, startDate, endDate);
 }
+void PublisherBookController::cancelTimedDiscount(int bookId) {
+    if (bookId <= 0) { emit validationError("شناسه کتاب نامعتبر است"); return; }
+    if (!networkManager->isConnected()) { emit timedDiscountCancelFailed("اتصال به سرور برقرار نیست"); return; }
+    networkManager->cancelTimedDiscount(bookId);
+}
+void PublisherBookController::loadBookForEdit(int bookId) {
+    if (bookId <= 0) { emit validationError("شناسه کتاب نامعتبر است"); return; }
+    if (!networkManager->isConnected()) { emit bookDetailsForEditLoadFailed("اتصال به سرور برقرار نیست"); return; }
+    networkManager->getBookDetails(bookId);
+}
 void PublisherBookController::onResponseReceived(RequestType type, const Response &response) {
     switch (type) {
     case RequestType::AddBook:
@@ -159,6 +194,14 @@ void PublisherBookController::onResponseReceived(RequestType type, const Respons
     case RequestType::ApplyTimedDiscount:
         if (response.isSuccess()) emit timedDiscountApplied(response.getMessage());
         else emit timedDiscountApplyFailed(response.getMessage());
+        break;
+    case RequestType::CancelTimedDiscount:
+        if (response.isSuccess()) emit timedDiscountCancelled(response.getMessage());
+        else emit timedDiscountCancelFailed(response.getMessage());
+        break;
+    case RequestType::GetBookDetails:
+        if (response.isSuccess()) emit bookDetailsForEditLoaded(response.getData());
+        else emit bookDetailsForEditLoadFailed(response.getMessage());
         break;
     default:
         break;
