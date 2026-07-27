@@ -178,12 +178,20 @@ void NetworkManager::addBook(const QString &bookName, const QString &description
     p["discountPercent"] = discountPercent;
     sendRequest(RequestType::AddBook, p);
 }
-void NetworkManager::updateBook(int bookId, const QString &bookName, const QString &description, double price) {
+void NetworkManager::updateBook(int bookId, const QString &bookName, const QString &description, double price,
+                                const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+                                const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData) {
     QVariantMap p;
     p["bookId"] = bookId;
     p["bookName"] = bookName;
     p["description"] = description;
     p["price"] = price;
+    p["genreTitle"] = genreTitle;
+    p["categoryTitle"] = categoryTitle;
+    p["authorName"] = authorName;
+    p["coverImageData"] = coverImageData;
+    p["coverImageExtension"] = coverImageExtension;
+    p["pdfData"] = pdfData;
     sendRequest(RequestType::UpdateBook, p);
 }
 void NetworkManager::deactivateBook(int bookId) {
@@ -210,6 +218,11 @@ void NetworkManager::applyTimedDiscount(int bookId, double discountPercent, cons
     p["startDate"] = startDate;
     p["endDate"] = endDate;
     sendRequest(RequestType::ApplyTimedDiscount, p);
+}
+void NetworkManager::cancelTimedDiscount(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::CancelTimedDiscount, p);
 }
 void NetworkManager::getPublisherStats() {
     sendRequest(RequestType::GetPublisherStats);
