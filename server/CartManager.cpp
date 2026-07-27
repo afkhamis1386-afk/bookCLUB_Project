@@ -62,6 +62,7 @@ Response CartManager::getCart(int userId) {
         return Response(ResponseStatus::Error, "خطا در ارتباط با پایگاه داده هنگام بارگذاری سبد خرید");
     }
     TimedDiscountRepository timedDiscountRepo;
+    BookRepository bookRepo;
     QVector<CartItem> items = cart->getItems();
     QVariantList itemList;
     double totalPrice = 0;
@@ -71,8 +72,10 @@ Response CartManager::getCart(int userId) {
         double timedPercent = activeDiscount ? activeDiscount->getDiscountPercent() : 0;
         double effectivePercent = PriceCalculator::calculateEffectivePercent( item.getDiscountPercent(), timedPercent );
         double finalPrice = PriceCalculator::calculateFinalPrice( item.getPrice(), effectivePercent, item.getDiscountAmount() );
+        std::unique_ptr<Book> book(bookRepo.loadBookById(item.getBookId()));
         QVariantMap itemData;
         itemData["bookId"] = item.getBookId();
+        itemData["bookName"] = book ? book->getBookName() : QString();
         itemData["price"] = item.getPrice();
         itemData["discountPercent"] = effectivePercent;
         itemData["finalPrice"] = finalPrice;
