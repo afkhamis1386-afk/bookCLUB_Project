@@ -1,5 +1,6 @@
 #include "publishermainwindow.h"
 #include "publisheraddbookwindow_c.h"
+#include "registerwindow_c.h"
 #include "ui_publishermainwindow.h"
 #include "windownav.h"
 #include <QTableWidgetItem>
@@ -27,6 +28,8 @@ PublisherMainWindow::PublisherMainWindow(NetworkManager *networkManager, QWidget
     connect(ui->editBookButton, &QPushButton::clicked, this, &PublisherMainWindow::onEditBookButtonClicked);
     connect(ui->toggleBookActiveButton, &QPushButton::clicked, this, &PublisherMainWindow::onToggleBookActiveButtonClicked);
     connect(ui->logoutButton, &QPushButton::clicked, this, &PublisherMainWindow::onLogoutButtonClicked);
+    connect(ui->editAccountButton, &QPushButton::clicked, this, &PublisherMainWindow::onEditAccountButtonClicked);
+    ui->editAccountButton->setEnabled(false);
     connect(dashboardController, &PublisherDashboardController::dashboardLoaded, this, &PublisherMainWindow::onDashboardLoaded);
     connect(dashboardController, &PublisherDashboardController::dashboardLoadFailed, this, &PublisherMainWindow::onDashboardLoadFailed);
     connect(bookController, &PublisherBookController::bookDeactivated, this, &PublisherMainWindow::onBookDeactivated);
@@ -68,9 +71,9 @@ void PublisherMainWindow::populateBooksTable(const QVariantList &books)
             QDateTime start = b.value("timedDiscountStart").toDateTime();
             QDateTime end = b.value("timedDiscountEnd").toDateTime();
             timedDiscountText = QString("%1 % (از %2 تا %3)")
-                                    .arg(timedPercent, 0, 'f', 0)
-                                    .arg(start.toString("yyyy/MM/dd HH:mm"))
-                                    .arg(end.toString("yyyy/MM/dd HH:mm"));
+            .arg(timedPercent, 0, 'f', 0)
+            .arg(start.toString("yyyy/MM/dd HH:mm"))
+            .arg(end.toString("yyyy/MM/dd HH:mm"));
         }
         ui->myBooksTableWidget->setItem(i, 6, new QTableWidgetItem(timedDiscountText));
     }
@@ -161,6 +164,8 @@ void PublisherMainWindow::onBookReactivateFailed(const QString &message) { ui->s
 void PublisherMainWindow::onValidationError(const QString &message) { ui->statusLabel->setText(message); }
 void PublisherMainWindow::onAccountInfoLoaded(const QVariantMap &accountData)
 {
+    currentAccountData = accountData;
+    ui->editAccountButton->setEnabled(true);
     ui->nameLabel->setText("نام و نام خانوادگی: " + accountData.value("firstName").toString() + " " + accountData.value("lastName").toString());
     ui->emailLabel->setText("ایمیل: " + accountData.value("email").toString());
     ui->publicationNameLabel->setText("نام انتشارات: " + accountData.value("publicationName").toString());
@@ -168,9 +173,29 @@ void PublisherMainWindow::onAccountInfoLoaded(const QVariantMap &accountData)
 }
 void PublisherMainWindow::onAccountInfoLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 
+void PublisherMainWindow::onEditAccountButtonClicked()
+{
+    if(currentAccountData.isEmpty()) {
+        ui->statusLabel->setText("اطلاعات حساب هنوز بارگذاری نشده است");
+        return;
+    }
+
+    RegisterWindow_c *editWindow = new RegisterWindow_c(
+        networkManager, RegisterWindow_c::Mode::AccountEdit, currentAccountData);
+    editWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(editWindow, &RegisterWindow_c::backToProfileRequested,
+            editWindow, &QWidget::close);
+    connect(editWindow, &QObject::destroyed, this, [this]() {
+        profileController->loadAccountInfo();
+        this->show();
+    });
+    showFollowingState(editWindow, this);
+    this->hide();
+}
+
 void PublisherMainWindow::onLogoutButtonClicked() {
     if (QMessageBox::question(this, "خروج از حساب کاربری", "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
-        QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
+         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
         networkManager->logout();
         emit logoutRequested();
     }

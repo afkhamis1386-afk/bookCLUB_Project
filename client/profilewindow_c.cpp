@@ -1,6 +1,7 @@
 #include "profilewindow_c.h"
 #include "ui_profilewindow_c.h"
 #include "GenreSelectionWindow_c.h"
+#include "registerwindow_c.h"
 #include "windownav.h"
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -21,6 +22,8 @@ ProfileWindow_c::ProfileWindow_c(NetworkManager *networkManager, QWidget *parent
     ui->ordersTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     connect(ui->changePasswordButton, &QPushButton::clicked, this, &ProfileWindow_c::onChangePasswordButtonClicked);
     connect(ui->editGenresButton, &QPushButton::clicked, this, &ProfileWindow_c::onEditGenresButtonClicked);
+    connect(ui->editAccountButton, &QPushButton::clicked, this, &ProfileWindow_c::onEditAccountButtonClicked);
+    ui->editAccountButton->setEnabled(false);
     connect(ui->backButton, &QPushButton::clicked, this, &ProfileWindow_c::onBackButtonClicked);
     connect(ui->logoutButton, &QPushButton::clicked, this, &ProfileWindow_c::onLogoutButtonClicked);
     connect(profileController, &ProfileController::accountInfoLoaded, this, &ProfileWindow_c::onAccountInfoLoaded);
@@ -41,6 +44,8 @@ ProfileWindow_c::~ProfileWindow_c()
 
 void ProfileWindow_c::onAccountInfoLoaded(const QVariantMap &accountData)
 {
+    currentAccountData = accountData;
+    ui->editAccountButton->setEnabled(true);
     ui->usernameLabel->setText("نام کاربری: " + accountData.value("username").toString());
     ui->registerDateLabel->setText("تاریخ عضویت: " + accountData.value("registerDate").toDateTime().toString("yyyy/MM/dd"));
     ui->purchasedCountLabel->setText("تعداد کتاب های خریداری شده: " + QString::number(accountData.value("purchasedCount").toInt()));
@@ -85,6 +90,24 @@ void ProfileWindow_c::onPasswordChangeFailed(const QString &message)
     ui->statusLabel->setText(message);
 }
 
+void ProfileWindow_c::onEditAccountButtonClicked()
+{
+    if (currentAccountData.isEmpty()) {
+        ui->statusLabel->setText("اطلاعات حساب هنوز بارگذاری نشده است");
+        return;
+    }
+
+    RegisterWindow_c *editWindow = new RegisterWindow_c(networkManager, RegisterWindow_c::Mode::AccountEdit, currentAccountData);
+    editWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(editWindow, &RegisterWindow_c::backToProfileRequested, editWindow, &QWidget::close);
+    connect(editWindow, &QObject::destroyed, this, [this]() {
+        profileController->loadAccountInfo();
+        this->show();
+    });
+    showFollowingState(editWindow, this);
+    this->hide();
+}
+
 void ProfileWindow_c::onEditGenresButtonClicked()
 {
     GenreSelectionWindow_c *genreWindow = new GenreSelectionWindow_c(networkManager);
@@ -110,7 +133,7 @@ void ProfileWindow_c::onBackButtonClicked()
 void ProfileWindow_c::onLogoutButtonClicked()
 {
     if (QMessageBox::question(this, "خروج از حساب کاربری", "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
-         QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
+    QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
         networkManager->logout();
         emit logoutRequested();
     }

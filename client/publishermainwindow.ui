@@ -19,10 +19,7 @@
   <property name="styleSheet">
    <string notr="true">
 #centralwidget {
-    background-image: url(&quot;:/wallhaven-49kq3d.jpg&quot;);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    border-image: url(":/wallhaven-49kq3d.jpg") 0 0 0 0 stretch stretch;
 }
 
 QTabWidget {
@@ -324,6 +321,13 @@ QLabel {
          <widget class="QLabel" name="licenseNumberLabel">
           <property name="text">
            <string>شماره پروانه نشر:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="editAccountButton">
+          <property name="text">
+           <string>ویرایش حساب کاربری</string>
           </property>
          </widget>
         </item>

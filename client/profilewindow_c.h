@@ -31,6 +31,7 @@ private slots:
     void onPasswordChanged(const QString &message);
     void onPasswordChangeFailed(const QString &message);
     void onEditGenresButtonClicked();
+    void onEditAccountButtonClicked();
     void onValidationError(const QString &message);
     void onBackButtonClicked();
     void onLogoutButtonClicked();
@@ -39,6 +40,7 @@ private:
     Ui::ProfileWindow_c *ui;
     NetworkManager *networkManager;
     ProfileController *profileController;
+    QVariantMap currentAccountData;
 };
 
 #endif // PROFILEWINDOW_C_H

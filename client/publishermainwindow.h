@@ -36,6 +36,7 @@ private slots:
     void onValidationError(const QString &message);
     void onAccountInfoLoaded(const QVariantMap &accountData);
     void onAccountInfoLoadFailed(const QString &message);
+    void onEditAccountButtonClicked();
     void onLogoutButtonClicked();
 
 private:
@@ -45,6 +46,7 @@ private:
     PublisherBookController *bookController;
     ProfileController *profileController;
     QVariantList currentBooks;
+    QVariantMap currentAccountData;
 
     void populateBooksTable(const QVariantList &books);
     int getSelectedBookId() const;
