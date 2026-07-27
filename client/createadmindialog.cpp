@@ -19,6 +19,7 @@ CreateAdminDialog::~CreateAdminDialog() {
     delete ui;
 }
 void CreateAdminDialog::onAccepted() {
+    ui->statusLabel->clear();
     adminController->createAdmin(
         ui->usernameLineEdit->text(),
         ui->passwordLineEdit->text(),
@@ -31,8 +32,8 @@ void CreateAdminDialog::onAdminCreated(const QString &message) {
     accept();
 }
 void CreateAdminDialog::onAdminCreateFailed(const QString &message) {
-    QMessageBox::warning(this, "خطا", message);
+    ui->statusLabel->setText(message);
 }
 void CreateAdminDialog::onValidationError(const QString &message) {
-    QMessageBox::warning(this, "خطا", message);
+    ui->statusLabel->setText(message);
 }

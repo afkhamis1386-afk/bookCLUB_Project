@@ -49,7 +49,7 @@ QPushButton {
 }
 
 QPushButton:hover {
-    background-color: #34495e; 
+    background-color: #34495e;
     color: #d4af37;
 }
 
@@ -60,8 +60,8 @@ QPushButton:pressed {
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>510</y>
+     <x>240</x>
+     <y>480</y>
      <width>419</width>
      <height>29</height>
     </rect>
@@ -73,13 +73,13 @@ QPushButton:pressed {
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>280</x>
-     <y>70</y>
-     <width>421</width>
-     <height>401</height>
+     <y>10</y>
+     <width>451</width>
+     <height>451</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -114,27 +114,43 @@ QPushButton:pressed {
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QLabel" name="statusLabel">
+      <property name="minimumSize">
+       <size>
+        <width>449</width>
+        <height>49</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>449</width>
+        <height>49</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">	background-color: rgba(255, 255, 255, 150);
+    color: #2c3e50;
+    border: 1px solid rgba(44, 62, 80, 50);
+    border-radius: 10px;
+    padding: 10px;
+    font-family: &quot;Vazirmatn&quot;, &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 14px;
+    font-weight: bold;</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>CreateAdminDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
