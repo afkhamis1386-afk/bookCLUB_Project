@@ -18,7 +18,7 @@ Response AuthManager::validateNormalUserRegistration(const QString &username, co
     const QString cleanUsername = username.trimmed();
     const QString cleanAnswer = plainAnswer.trimmed();
     if (!User::isValidUsername(cleanUsername)) {
-        return Response(ResponseStatus::ValidationFailed, "نام کاربری نامعتبر است. طول مجاز ۳ تا ۲۰ کاراکتر و فقط حروف انگلیسی، اعداد و خط تیره");
+        return Response(ResponseStatus::ValidationFailed, "نام کاربری نامعتبر است. طول مجاز ۳ تا ۱۵ کاراکتر و فقط حروف انگلیسی، اعداد، خط تیره و زیرخط");
     }
     if (!User::isStrongPassword(plainPassword)) {
         return Response(ResponseStatus::ValidationFailed, "رمز عبور ضعیف است. باید حداقل ۸ کاراکتر و شامل حروف بزرگ، کوچک و عدد باشد");
@@ -39,7 +39,7 @@ Response AuthManager::validatePublisherRegistration(const QString &username, con
     const QString cleanPublicationName = publicationName.trimmed();
     const QString cleanLicenseNumber = licenseNumber.trimmed();
     if (!User::isValidUsername(cleanUsername)) {
-        return Response(ResponseStatus::ValidationFailed, "نام کاربری نامعتبر است. طول مجاز ۳ تا ۲۰ کاراکتر و فقط حروف انگلیسی، اعداد و خط تیره");
+        return Response(ResponseStatus::ValidationFailed, "نام کاربری نامعتبر است. طول مجاز ۳ تا ۱۵ کاراکتر و فقط حروف انگلیسی، اعداد، خط تیره و زیرخط");
     }
     if (!User::isStrongPassword(plainPassword)) {
         return Response(ResponseStatus::ValidationFailed, "رمز عبور ضعیف است. باید حداقل ۸ کاراکتر و شامل حروف بزرگ، کوچک و عدد باشد");
@@ -508,5 +508,113 @@ Response AuthManager::getAccountInfo(int userId, UserRole role) {
     }
     catch (...) {
         return Response(ResponseStatus::Error, "خطای ناشناخته در بازیابی اطلاعات حساب");
+    }
+}
+
+Response AuthManager::updateAccount(int userId, UserRole role, const QVariantMap &accountData) {
+    try {
+        if (role != UserRole::NormalUser && role != UserRole::Publisher) {
+            return Response(ResponseStatus::Unauthorized, "ویرایش حساب برای این نقش مجاز نیست");
+        }
+
+        const QString username = accountData.value("username").toString().trimmed();
+        const QString newPassword = accountData.value("password").toString();
+        const QString securityAnswer = accountData.value("securityAnswer").toString().trimmed();
+
+        if (!User::isValidUsername(username)) {
+            return Response(ResponseStatus::ValidationFailed,
+                            "نام کاربری نامعتبر است. طول مجاز ۳ تا ۱۵ کاراکتر و فقط حروف انگلیسی، اعداد، خط تیره و زیرخط است");
+        }
+        if (!newPassword.isEmpty() && !User::isStrongPassword(newPassword)) {
+            return Response(ResponseStatus::ValidationFailed,
+                            "رمز عبور جدید ضعیف است. باید حداقل ۸ کاراکتر و شامل حروف بزرگ، کوچک و عدد باشد");
+        }
+
+        const QString encryptedUsername = User::encryptString(username);
+        const QString passwordHash = newPassword.isEmpty() ? QString() : User::hashString(newPassword);
+        const QString securityAnswerHash = securityAnswer.isEmpty() ? QString() : User::hashString(securityAnswer);
+
+        UserRepository userRepo;
+        if (userRepo.isUsernameTakenByOther(encryptedUsername, userId)) {
+            return Response(ResponseStatus::Error, "این نام کاربری قبلاً استفاده شده است");
+        }
+
+        if (role == UserRole::NormalUser) {
+            std::unique_ptr<NormalUser> currentUser(userRepo.loadNormalUserById(userId));
+            if (!currentUser) {
+                return Response(ResponseStatus::NotFound, "کاربر یافت نشد");
+            }
+            if (!userRepo.updateNormalUserAccount(userId, encryptedUsername, passwordHash, securityAnswerHash)) {
+                return Response(ResponseStatus::Error, "خطا در به روزرسانی حساب کاربری");
+            }
+
+            QVariantMap data;
+            data["userId"] = userId;
+            data["role"] = static_cast<int>(role);
+            data["username"] = username;
+            return Response(ResponseStatus::Success, "حساب کاربری با موفقیت ویرایش شد", data);
+        }
+
+        const QString firstName = accountData.value("firstName").toString().trimmed();
+        const QString lastName = accountData.value("lastName").toString().trimmed();
+        const QString email = accountData.value("email").toString().trimmed();
+        const QString publicationName = accountData.value("publicationName").toString().trimmed();
+        const QString licenseNumber = accountData.value("licenseNumber").toString().trimmed();
+        const QString shortDescription = accountData.value("shortDescription").toString().trimmed();
+
+        if (firstName.isEmpty() || firstName.length() > 30) {
+            return Response(ResponseStatus::ValidationFailed, "نام باید بین ۱ تا ۳۰ کاراکتر باشد");
+        }
+        if (lastName.isEmpty() || lastName.length() > 30) {
+            return Response(ResponseStatus::ValidationFailed, "نام خانوادگی باید بین ۱ تا ۳۰ کاراکتر باشد");
+        }
+        if (email.isEmpty() || email.length() > 120 || !isValidEmail(email)) {
+            return Response(ResponseStatus::ValidationFailed, "ایمیل نامعتبر است");
+        }
+        if (publicationName.isEmpty() || publicationName.length() > 50) {
+            return Response(ResponseStatus::ValidationFailed, "نام انتشارات باید بین ۱ تا ۵۰ کاراکتر باشد");
+        }
+        if (licenseNumber.isEmpty() || licenseNumber.length() > 13) {
+            return Response(ResponseStatus::ValidationFailed, "شماره پروانه نشر باید حداکثر ۱۳ کاراکتر باشد");
+        }
+        if (shortDescription.length() > 500) {
+            return Response(ResponseStatus::ValidationFailed, "توضیحات کوتاه باید حداکثر ۵۰۰ کاراکتر باشد");
+        }
+
+        PublisherRepository publisherRepo;
+        std::unique_ptr<Publisher> currentPublisher(publisherRepo.loadPublisherById(userId));
+        if (!currentPublisher) {
+            return Response(ResponseStatus::NotFound, "ناشر یافت نشد");
+        }
+        if (publisherRepo.isEmailTaken(email, userId)) {
+            return Response(ResponseStatus::Error, "این ایمیل قبلاً ثبت شده است");
+        }
+        if (publisherRepo.isLicenseNumberTaken(licenseNumber, userId)) {
+            return Response(ResponseStatus::Error, "این شماره پروانه نشر قبلاً ثبت شده است");
+        }
+
+        if (!publisherRepo.updateAccount(userId, encryptedUsername, passwordHash, securityAnswerHash,
+                                         firstName, lastName, email, shortDescription,
+                                         publicationName, licenseNumber)) {
+            return Response(ResponseStatus::Error, "خطا در به روزرسانی حساب ناشر");
+        }
+
+        QVariantMap data;
+        data["userId"] = userId;
+        data["role"] = static_cast<int>(role);
+        data["username"] = username;
+        data["firstName"] = firstName;
+        data["lastName"] = lastName;
+        data["email"] = email;
+        data["shortDescription"] = shortDescription;
+        data["publicationName"] = publicationName;
+        data["publisherLicenseNumber"] = licenseNumber;
+        return Response(ResponseStatus::Success, "حساب ناشر با موفقیت ویرایش شد", data);
+    }
+    catch (const std::exception &) {
+        return Response(ResponseStatus::Error, "خطای داخلی در ویرایش حساب کاربری");
+    }
+    catch (...) {
+        return Response(ResponseStatus::Error, "خطای ناشناخته در ویرایش حساب کاربری");
     }
 }

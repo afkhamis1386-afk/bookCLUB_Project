@@ -26,6 +26,7 @@ public:
     Response getAllCategories();
     Response setFavoriteGenres(int userId, const QVector<int> &genreIds);
     Response getAccountInfo(int userId, UserRole role);
+    Response updateAccount(int userId, UserRole role, const QVariantMap &accountData);
 private:
     Response validateNormalUserRegistration(const QString &username, const QString &plainPassword, const QString &plainAnswer) const;
     Response validatePublisherRegistration(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName,
