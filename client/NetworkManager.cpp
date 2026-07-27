@@ -81,6 +81,9 @@ void NetworkManager::recoverPassword(const QString &username, const QString &sec
 void NetworkManager::getAccountInfo() {
     sendRequest(RequestType::GetAccountInfo);
 }
+void NetworkManager::updateAccount(const QVariantMap &accountData) {
+    sendRequest(RequestType::UpdateAccount, accountData);
+}
 void NetworkManager::getAllGenres() {
     sendRequest(RequestType::GetAllGenres);
 }
@@ -457,6 +460,9 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
             hasFavoriteGenres = false;
             loggedIn = false;
         }
+    }
+    if (matchedType == RequestType::UpdateAccount && response.isSuccess()) {
+        currentUsername = response.getData().value("username").toString();
     }
     emit responseReceived(matchedType, response);
 }

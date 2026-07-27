@@ -27,6 +27,7 @@ public:
     void changePassword(const QString &oldPassword, const QString &newPassword);
     void recoverPassword(const QString &username, const QString &securityAnswer, const QString &newPassword);
     void getAccountInfo();
+    void updateAccount(const QVariantMap &accountData);
     void getAllGenres();
     void getAllCategories();
     void setFavoriteGenres(const QVector<int> &genreIds);
@@ -97,7 +98,6 @@ public:
     void getPurchasedBooks();
     void bootstrapFirstAdmin(const QString &username, const QString &password, const QString &securityAnswer, const QString &firstName, const QString &lastName);
     void createAdditionalAdmin(const QString &username, const QString &password, const QString &firstName, const QString &lastName);
-
 signals:
     void connected();
     void disconnected();
