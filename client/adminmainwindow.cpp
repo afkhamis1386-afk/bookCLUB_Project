@@ -247,10 +247,14 @@ void AdminMainWindow::onViewBookDetailsButtonClicked() {
     adminController->loadBookDetailsForReview(id);
 }
 void AdminMainWindow::onBookDetailsForReviewLoaded(const QVariantMap &bookData) {
-    QMessageBox::information(this, "جزئیات کتاب", QString("نام: %1\nتوضیحات: %2\nقیمت: %3")
-                                                      .arg(bookData.value("bookName").toString())
-                                                      .arg(bookData.value("description").toString())
-                                                      .arg(bookData.value("price").toDouble()));
+    const QString price = QString::number(bookData.value("price").toDouble(), 'f', 2);
+    const QString details = QString("نام کتاب: %1\nنام نویسنده: %2\nقیمت کتاب: %3\nنوع ژانر: %4\nتوضیحات: %5")
+                                .arg(bookData.value("bookName").toString())
+                                .arg(bookData.value("authorName").toString())
+                                .arg(price)
+                                .arg(bookData.value("genreTitle").toString())
+                                .arg(bookData.value("description").toString());
+    QMessageBox::information(this, "جزئیات کامل کتاب", details);
 }
 void AdminMainWindow::onBookDetailsForReviewLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onDeleteBookButtonClicked() {
