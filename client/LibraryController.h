@@ -1,11 +1,12 @@
 #ifndef LIBRARYCONTROLLER_H
 #define LIBRARYCONTROLLER_H
+
 #include <QObject>
 #include <QVariantList>
 #include "NetworkManager.h"
+
 class LibraryController : public QObject {
     Q_OBJECT
-
 public:
     explicit LibraryController(NetworkManager *networkManager, QObject *parent = nullptr);
     void refreshShelves();
@@ -14,6 +15,8 @@ public:
     void deleteShelf(int shelfId);
     void addBookToShelf(int shelfId, int bookId);
     void removeBookFromShelf(int shelfId, int bookId);
+    void reorderShelves(const QVariantList &shelfIds);
+    void reorderShelfBooks(int shelfId, const QVariantList &bookIds);
     void refreshPurchasedBooks();
 
 signals:
@@ -29,6 +32,10 @@ signals:
     void bookAddToShelfFailed(const QString &message);
     void bookRemovedFromShelf(const QString &message);
     void bookRemoveFromShelfFailed(const QString &message);
+    void shelvesReordered(const QString &message);
+    void shelvesReorderFailed(const QString &message);
+    void shelfBooksReordered(const QString &message);
+    void shelfBooksReorderFailed(const QString &message);
     void validationError(const QString &message);
     void purchasedBooksLoaded(const QVariantList &bookIds);
     void purchasedBooksLoadFailed(const QString &message);

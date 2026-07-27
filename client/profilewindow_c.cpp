@@ -15,10 +15,17 @@ ProfileWindow_c::ProfileWindow_c(NetworkManager *networkManager, QWidget *parent
 {
     ui->setupUi(this);
 
-    QStringList headers = {"شماره سفارش", "تاریخ", "مبلغ نهایی", "وضعیت"};
-    ui->ordersTableWidget->setColumnCount(4);
+    QStringList headers = {"شماره سفارش", "نام کتاب ها", "تاریخ", "مبلغ نهایی", "وضعیت"};
+    ui->ordersTableWidget->setColumnCount(5);
     ui->ordersTableWidget->setHorizontalHeaderLabels(headers);
-    ui->ordersTableWidget->horizontalHeader()->setStretchLastSection(true);
+    ui->ordersTableWidget->horizontalHeader()->setStretchLastSection(false);
+    ui->ordersTableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    ui->ordersTableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->ordersTableWidget->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    ui->ordersTableWidget->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+    ui->ordersTableWidget->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+    ui->ordersTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->ordersTableWidget->setWordWrap(true);
     ui->ordersTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     connect(ui->changePasswordButton, &QPushButton::clicked, this, &ProfileWindow_c::onChangePasswordButtonClicked);
     connect(ui->editGenresButton, &QPushButton::clicked, this, &ProfileWindow_c::onEditGenresButtonClicked);
@@ -62,9 +69,10 @@ void ProfileWindow_c::onOrderHistoryLoaded(const QVariantList &orders)
     for (int i = 0; i < orders.size(); ++i) {
         QVariantMap order = orders[i].toMap();
         ui->ordersTableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(order.value("orderId").toInt())));
-        ui->ordersTableWidget->setItem(i, 1, new QTableWidgetItem(order.value("orderDate").toDateTime().toString("yyyy/MM/dd hh:mm")));
-        ui->ordersTableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(order.value("finalPrice").toDouble(), 'f', 0) + " تومان"));
-        ui->ordersTableWidget->setItem(i, 3, new QTableWidgetItem(order.value("status").toString()));
+        ui->ordersTableWidget->setItem(i, 1, new QTableWidgetItem(order.value("bookNames").toString()));
+        ui->ordersTableWidget->setItem(i, 2, new QTableWidgetItem(order.value("orderDate").toDateTime().toString("yyyy/MM/dd hh:mm")));
+        ui->ordersTableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(order.value("finalPrice").toDouble(), 'f', 0) + " تومان"));
+        ui->ordersTableWidget->setItem(i, 4, new QTableWidgetItem(order.value("status").toString()));
     }
 }
 
@@ -97,9 +105,11 @@ void ProfileWindow_c::onEditAccountButtonClicked()
         return;
     }
 
-    RegisterWindow_c *editWindow = new RegisterWindow_c(networkManager, RegisterWindow_c::Mode::AccountEdit, currentAccountData);
+    RegisterWindow_c *editWindow = new RegisterWindow_c(
+        networkManager, RegisterWindow_c::Mode::AccountEdit, currentAccountData);
     editWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(editWindow, &RegisterWindow_c::backToProfileRequested, editWindow, &QWidget::close);
+    connect(editWindow, &RegisterWindow_c::backToProfileRequested,
+            editWindow, &QWidget::close);
     connect(editWindow, &QObject::destroyed, this, [this]() {
         profileController->loadAccountInfo();
         this->show();
@@ -132,7 +142,7 @@ void ProfileWindow_c::onBackButtonClicked()
 
 void ProfileWindow_c::onLogoutButtonClicked()
 {
-    if (QMessageBox::question(this, "خروج از حساب کاربری", "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
+    if(QMessageBox::question(this, "خروج از حساب کاربری", "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
     QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
         networkManager->logout();
         emit logoutRequested();
