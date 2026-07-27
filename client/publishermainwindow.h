@@ -5,6 +5,8 @@
 #include "PublisherDashboardController.h"
 #include "PublisherBookController.h"
 #include "ProfileController.h"
+#include "NotificationController.h"
+#include <QShowEvent>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,6 +21,9 @@ class PublisherMainWindow : public QMainWindow
 public:
     explicit PublisherMainWindow(NetworkManager *networkManager, QWidget *parent = nullptr);
     ~PublisherMainWindow() override;
+
+protected:
+    void showEvent(QShowEvent *event) override;
 
 signals:
     void logoutRequested();
@@ -36,6 +41,12 @@ private slots:
     void onValidationError(const QString &message);
     void onAccountInfoLoaded(const QVariantMap &accountData);
     void onAccountInfoLoadFailed(const QString &message);
+    void onEditAccountButtonClicked();
+    void onNotificationsButtonClicked();
+    void onUnreadCountLoaded(int count);
+    void onUnreadCountLoadFailed(const QString &message);
+    void onNewNotificationArrived(const QVariantMap &notificationData);
+    void onNotificationMarkedRead(const QString &message);
     void onLogoutButtonClicked();
 
 private:
@@ -44,7 +55,9 @@ private:
     PublisherDashboardController *dashboardController;
     PublisherBookController *bookController;
     ProfileController *profileController;
+    NotificationController *notificationController;
     QVariantList currentBooks;
+    QVariantMap currentAccountData;
 
     void populateBooksTable(const QVariantList &books);
     int getSelectedBookId() const;

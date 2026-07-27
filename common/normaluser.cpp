@@ -1,12 +1,38 @@
 #include "normaluser.h"
 NormalUser::NormalUser():User(){}
-NormalUser::NormalUser(const QString &username, const QString &plainPassword, const QString &plainAnswer)
-:User(username, plainPassword, plainAnswer){}
-NormalUser::NormalUser(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive, const QDateTime &registerDate)
-:User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, isActive, registerDate){}
+NormalUser::NormalUser(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName, const QString &lastName)
+    :User(username, plainPassword, plainAnswer),
+    firstName(firstName.trimmed()), lastName(lastName.trimmed()){}
+NormalUser::NormalUser(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive,
+     const QDateTime &registerDate, const QString &firstName, const QString &lastName)
+    :User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, isActive, registerDate),
+    firstName(firstName.trimmed()), lastName(lastName.trimmed()){}
 NormalUser::~NormalUser(){}
 QString NormalUser::getRole() const {
     return "NormalUser";
+}
+QString NormalUser::getFirstName() const {
+    return firstName;
+}
+QString NormalUser::getLastName() const {
+    return lastName;
+}
+QString NormalUser::getFullName() const {
+    return (firstName + " " + lastName).trimmed();
+}
+bool NormalUser::setFirstName(const QString &name) {
+    const QString cleanName = name.trimmed();
+    if (cleanName.isEmpty() || cleanName.length() > 30)
+        return false;
+    firstName = cleanName;
+    return true;
+}
+bool NormalUser::setLastName(const QString &name) {
+    const QString cleanName = name.trimmed();
+    if (cleanName.isEmpty() || cleanName.length() > 30)
+        return false;
+    lastName = cleanName;
+    return true;
 }
 bool NormalUser::setFavoriteGenres(const QVector<int> &genreIds){
     QVector<int> unique;

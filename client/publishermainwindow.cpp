@@ -1,5 +1,7 @@
 #include "publishermainwindow.h"
 #include "publisheraddbookwindow_c.h"
+#include "registerwindow_c.h"
+#include "notificationwindow_c.h"
 #include "ui_publishermainwindow.h"
 #include "windownav.h"
 #include <QTableWidgetItem>
@@ -14,6 +16,7 @@ PublisherMainWindow::PublisherMainWindow(NetworkManager *networkManager, QWidget
     , dashboardController(new PublisherDashboardController(networkManager, this))
     , bookController(new PublisherBookController(networkManager, this))
     , profileController(new ProfileController(networkManager, this))
+    , notificationController(new NotificationController(networkManager, this))
 {
     ui->setupUi(this);
     ui->myBooksTableWidget->setColumnCount(7);
@@ -27,6 +30,9 @@ PublisherMainWindow::PublisherMainWindow(NetworkManager *networkManager, QWidget
     connect(ui->editBookButton, &QPushButton::clicked, this, &PublisherMainWindow::onEditBookButtonClicked);
     connect(ui->toggleBookActiveButton, &QPushButton::clicked, this, &PublisherMainWindow::onToggleBookActiveButtonClicked);
     connect(ui->logoutButton, &QPushButton::clicked, this, &PublisherMainWindow::onLogoutButtonClicked);
+    connect(ui->editAccountButton, &QPushButton::clicked, this, &PublisherMainWindow::onEditAccountButtonClicked);
+    connect(ui->notificationsButton, &QPushButton::clicked, this, &PublisherMainWindow::onNotificationsButtonClicked);
+    ui->editAccountButton->setEnabled(false);
     connect(dashboardController, &PublisherDashboardController::dashboardLoaded, this, &PublisherMainWindow::onDashboardLoaded);
     connect(dashboardController, &PublisherDashboardController::dashboardLoadFailed, this, &PublisherMainWindow::onDashboardLoadFailed);
     connect(bookController, &PublisherBookController::bookDeactivated, this, &PublisherMainWindow::onBookDeactivated);
@@ -36,14 +42,25 @@ PublisherMainWindow::PublisherMainWindow(NetworkManager *networkManager, QWidget
     connect(bookController, &PublisherBookController::validationError, this, &PublisherMainWindow::onValidationError);
     connect(profileController, &ProfileController::accountInfoLoaded, this, &PublisherMainWindow::onAccountInfoLoaded);
     connect(profileController, &ProfileController::accountInfoLoadFailed, this, &PublisherMainWindow::onAccountInfoLoadFailed);
+    connect(notificationController, &NotificationController::unreadCountLoaded, this, &PublisherMainWindow::onUnreadCountLoaded);
+    connect(notificationController, &NotificationController::unreadCountLoadFailed, this, &PublisherMainWindow::onUnreadCountLoadFailed);
+    connect(notificationController, &NotificationController::newNotificationArrived, this, &PublisherMainWindow::onNewNotificationArrived);
+    connect(notificationController, &NotificationController::notificationMarkedRead, this, &PublisherMainWindow::onNotificationMarkedRead);
 
     dashboardController->refreshDashboard();
     profileController->loadAccountInfo();
+    notificationController->refreshUnreadCount();
 }
 
 PublisherMainWindow::~PublisherMainWindow()
 {
     delete ui;
+}
+
+void PublisherMainWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+    notificationController->refreshUnreadCount();
 }
 
 void PublisherMainWindow::populateBooksTable(const QVariantList &books)
@@ -161,6 +178,8 @@ void PublisherMainWindow::onBookReactivateFailed(const QString &message) { ui->s
 void PublisherMainWindow::onValidationError(const QString &message) { ui->statusLabel->setText(message); }
 void PublisherMainWindow::onAccountInfoLoaded(const QVariantMap &accountData)
 {
+    currentAccountData = accountData;
+    ui->editAccountButton->setEnabled(true);
     ui->nameLabel->setText("نام و نام خانوادگی: " + accountData.value("firstName").toString() + " " + accountData.value("lastName").toString());
     ui->emailLabel->setText("ایمیل: " + accountData.value("email").toString());
     ui->publicationNameLabel->setText("نام انتشارات: " + accountData.value("publicationName").toString());
@@ -168,9 +187,64 @@ void PublisherMainWindow::onAccountInfoLoaded(const QVariantMap &accountData)
 }
 void PublisherMainWindow::onAccountInfoLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 
+void PublisherMainWindow::onEditAccountButtonClicked()
+{
+    if (currentAccountData.isEmpty()) {
+        ui->statusLabel->setText("اطلاعات حساب هنوز بارگذاری نشده است");
+        return;
+    }
+
+    RegisterWindow_c *editWindow = new RegisterWindow_c(
+        networkManager, RegisterWindow_c::Mode::AccountEdit, currentAccountData);
+    editWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(editWindow, &RegisterWindow_c::backToProfileRequested,
+            editWindow, &QWidget::close);
+    connect(editWindow, &QObject::destroyed, this, [this]() {
+        profileController->loadAccountInfo();
+        this->show();
+    });
+    showFollowingState(editWindow, this);
+    this->hide();
+}
+
+void PublisherMainWindow::onNotificationsButtonClicked()
+{
+    NotificationWindow_c *notificationWindow = new NotificationWindow_c(networkManager);
+    notificationWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(notificationWindow, &NotificationWindow_c::backRequested, this, [this, notificationWindow]() {
+        notificationWindow->close();
+        notificationController->refreshUnreadCount();
+        this->show();
+    });
+    showFollowingState(notificationWindow, this);
+    this->hide();
+}
+
+void PublisherMainWindow::onUnreadCountLoaded(int count)
+{
+    ui->notificationsButton->setText(QString("اعلان ها (%1)").arg(count));
+}
+
+void PublisherMainWindow::onUnreadCountLoadFailed(const QString &message)
+{
+    ui->statusLabel->setText(message);
+}
+
+void PublisherMainWindow::onNewNotificationArrived(const QVariantMap &notificationData)
+{
+    notificationController->refreshUnreadCount();
+    statusBar()->showMessage(
+        QString("اعلان جدید: %1").arg(notificationData.value("title").toString()), 5000);
+}
+
+void PublisherMainWindow::onNotificationMarkedRead(const QString &message)
+{
+    Q_UNUSED(message)
+    notificationController->refreshUnreadCount();
+}
 void PublisherMainWindow::onLogoutButtonClicked() {
-    if (QMessageBox::question(this, "خروج از حساب کاربری", "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
-        QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
+    if(QMessageBox::question(this, "خروج از حساب کاربری", "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
+    QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes){
         networkManager->logout();
         emit logoutRequested();
     }

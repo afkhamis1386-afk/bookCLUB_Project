@@ -15,8 +15,10 @@ void LoginController::attemptLogin(const QString &username, const QString &passw
     }
     networkManager->login(username.trimmed(), password);
 }
-void LoginController::attemptRegisterNormalUser(const QString &username, const QString &password, const QString &confirmPassword, const QString &securityAnswer) {
-    if(username.trimmed().isEmpty() || password.isEmpty() || securityAnswer.trimmed().isEmpty()){
+void LoginController::attemptRegisterNormalUser(const QString &username, const QString &password, const QString &confirmPassword, const QString &securityAnswer,
+     const QString &firstName, const QString &lastName) {
+    if(username.trimmed().isEmpty() || password.isEmpty() || securityAnswer.trimmed().isEmpty()
+        || firstName.trimmed().isEmpty() || lastName.trimmed().isEmpty()){
         emit validationError("تمامی فیلدها را پر کنید");
         return;
     }
@@ -28,10 +30,10 @@ void LoginController::attemptRegisterNormalUser(const QString &username, const Q
         emit registrationFailed("اتصال به سرور برقرار نیست");
         return;
     }
-    networkManager->registerNormalUser(username.trimmed(), password, securityAnswer.trimmed());
+    networkManager->registerNormalUser(username.trimmed(), password, securityAnswer.trimmed(), firstName.trimmed(), lastName.trimmed());
 }
 void LoginController::attemptRegisterPublisher(const QString &username, const QString &password, const QString &confirmPassword, const QString &securityAnswer, const QString &firstName, const QString &lastName,
-    const QString &email, const QString &publicationName, const QString &licenseNumber, const QString &shortDescription){
+     const QString &email, const QString &publicationName, const QString &licenseNumber, const QString &shortDescription){
     if(username.trimmed().isEmpty() || password.isEmpty() || securityAnswer.trimmed().isEmpty() || firstName.trimmed().isEmpty() || lastName.trimmed().isEmpty() || email.trimmed().isEmpty() || publicationName.trimmed().isEmpty() || licenseNumber.trimmed().isEmpty()){
         emit validationError("تمامی فیلدهای اجباری را پر کنید");
         return;
@@ -45,7 +47,7 @@ void LoginController::attemptRegisterPublisher(const QString &username, const QS
         return;
     }
     networkManager->registerPublisher(username.trimmed(), password, securityAnswer.trimmed(), firstName.trimmed(), lastName.trimmed(), email.trimmed(),
-    publicationName.trimmed(), licenseNumber.trimmed(), shortDescription.trimmed());
+                                      publicationName.trimmed(), licenseNumber.trimmed(), shortDescription.trimmed());
 }
 void LoginController::attemptRecoverPassword(const QString &username, const QString &securityAnswer, const QString &newPassword, const QString &confirmNewPassword){
     if(username.trimmed().isEmpty() || securityAnswer.trimmed().isEmpty() || newPassword.isEmpty()){

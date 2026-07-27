@@ -1,10 +1,10 @@
 #include "Book.h"
 Book::Book():bookId(-1), bookPrice(0.0), discountPercent(0.0), discountAmount(0.0), registeredIn(QDateTime::currentDateTime()), isActive(true), isDeleted(false), genreId(-1), categoryId(-1), authorId(-1), publisherUserId(-1){}
 Book::Book(const QString &bN, const QString &bD, double bP, int gI, int cI, int auI, int pUI, const QString &cIP, const QString &pFP)
-    :bookId(-1), bookName(bN), bookDescription(bD), bookPrice(bP >= 0 ? bP : 0.0), discountPercent(0.0), discountAmount(0.0), coverImagePath(cIP), pdfFilePath(pFP), registeredIn(QDateTime::currentDateTime()), isActive(true), isDeleted(false),
+    :bookId(-1), bookName(bN), bookDescription(bD), bookPrice(bP >= 0 && bP <= 99999999.99 ? bP : 0.0), discountPercent(0.0), discountAmount(0.0), coverImagePath(cIP), pdfFilePath(pFP), registeredIn(QDateTime::currentDateTime()), isActive(true), isDeleted(false),
     genreId(gI), categoryId(cI), authorId(auI), publisherUserId(pUI){}
 Book::Book(int bI, const QString &bN, const QString &bD, double bP, double dP, double dA, const QString &cIP, const QString &pFP, const QDateTime &rIn, bool iA, bool iD, int gI, int cI, int auI, int pUI)
-    :bookId(bI), bookName(bN), bookDescription(bD), bookPrice(bP >= 0 ? bP : 0.0), discountPercent(dP >= 0 && dP <= 100 ? dP : 0.0), discountAmount(dA >= 0 ? dA : 0.0), coverImagePath(cIP), pdfFilePath(pFP), registeredIn(rIn), isActive(iA), isDeleted(iD),
+    :bookId(bI), bookName(bN), bookDescription(bD), bookPrice(bP >= 0 && bP <= 99999999.99 ? bP : 0.0), discountPercent(dP >= 0 && dP <= 100 ? dP : 0.0), discountAmount(dA >= 0 && dA <= 99999999.99 ? dA : 0.0), coverImagePath(cIP), pdfFilePath(pFP), registeredIn(rIn), isActive(iA), isDeleted(iD),
     genreId(gI), categoryId(cI), authorId(auI), publisherUserId(pUI){}
 Book::~Book(){}
 int Book::getBookId() const { return bookId; }
@@ -38,7 +38,7 @@ bool Book::setBookDescription(const QString &description){
     return true;
 }
 bool Book::setBookPrice(double price){
-    if(price < 0)
+    if(price < 0 || price > 99999999.99)
         return false;
     bookPrice = price;
     return true;
@@ -50,7 +50,7 @@ bool Book::setDiscountPercent(double percent){
     return true;
 }
 bool Book::setDiscountAmount(double amount){
-    if(amount < 0)
+    if(amount < 0 || amount > 99999999.99)
         return false;
     discountAmount = amount;
     return true;
@@ -93,16 +93,16 @@ double Book::getFinalPrice() const {
     double priceAfterPercent = bookPrice - (bookPrice * (discountPercent / 100.0));
     double finalPrice = priceAfterPercent - discountAmount;
     if(finalPrice < 0)
-        finalPrice = 0;
+    finalPrice = 0;
     return finalPrice;
 }
 QDataStream &operator<<(QDataStream &out, const Book &book) {
     out << book.bookId << book.bookName << book.bookDescription << book.bookPrice << book.discountPercent << book.discountAmount << book.coverImagePath << book.pdfFilePath << book.registeredIn << book.isActive << book.isDeleted
-        << book.genreId << book.categoryId << book.authorId << book.publisherUserId;
+    << book.genreId << book.categoryId << book.authorId << book.publisherUserId;
     return out;
 }
 QDataStream &operator>>(QDataStream &in, Book &book) {
     in >> book.bookId >> book.bookName >> book.bookDescription >> book.bookPrice >> book.discountPercent >> book.discountAmount >> book.coverImagePath >> book.pdfFilePath >> book.registeredIn >> book.isActive >> book.isDeleted
-        >> book.genreId >> book.categoryId >> book.authorId >> book.publisherUserId;
+    >> book.genreId >> book.categoryId >> book.authorId >> book.publisherUserId;
     return in;
 }

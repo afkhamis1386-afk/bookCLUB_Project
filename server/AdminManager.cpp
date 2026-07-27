@@ -2,7 +2,9 @@
 #include "UserRepository.h"
 #include "PublisherRepository.h"
 #include "BookRepository.h"
+#include "AuthorRepository.h"
 #include "ReviewRepository.h"
+#include "GenreRepository.h"
 #include "../common/normaluser.h"
 #include "../common/publisher.h"
 #include "../common/Admin.h"
@@ -10,6 +12,7 @@
 #include "../common/Book.h"
 #include "../common/Review.h"
 #include <memory>
+#include <QHash>
 AdminManager::AdminManager(){}
 Response AdminManager::getAllUsers(){
     UserRepository userRepo;
@@ -17,6 +20,12 @@ Response AdminManager::getAllUsers(){
     PublisherRepository publisherRepo;
     QVector<int> publisherIds = publisherRepo.getAllPublisherIds();
     QVariantList userList;
+    GenreRepository genreRepo;
+    QHash<int, QString> genreTitlesById;
+    const QVector<Genre> allGenres = genreRepo.getAllGenres();
+    for(const Genre &genre : allGenres)
+    genreTitlesById.insert(genre.getGenreId(), genre.getGenreTitle());
+
     for(int userId : qAsConst(normalUserIds)){
         std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
         if (!user) continue;
@@ -24,6 +33,15 @@ Response AdminManager::getAllUsers(){
         userData["userId"] = user->getUserId();
         userData["username"] = user->getUsername();
         userData["role"] = "NormalUser";
+        userData["firstName"] = user->getFirstName();
+        userData["lastName"] = user->getLastName();
+        QVariantList favoriteGenreTitles;
+        for(int genreId : user->getFavoriteGenres()) {
+            const auto title = genreTitlesById.constFind(genreId);
+            if(title != genreTitlesById.constEnd())
+                favoriteGenreTitles.append(title.value());
+        }
+        userData["favoriteGenreTitles"] = favoriteGenreTitles;
         userData["isBlocked"] = user->getIsBlocked();
         userData["isDeleted"] = user->getIsDeleted();
         userData["isActive"] = user->getIsActive();
@@ -41,7 +59,11 @@ Response AdminManager::getAllUsers(){
         userData["isDeleted"] = publisher->getIsDeleted();
         userData["isActive"] = publisher->getIsActive();
         userData["registerDate"] = publisher->getRegisterDate();
+        userData["firstName"] = publisher->getFirstName();
+        userData["lastName"] = publisher->getLastName();
         userData["publicationName"] = publisher->getPublicationName();
+        userData["publisherLicenseNumber"] = publisher->getPublisherLicenseNumber();
+        userData["email"] = publisher->getEmail();
         userList.append(userData);
     }
     AdminRepository adminRepoForList;
@@ -57,6 +79,8 @@ Response AdminManager::getAllUsers(){
         userData["isDeleted"] = admin->getIsDeleted();
         userData["isActive"] = admin->getIsActive();
         userData["registerDate"] = admin->getRegisterDate();
+        userData["firstName"] = admin->getFirstName();
+        userData["lastName"] = admin->getLastName();
         userList.append(userData);
     }
     QVariantMap data;
@@ -72,6 +96,8 @@ Response AdminManager::getNormalUserDetails(int userId){
     QVariantMap data;
     data["userId"] = user->getUserId();
     data["username"] = user->getUsername();
+    data["firstName"] = user->getFirstName();
+    data["lastName"] = user->getLastName();
     data["isBlocked"] = user->getIsBlocked();
     data["isDeleted"] = user->getIsDeleted();
     data["isActive"] = user->getIsActive();
@@ -81,6 +107,14 @@ Response AdminManager::getNormalUserDetails(int userId){
     for(int genreId : user->getFavoriteGenres())
         genreList.append(genreId);
     data["favoriteGenres"] = genreList;
+    QVariantList genreTitles;
+    GenreRepository genreRepo;
+    for(int genreId : user->getFavoriteGenres()) {
+        std::unique_ptr<Genre> genre(genreRepo.loadGenreById(genreId));
+        if (genre)
+            genreTitles.append(genre->getGenreTitle());
+    }
+    data["favoriteGenreTitles"] = genreTitles;
     return Response(ResponseStatus::Success, "اطلاعات کاربر عادی بازیابی شد", data);
 }
 Response AdminManager::getPublisherDetails(int userId){
@@ -96,6 +130,7 @@ Response AdminManager::getPublisherDetails(int userId){
     data["lastName"] = publisher->getLastName();
     data["email"] = publisher->getEmail();
     data["publicationName"] = publisher->getPublicationName();
+    data["publisherLicenseNumber"] = publisher->getPublisherLicenseNumber();
     data["isBlocked"] = publisher->getIsBlocked();
     data["isDeleted"] = publisher->getIsDeleted();
     data["isActive"] = publisher->getIsActive();
@@ -190,11 +225,26 @@ Response AdminManager::getBookDetailsForReview(int bookId){
     if(!book){
         return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
     }
+
+    AuthorRepository authorRepo;
+    std::unique_ptr<Author> author(authorRepo.loadAuthorById(book->getAuthorId()));
+    if(!author){
+        return Response(ResponseStatus::Error, "اطلاعات نویسنده کتاب یافت نشد");
+    }
+
+    GenreRepository genreRepo;
+    std::unique_ptr<Genre> genre(genreRepo.loadGenreById(book->getGenreId()));
+    if(!genre){
+        return Response(ResponseStatus::Error, "اطلاعات ژانر کتاب یافت نشد");
+    }
+
     QVariantMap data;
     data["bookId"] = book->getBookId();
     data["bookName"] = book->getBookName();
-    data["description"] = book->getBookDescription();
+    data["authorName"] = author->getAuthorName();
     data["price"] = book->getBookPrice();
+    data["genreTitle"] = genre->getGenreTitle();
+    data["description"] = book->getBookDescription();
     data["publisherUserId"] = book->getPublisherUserId();
     data["isActive"] = book->getIsActive();
     data["isDeleted"] = book->getIsDeleted();
