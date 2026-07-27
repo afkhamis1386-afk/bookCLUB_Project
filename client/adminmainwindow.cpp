@@ -8,6 +8,7 @@
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QStringList>
 AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::AdminMainWindow)
@@ -30,6 +31,7 @@ AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent
     ui->reviewsTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->reviewsTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     connect(ui->refreshUsersButton, &QPushButton::clicked, adminController, &AdminController::loadAllUsers);
+    connect(ui->viewUserDetailsButton, &QPushButton::clicked, this, &AdminMainWindow::onViewUserDetailsButtonClicked);
     connect(ui->blockUserButton, &QPushButton::clicked, this, &AdminMainWindow::onBlockUserButtonClicked);
     connect(ui->unblockUserButton, &QPushButton::clicked, this, &AdminMainWindow::onUnblockUserButtonClicked);
     connect(ui->toggleActiveButton, &QPushButton::clicked, this, &AdminMainWindow::onToggleActiveButtonClicked);
@@ -117,8 +119,12 @@ void AdminMainWindow::applyUserSearchAndFilter() {
         if (roleFilterIndex == 3 && role != "Admin") continue;
         if (!searchText.isEmpty()) {
             const QString username = u.value("username").toString();
+            const QString firstName = u.value("firstName").toString();
+            const QString lastName = u.value("lastName").toString();
             const QString publicationName = u.value("publicationName").toString();
             const bool matches = username.contains(searchText, Qt::CaseInsensitive)
+                                 || firstName.contains(searchText, Qt::CaseInsensitive)
+                                 || lastName.contains(searchText, Qt::CaseInsensitive)
                                  || publicationName.contains(searchText, Qt::CaseInsensitive);
             if (!matches) continue;
         }
@@ -128,6 +134,67 @@ void AdminMainWindow::applyUserSearchAndFilter() {
 }
 void AdminMainWindow::onUserSearchOrFilterChanged() {
     applyUserSearchAndFilter();
+}
+void AdminMainWindow::onViewUserDetailsButtonClicked() {
+    const int userId = getSelectedUserId();
+    if (userId <= 0) {
+        ui->statusLabel->setText("ابتدا یک کاربر را انتخاب کنید");
+        return;
+    }
+
+    QVariantMap selectedUser;
+    for (const QVariant &value : qAsConst(allUsersCache)) {
+        const QVariantMap userData = value.toMap();
+        if (userData.value("userId").toInt() == userId) {
+            selectedUser = userData;
+            break;
+        }
+    }
+    if (selectedUser.isEmpty()) {
+        ui->statusLabel->setText("اطلاعات کاربر انتخاب شده در دسترس نیست؛ فهرست را به روزرسانی کنید");
+        return;
+    }
+
+    const auto displayValue = [](const QString &value) {
+        return value.trimmed().isEmpty() ? QString("ثبت نشده") : value.trimmed();
+    };
+
+    const QString role = selectedUser.value("role").toString();
+    const QString username = displayValue(selectedUser.value("username").toString());
+    QString details;
+
+    if (role == "NormalUser") {
+        QStringList genreTitles;
+        const QVariantList genres = selectedUser.value("favoriteGenreTitles").toList();
+        for (const QVariant &genre : genres) {
+            const QString title = genre.toString().trimmed();
+            if (!title.isEmpty())
+                genreTitles.append(title);
+        }
+        details = QString("نوع حساب: کاربر عادی\nنام کاربری: %1\nنام: %2\nنام خانوادگی: %3\nژانرهای مورد علاقه: %4")
+                      .arg(username)
+                      .arg(displayValue(selectedUser.value("firstName").toString()))
+                      .arg(displayValue(selectedUser.value("lastName").toString()))
+                      .arg(genreTitles.isEmpty() ? QString("انتخاب نشده") : genreTitles.join("، "));
+    } else if (role == "Publisher") {
+        details = QString("نوع حساب: ناشر\nنام کاربری: %1\nنام: %2\nنام خانوادگی: %3\nنام انتشارات: %4\nشماره پروانه نشر: %5\nایمیل: %6")
+                      .arg(username)
+                      .arg(displayValue(selectedUser.value("firstName").toString()))
+                      .arg(displayValue(selectedUser.value("lastName").toString()))
+                      .arg(displayValue(selectedUser.value("publicationName").toString()))
+                      .arg(displayValue(selectedUser.value("publisherLicenseNumber").toString()))
+                      .arg(displayValue(selectedUser.value("email").toString()));
+    } else if (role == "Admin") {
+        details = QString("نوع حساب: ادمین\nنام کاربری: %1\nنام: %2\nنام خانوادگی: %3")
+                      .arg(username)
+                      .arg(displayValue(selectedUser.value("firstName").toString()))
+                      .arg(displayValue(selectedUser.value("lastName").toString()));
+    } else {
+        ui->statusLabel->setText("نقش کاربر انتخاب شده نامعتبر است");
+        return;
+    }
+
+    QMessageBox::information(this, "اطلاعات کامل کاربر", details);
 }
 void AdminMainWindow::onUsersLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onBlockUserButtonClicked() {
