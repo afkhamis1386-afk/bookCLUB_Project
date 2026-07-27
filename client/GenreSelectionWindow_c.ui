@@ -78,6 +78,38 @@ QLabel#instructionLabel {
     font-size: 14px;
     font-weight: normal;
     background: transparent;
+}
+QMessageBox {
+    background-color: #ffffff;
+    border: 1px solid #2c3e50; 
+    border-radius: 10px;
+}
+
+QMessageBox QLabel {
+    color: #000000; 
+    font-family: &quot;Vazirmatn&quot;, &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 11px; 
+    font-weight: normal;
+    background: transparent;
+}
+QMessageBox QPushButton {
+    background-color: #2c3e50;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-family: &quot;Vazirmatn&quot;, &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 13px;
+    padding: 6px 16px;
+    min-width: 60px;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #34495e;
+    color: #d4af37;
+}
+
+QMessageBox QPushButton:pressed {
+    background-color: #1a252f;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -87,27 +119,14 @@ QLabel#instructionLabel {
 }</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1">
-     <spacer name="verticalSpacer">
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_2">
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Horizontal</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>20</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="3" column="1">
-     <spacer name="verticalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
+        <width>166</width>
         <height>20</height>
        </size>
       </property>
@@ -126,21 +145,54 @@ QLabel#instructionLabel {
       </property>
      </spacer>
     </item>
-    <item row="2" column="3" colspan="2">
-     <widget class="QLabel" name="statusLabel">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <spacer name="horizontalSpacer_2">
+    <item row="0" column="1">
+     <spacer name="verticalSpacer">
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Vertical</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>166</width>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="2">
+     <widget class="QPushButton" name="confirmButton">
+      <property name="styleSheet">
+       <string notr="true">QPushButton#confirmButton {
+    background-color: #2c3e50; 
+    color: #ffffff;
+    border: none;
+    border-radius: 10px; 
+    padding: 10px;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 10pt;
+    font-weight: bold;
+}
+QPushButton#confirmButton:hover {
+    background-color: #34495e;  
+    color: #d4af37; 
+    font-weight: bold;      
+}
+QPushButton#confirmButton:pressed {
+    background-color: #1a252f; 
+}</string>
+      </property>
+      <property name="text">
+       <string>تایید و ادامه </string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -177,36 +229,23 @@ QLabel#instructionLabel {
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="statusLabel">
+         <property name="font">
+          <font>
+           <family>Vazirmatn</family>
+           <pointsize>-1</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QListWidget" name="genresListWidget"/>
        </item>
       </layout>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QPushButton" name="confirmButton">
-      <property name="styleSheet">
-       <string notr="true">QPushButton#confirmButton {
-    background-color: #2c3e50; 
-    color: #ffffff;
-    border: none;
-    border-radius: 10px; 
-    padding: 10px;
-    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
-    font-size: 10pt;
-    font-weight: bold;
-}
-QPushButton#confirmButton:hover {
-    background-color: #34495e;  
-    color: #d4af37; 
-    font-weight: bold;      
-}
-QPushButton#confirmButton:pressed {
-    background-color: #1a252f; 
-}</string>
-      </property>
-      <property name="text">
-       <string>تایید و ادامه </string>
-      </property>
      </widget>
     </item>
    </layout>

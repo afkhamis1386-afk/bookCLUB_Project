@@ -45,11 +45,14 @@ public:
                  const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
                  const QByteArray &coverImageData, const QString &coverImageExtension,
                  const QByteArray &pdfData, double discountPercent = 0.0);
-    void updateBook(int bookId, const QString &bookName, const QString &description, double price);
+    void updateBook(int bookId, const QString &bookName, const QString &description, double price,
+                    const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+                    const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData);
     void deactivateBook(int bookId);
     void reactivateBook(int bookId);
     void applyDiscount(int bookId, double discountPercent, double discountAmount);
     void applyTimedDiscount(int bookId, double discountPercent, const QDateTime &startDate, const QDateTime &endDate);
+    void cancelTimedDiscount(int bookId);
     void getPublisherStats();
     void addToCart(int bookId);
     void claimFreeBook(int bookId);

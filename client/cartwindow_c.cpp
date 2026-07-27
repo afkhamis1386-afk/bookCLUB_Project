@@ -11,7 +11,7 @@ CartWindow_c::CartWindow_c(NetworkManager *networkManager, QWidget *parent)
     , networkManager(networkManager)
     , cartController(new CartController(networkManager, this)) {
     ui->setupUi(this);
-    QStringList headers = {"عنوان (شناسه کتاب)", "قیمت", "تخفیف", "قیمت نهایی"};
+    QStringList headers = {"نام کتاب", "قیمت", "تخفیف", "قیمت نهایی"};
     ui->cartTableWidget->setColumnCount(4);
     ui->cartTableWidget->setHorizontalHeaderLabels(headers);
     ui->cartTableWidget->horizontalHeader()->setStretchLastSection(true);
@@ -36,10 +36,11 @@ void CartWindow_c::populateTable(const QVariantList &items) {
     for (int i = 0; i < items.size(); ++i) {
         QVariantMap item = items[i].toMap();
         int bookId = item.value("bookId").toInt();
+        QString bookName = item.value("bookName").toString();
         double price = item.value("price").toDouble();
         double discountPercent = item.value("discountPercent").toDouble();
         double finalPrice = item.value("finalPrice").toDouble();
-        QTableWidgetItem *bookItem = new QTableWidgetItem(QString("کتاب #%1").arg(bookId));
+        QTableWidgetItem *bookItem = new QTableWidgetItem(bookName.isEmpty() ? QString("کتاب نامشخص (شناسه %1)").arg(bookId) : bookName);
         bookItem->setData(Qt::UserRole, bookId);
         ui->cartTableWidget->setItem(i, 0, bookItem);
         ui->cartTableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(price, 'f', 0)));

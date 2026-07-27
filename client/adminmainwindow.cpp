@@ -109,7 +109,7 @@ void AdminMainWindow::applyUserSearchAndFilter() {
     const QString searchText = ui->userSearchLineEdit->text().trimmed();
     const int roleFilterIndex = ui->userRoleFilterComboBox->currentIndex();
     QVariantList filtered;
-    for (const QVariant &v : allUsersCache) {
+    for (const QVariant &v : qAsConst(allUsersCache)) {
         QVariantMap u = v.toMap();
         const QString role = u.value("role").toString();
         if (roleFilterIndex == 1 && role != "NormalUser") continue;
@@ -244,13 +244,14 @@ void AdminMainWindow::onReviewDeleteFailed(const QString &message) { ui->statusL
 void AdminMainWindow::onValidationError(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onLogoutButtonClicked() {
     if (QMessageBox::question(this, "خروج از حساب کاربری",
-                              "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
+                              "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
         networkManager->logout();
         emit logoutRequested();
     }
 }
 void AdminMainWindow::onCreateAdminButtonClicked() {
     CreateAdminDialog dialog(networkManager, this);
-    dialog.exec();
+    if (dialog.exec() == QDialog::Accepted) {
+        adminController->loadAllUsers();
+    }
 }

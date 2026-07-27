@@ -12,11 +12,15 @@ public:
                  const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
                  const QString &coverImageFilePath, const QString &pdfFilePath,
                  double discountPercent = 0.0);
-    void updateBook(int bookId, const QString &bookName, const QString &description, double price);
+    void updateBook(int bookId, const QString &bookName, const QString &description, double price,
+                    const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+                    const QString &coverImageFilePath, const QString &pdfFilePath);
     void deactivateBook(int bookId);
     void reactivateBook(int bookId);
     void applyDiscount(int bookId, double discountPercent, double discountAmount);
     void applyTimedDiscount(int bookId, double discountPercent, const QDateTime &startDate, const QDateTime &endDate);
+    void cancelTimedDiscount(int bookId);
+    void loadBookForEdit(int bookId);
 signals:
     void bookAdded(int bookId, const QString &message);
     void bookAddFailed(const QString &message);
@@ -32,6 +36,10 @@ signals:
     void discountApplyFailed(const QString &message);
     void timedDiscountApplied(const QString &message);
     void timedDiscountApplyFailed(const QString &message);
+    void timedDiscountCancelled(const QString &message);
+    void timedDiscountCancelFailed(const QString &message);
+    void bookDetailsForEditLoaded(const QVariantMap &bookData);
+    void bookDetailsForEditLoadFailed(const QString &message);
 private slots:
     void onResponseReceived(RequestType type, const Response &response);
 private:

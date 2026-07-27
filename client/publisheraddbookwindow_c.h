@@ -18,6 +18,7 @@ class PublisherAddBookWindow_c : public QMainWindow
 
 public:
     explicit PublisherAddBookWindow_c(NetworkManager *networkManager, QWidget *parent = nullptr);
+    explicit PublisherAddBookWindow_c(NetworkManager *networkManager, int editBookId, QWidget *parent = nullptr);
     ~PublisherAddBookWindow_c() override;
 
 signals:
@@ -33,14 +34,28 @@ private slots:
     void onBackButtonClicked();
     void onGenresLoaded(const QVariantList &genres);
     void onGenresLoadFailed(const QString &message);
+    void onDiscountTypeToggled();
+    void onBookUpdated(const QString &message);
+    void onBookUpdateFailed(const QString &message);
+    void onBookDetailsForEditLoaded(const QVariantMap &bookData);
+    void onBookDetailsForEditLoadFailed(const QString &message);
 
 private:
+    void setupCommon();
+    void applySelectedDiscount(int bookId);
+
     Ui::PublisherAddBookWindow_c *ui;
     NetworkManager *networkManager;
     PublisherBookController *publisherBookController;
     ProfileController *profileController;
     QString selectedCoverPath;
     QString selectedPdfPath;
+
+    bool isEditMode = false;
+    int editingBookId = -1;
+    bool pendingGenreSelection = false;
+    QString pendingGenreTitle;
+    bool hadTimedDiscount = false;
 };
 
 #endif // PUBLISHERADDBOOKWINDOW_C_H
