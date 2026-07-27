@@ -2,8 +2,10 @@
 #include "PublisherRepository.h"
 #include "BookRepository.h"
 #include "RatingRepository.h"
+#include "TimedDiscountRepository.h"
 #include "../common/publisher.h"
 #include "../common/Book.h"
+#include "../common/TimedDiscount.h"
 #include <memory>
 
 PublisherManager::PublisherManager() {}
@@ -79,6 +81,7 @@ Response PublisherManager::getFullDashboard(int publisherUserId) {
     BookRepository bookRepo;
     RatingRepository ratingRepo;
     PublisherRepository publisherRepo;
+    TimedDiscountRepository timedDiscountRepo;
     int totalBooksCount = bookRepo.getTotalBooksCountByPublisher(publisherUserId);
     QVector<int> bookIds = bookRepo.getBooksByPublisher(publisherUserId);
     double totalRevenue = publisherRepo.getTotalRevenue(publisherUserId);
@@ -96,11 +99,19 @@ Response PublisherManager::getFullDashboard(int publisherUserId) {
         bookStat["ratingCount"] = ratingCount;
         bookStat["soldCount"] = soldCount;
         bookStat["isActive"] = book->getIsActive();
+        bookStat["discountPercent"] = book->getDiscountPercent();
+        bookStat["discountAmount"] = book->getDiscountAmount();
+        std::unique_ptr<TimedDiscount> timedDiscount(timedDiscountRepo.getCurrentOrUpcomingDiscountForBook(bookId));
+        if (timedDiscount) {
+            bookStat["timedDiscountPercent"] = timedDiscount->getDiscountPercent();
+            bookStat["timedDiscountStart"] = timedDiscount->getStartDate();
+            bookStat["timedDiscountEnd"] = timedDiscount->getEndDate();
+        }
         bookStats.append(bookStat);
     }
     QVector<int> topSellingIds = bookRepo.getTopSellingBooksByPublisher(publisherUserId, 5);
     QVariantList topSellingList;
-    for (int bookId : topSellingIds) {
+    for (int bookId : qAsConst(topSellingIds)) {
         std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
         if (!book) continue;
         QVariantMap item;
@@ -111,7 +122,7 @@ Response PublisherManager::getFullDashboard(int publisherUserId) {
     }
     QVector<int> leastSellingIds = bookRepo.getLeastSellingBooksByPublisher(publisherUserId, 5);
     QVariantList leastSellingList;
-    for (int bookId : leastSellingIds) {
+    for (int bookId : qAsConst(leastSellingIds)) {
         std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
         if (!book) continue;
         QVariantMap item;
