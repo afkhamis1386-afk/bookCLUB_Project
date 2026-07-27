@@ -29,8 +29,13 @@ int UserRepository::insertNormalUser(const NormalUser &user) {
     }
     int newUserId = insertUser.value(0).toInt();
     QSqlQuery insertNormal(db);
-    insertNormal.prepare( "INSERT INTO NormalUsers (UserID, SecurityAnswerHash) VALUES (:userId, :answerHash)" );
+    insertNormal.prepare(
+        "INSERT INTO NormalUsers (UserID, FirstName, LastName, SecurityAnswerHash) "
+        "VALUES (:userId, :firstName, :lastName, :answerHash)"
+        );
     insertNormal.bindValue(":userId", newUserId);
+    insertNormal.bindValue(":firstName", user.getFirstName());
+    insertNormal.bindValue(":lastName", user.getLastName());
     insertNormal.bindValue(":answerHash", user.getHashedSecurityAnswer());
     if (!insertNormal.exec()) {
         qWarning() << "خطا در ثبت NormalUser:" << insertNormal.lastError().text();
@@ -49,7 +54,8 @@ NormalUser* UserRepository::loadNormalUserById(int userId) {
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID, u.Username, u.PasswordHash, nu.SecurityAnswerHash, "
-        "u.IsBlocked, u.IsDeleted, u.IsActive, u.RegisterDate "
+        "u.IsBlocked, u.IsDeleted, u.IsActive, u.RegisterDate, "
+        "nu.FirstName, nu.LastName "
         "FROM Users u JOIN NormalUsers nu ON u.UserID = nu.UserID "
         "WHERE u.UserID = :userId"
         );
@@ -66,7 +72,9 @@ NormalUser* UserRepository::loadNormalUserById(int userId) {
         query.value(4).toBool(),
         query.value(5).toBool(),
         query.value(6).toBool(),
-        query.value(7).toDateTime()
+        query.value(7).toDateTime(),
+        query.value(8).toString(),
+        query.value(9).toString()
         );
     user->setFavoriteGenres(getFavoriteGenreIds(userId));
     user->setPurchasedBooks(getPurchasedBookIds(userId));
@@ -139,7 +147,8 @@ bool UserRepository::isUsernameTakenByOther(const QString &encryptedUsername, in
 }
 
 bool UserRepository::updateNormalUserAccount(int userId, const QString &encryptedUsername,
-                                             const QString &newPasswordHash, const QString &newSecurityAnswerHash) {
+                                             const QString &newPasswordHash, const QString &newSecurityAnswerHash,
+                                             const QString &firstName, const QString &lastName) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction()) {
         qWarning() << "خطا در شروع تراکنش ویرایش حساب کاربر عادی:" << db.lastError().text();
@@ -164,20 +173,24 @@ bool UserRepository::updateNormalUserAccount(int userId, const QString &encrypte
         return false;
     }
 
-    if (!newSecurityAnswerHash.isEmpty()) {
-        QSqlQuery updateNormalUser(db);
-        updateNormalUser.prepare(
-            "UPDATE NormalUsers SET SecurityAnswerHash = :answerHash WHERE UserID = :userId"
-            );
-        updateNormalUser.bindValue(":answerHash", newSecurityAnswerHash);
-        updateNormalUser.bindValue(":userId", userId);
-        if (!updateNormalUser.exec()) {
-            qWarning() << "خطا در ویرایش جدول NormalUsers:" << updateNormalUser.lastError().text();
-            db.rollback();
-            return false;
-        }
-    }
+    QString updateNormalSql =
+        "UPDATE NormalUsers SET FirstName = :firstName, LastName = :lastName";
+    if (!newSecurityAnswerHash.isEmpty())
+        updateNormalSql += ", SecurityAnswerHash = :answerHash";
+    updateNormalSql += " WHERE UserID = :userId";
 
+    QSqlQuery updateNormalUser(db);
+    updateNormalUser.prepare(updateNormalSql);
+    updateNormalUser.bindValue(":firstName", firstName);
+    updateNormalUser.bindValue(":lastName", lastName);
+    if (!newSecurityAnswerHash.isEmpty())
+        updateNormalUser.bindValue(":answerHash", newSecurityAnswerHash);
+    updateNormalUser.bindValue(":userId", userId);
+    if (!updateNormalUser.exec()) {
+        qWarning() << "خطا در ویرایش جدول NormalUsers:" << updateNormalUser.lastError().text();
+        db.rollback();
+        return false;
+    }
     if (!db.commit()) {
         qWarning() << "خطا در نهایی سازی ویرایش حساب کاربر عادی:" << db.lastError().text();
         db.rollback();
@@ -289,4 +302,3 @@ bool UserRepository::findRoleById(int userId, UserRole &outRole) {
     outRole = static_cast<UserRole>(roleId - 1);
     return true;
 }
-
