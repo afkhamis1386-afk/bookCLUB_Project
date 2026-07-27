@@ -129,6 +129,62 @@ bool UserRepository::updatePasswordHash(int userId, const QString &newPasswordHa
     }
     return true;
 }
+bool UserRepository::isUsernameTakenByOther(const QString &encryptedUsername, int excludedUserId) {
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare("SELECT COUNT(*) FROM Users WHERE Username = :username AND UserID <> :userId");
+    query.bindValue(":username", encryptedUsername);
+    query.bindValue(":userId", excludedUserId);
+    return query.exec() && query.next() && query.value(0).toInt() > 0;
+}
+
+bool UserRepository::updateNormalUserAccount(int userId, const QString &encryptedUsername,
+                                             const QString &newPasswordHash, const QString &newSecurityAnswerHash) {
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    if (!db.transaction()) {
+        qWarning() << "خطا در شروع تراکنش ویرایش حساب کاربر عادی:" << db.lastError().text();
+        return false;
+    }
+
+    QString updateUserSql = "UPDATE Users SET Username = :username";
+    if (!newPasswordHash.isEmpty())
+        updateUserSql += ", PasswordHash = :passwordHash";
+    updateUserSql += " WHERE UserID = :userId AND RoleID = :roleId";
+
+    QSqlQuery updateUser(db);
+    updateUser.prepare(updateUserSql);
+    updateUser.bindValue(":username", encryptedUsername);
+    if (!newPasswordHash.isEmpty())
+        updateUser.bindValue(":passwordHash", newPasswordHash);
+    updateUser.bindValue(":userId", userId);
+    updateUser.bindValue(":roleId", static_cast<int>(UserRole::NormalUser) + 1);
+    if (!updateUser.exec()) {
+        qWarning() << "خطا در ویرایش جدول Users برای کاربر عادی:" << updateUser.lastError().text();
+        db.rollback();
+        return false;
+    }
+
+    if (!newSecurityAnswerHash.isEmpty()) {
+        QSqlQuery updateNormalUser(db);
+        updateNormalUser.prepare(
+            "UPDATE NormalUsers SET SecurityAnswerHash = :answerHash WHERE UserID = :userId"
+            );
+        updateNormalUser.bindValue(":answerHash", newSecurityAnswerHash);
+        updateNormalUser.bindValue(":userId", userId);
+        if (!updateNormalUser.exec()) {
+            qWarning() << "خطا در ویرایش جدول NormalUsers:" << updateNormalUser.lastError().text();
+            db.rollback();
+            return false;
+        }
+    }
+
+    if (!db.commit()) {
+        qWarning() << "خطا در نهایی سازی ویرایش حساب کاربر عادی:" << db.lastError().text();
+        db.rollback();
+        return false;
+    }
+    return true;
+}
 QVector<int> UserRepository::getAllUserIds() {
     QVector<int> ids;
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
