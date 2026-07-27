@@ -35,6 +35,17 @@ void ProfileController::loadAccountInfo() {
     }
     networkManager->getAccountInfo();
 }
+void ProfileController::updateAccount(const QVariantMap &accountData) {
+    if (accountData.value("username").toString().trimmed().isEmpty()) {
+        emit validationError("نام کاربری را وارد کنید");
+        return;
+    }
+    if (!networkManager->isConnected()) {
+        emit accountUpdateFailed("اتصال به سرور برقرار نیست");
+        return;
+    }
+    networkManager->updateAccount(accountData);
+}
 void ProfileController::loadOrderHistory() {
     if (!networkManager->isConnected()) {
         emit orderHistoryLoadFailed("اتصال به سرور برقرار نیست");
@@ -63,6 +74,10 @@ void ProfileController::onResponseReceived(RequestType type, const Response &res
     case RequestType::GetAccountInfo:
         if (response.isSuccess()) emit accountInfoLoaded(response.getData());
         else emit accountInfoLoadFailed(response.getMessage());
+        break;
+    case RequestType::UpdateAccount:
+        if (response.isSuccess()) emit accountUpdated(response.getMessage());
+        else emit accountUpdateFailed(response.getMessage());
         break;
     case RequestType::GetOrderHistory:
         if (response.isSuccess()) emit orderHistoryLoaded(response.getData().value("orders").toList());

@@ -401,7 +401,7 @@ QComboBox#userRoleFilterComboBox QAbstractItemView {
        </size>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -652,7 +652,8 @@ QComboBox#userRoleFilterComboBox QAbstractItemView {
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="refreshReviewsButton"><property name="text">
+          <widget class="QPushButton" name="refreshReviewsButton">
+           <property name="text">
             <string>به روزرسانی</string>
            </property>
           </widget>
