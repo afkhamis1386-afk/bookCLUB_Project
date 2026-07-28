@@ -8,13 +8,10 @@
 #include <QTextEdit>
 #include <QPushButton>
 
-BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int bookId, QWidget *parent):QMainWindow(parent)
-    , ui(new Ui::BookDetailsWindow_c)
-    , networkManager(networkManager)
-    , bookId(bookId)
-    , bookStoreController(new BookStoreController(networkManager, this))
-    , cartController(new CartController(networkManager, this))
-    , reviewController(new ReviewController(networkManager, this))
+BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int bookId, QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::BookDetailsWindow_c) , networkManager(networkManager)
+    , bookId(bookId) , bookStoreController(new BookStoreController(networkManager, this))
+    , cartController(new CartController(networkManager, this)) , reviewController(new ReviewController(networkManager, this))
     , ratingController(new RatingController(networkManager, this))
     , savedBookController(new SavedBookController(networkManager, this)) {
     ui->setupUi(this);
@@ -50,7 +47,8 @@ BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int boo
     connect(networkManager, &NetworkManager::bookLiveUpdateReceived, this, &BookDetailsWindow_c::onBookLiveUpdateReceived);
     bookStoreController->loadBookDetails(bookId);
     bookStoreController->loadCoverImage(bookId);
-    reviewController->loadReviewsForBook(bookId); }
+    reviewController->loadReviewsForBook(bookId);
+}
 BookDetailsWindow_c::~BookDetailsWindow_c() {
     delete ui;
 }
@@ -72,6 +70,8 @@ void BookDetailsWindow_c::onBookDetailsReceived(const QVariantMap &bookData) {
     double avgRating = bookData.value("averageRating").toDouble();
     int ratingCount = bookData.value("ratingCount").toInt();
     ui->ratingLabel->setText(QString("امتیاز: %1 از ۵ (%2 رأی)").arg(avgRating, 0, 'f', 1).arg(ratingCount));
+    ui->authorNameLabel->setText(bookData.value("authorName").toString());
+    ui->publisherNameLabel->setText(bookData.value("publisherName").toString());
 }
 void BookDetailsWindow_c::onBookDetailsFailed(const QString &message) {
     ui->statusLabel->setText(message);
@@ -203,7 +203,9 @@ void BookDetailsWindow_c::onDeleteReviewClicked() {
         ui->statusLabel->setText("شما فقط می توانید نظرات خود را حذف کنید");
         return;
     }
-    QMessageBox::StandardButton reply = QMessageBox::question( this, "حذف نظر", "آیا از حذف نظر خود مطمئن هستید؟", QMessageBox::Yes | QMessageBox::No);
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this, "حذف نظر", "آیا از حذف نظر خود مطمئن هستید؟",
+        QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         reviewController->deleteReview(reviewId);
     }
@@ -230,7 +232,8 @@ void BookDetailsWindow_c::showEditReviewDialog(int reviewId, const QString &curr
         if (!newText.isEmpty() && newText.length() <= 1000) {
             reviewController->editReview(reviewId, newText);
             dialog.accept();
-        } else {
+        }
+        else {
             QMessageBox::warning(&dialog, "خطا", "متن نظر نمی تواند خالی باشد و باید حداکثر ۱۰۰۰ کاراکتر باشد");
         }
     });
