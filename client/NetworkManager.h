@@ -2,6 +2,7 @@
 #define NETWORKMANAGER_H
 #include <QObject>
 #include <QDateTime>
+#include <QVariantList>
 #include "ClientSocket.h"
 #include "../common/Response.h"
 #include "../common/Enums.h"
@@ -78,6 +79,12 @@ public:
     void getSavedBooks();
     void moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId);
     void removeBookFromShelf(int shelfId, int bookId);
+    void reorderShelves(const QVariantList &shelfIds);
+    void reorderShelfBooks(int shelfId, const QVariantList &bookIds);
+    void addFavoriteBook(int bookId);
+    void removeFavoriteBook(int bookId);
+    void getFavoriteBooks();
+    void reorderFavoriteBooks(const QVariantList &bookIds);
     void getNotifications();
     void markNotificationRead(int notificationId);
     void getUnreadNotificationCount();
