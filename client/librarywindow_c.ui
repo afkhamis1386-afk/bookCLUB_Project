@@ -203,7 +203,7 @@ QLineEdit:focus {
     <item row="0" column="1">
      <spacer name="verticalSpacer">
       <property name="orientation">
-       <enum>Qt::Orientation::Vertical</enum>
+       <enum>Qt::Vertical</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
@@ -216,7 +216,7 @@ QLineEdit:focus {
     <item row="1" column="0" rowspan="3">
      <spacer name="horizontalSpacer">
       <property name="orientation">
-       <enum>Qt::Orientation::Horizontal</enum>
+       <enum>Qt::Horizontal</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
@@ -260,10 +260,10 @@ QLineEdit:focus {
            </sizepolicy>
           </property>
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Shadow::Raised</enum>
+           <enum>QFrame::Raised</enum>
           </property>
           <widget class="QLabel" name="shelfBooksLabel">
            <property name="geometry">
@@ -447,7 +447,7 @@ QLineEdit:focus {
          <string>کتاب های ذخیره شده</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
        <widget class="QLabel" name="favoriteBooksLabel">
@@ -474,7 +474,7 @@ QLineEdit:focus {
          <string>لیست علاقه مندی ها</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
        <widget class="QListWidget" name="saveBooksListWidget">
@@ -584,7 +584,7 @@ QComboBox QAbstractItemView {
          <string>برای تغییر ترتیب، کتاب ها را با ماوس جابه جا کنید.</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </widget>
@@ -634,7 +634,7 @@ QComboBox QAbstractItemView {
     <item row="1" column="2" rowspan="3">
      <spacer name="horizontalSpacer_2">
       <property name="orientation">
-       <enum>Qt::Orientation::Horizontal</enum>
+       <enum>Qt::Horizontal</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
@@ -656,7 +656,7 @@ QComboBox QAbstractItemView {
       <item>
        <spacer name="bottomCenterSpacer">
         <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
+         <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -700,7 +700,7 @@ QComboBox QAbstractItemView {
     <item row="3" column="1">
      <spacer name="verticalSpacer_2">
       <property name="orientation">
-       <enum>Qt::Orientation::Vertical</enum>
+       <enum>Qt::Vertical</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>

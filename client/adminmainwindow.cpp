@@ -140,7 +140,6 @@ void AdminMainWindow::onViewUserDetailsButtonClicked() {
         ui->statusLabel->setText("ابتدا یک کاربر را انتخاب کنید");
         return;
     }
-
     QVariantMap selectedUser;
     for (const QVariant &value : qAsConst(allUsersCache)) {
         const QVariantMap userData = value.toMap();
@@ -170,11 +169,16 @@ void AdminMainWindow::onViewUserDetailsButtonClicked() {
             if (!title.isEmpty())
                 genreTitles.append(title);
         }
-        details = QString("نوع حساب: کاربر عادی\nنام کاربری: %1\nنام: %2\nنام خانوادگی: %3\nژانرهای مورد علاقه: %4")
+        const QString registerDate = selectedUser.value("registerDate").toDateTime().toString("yyyy/MM/dd");
+        const QString activeStatus = selectedUser.value("isActive").toBool() ? "فعال" : "غیرفعال";
+        const QString blockedStatus = selectedUser.value("isBlocked").toBool() ? "مسدود" : "مسدود نیست";
+        details = QString("نوع حساب: کاربر عادی\nنام کاربری: %1\nژانرهای مورد علاقه: %2\nتعداد کتاب‌های خریداری‌شده: %3\nتاریخ ثبت‌نام: %4\nوضعیت حساب: %5\nوضعیت دسترسی: %6")
                       .arg(username)
-                      .arg(displayValue(selectedUser.value("firstName").toString()))
-                      .arg(displayValue(selectedUser.value("lastName").toString()))
-                      .arg(genreTitles.isEmpty() ? QString("انتخاب نشده") : genreTitles.join("، "));
+                      .arg(genreTitles.isEmpty() ? QString("انتخاب نشده") : genreTitles.join("، "))
+                      .arg(selectedUser.value("purchasedCount").toInt())
+                      .arg(registerDate.isEmpty() ? QString("ثبت نشده") : registerDate)
+                      .arg(activeStatus)
+                      .arg(blockedStatus);
     } else if (role == "Publisher") {
         details = QString("نوع حساب: ناشر\nنام کاربری: %1\nنام: %2\nنام خانوادگی: %3\nنام انتشارات: %4\nشماره پروانه نشر: %5\nایمیل: %6")
                       .arg(username)
