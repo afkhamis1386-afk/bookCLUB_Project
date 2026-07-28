@@ -15,6 +15,7 @@ class LibraryWindow_c;
 QT_END_NAMESPACE
 
 class QListWidget;
+class QShowEvent;
 
 class LibraryWindow_c : public QMainWindow
 {
@@ -23,10 +24,10 @@ class LibraryWindow_c : public QMainWindow
 public:
     explicit LibraryWindow_c(NetworkManager *networkManager, QWidget *parent = nullptr);
     ~LibraryWindow_c() override;
-
 signals:
     void backRequested();
-
+protected:
+    void showEvent(QShowEvent *event) override;
 private slots:
     void onShelvesLoaded(const QVariantList &shelves);
     void onShelvesLoadFailed(const QString &message);
@@ -54,7 +55,6 @@ private slots:
     void onShelvesReorderFailed(const QString &message);
     void onShelfBooksReordered(const QString &message);
     void onShelfBooksReorderFailed(const QString &message);
-
     void onSavedBooksLoaded(const QVariantList &books);
     void onSavedBooksLoadFailed(const QString &message);
     void onRemoveSavedBookButtonClicked();
@@ -79,7 +79,6 @@ private slots:
     void onPurchasedBooksLoadFailed(const QString &message);
     void onOpenBookButtonClicked();
     void onViewBookDetailButtonClicked();
-
 private:
     Ui::LibraryWindow_c *ui;
     NetworkManager *networkManager;
@@ -89,6 +88,8 @@ private:
     QVariantList currentSavedBooks;
     QVariantList currentFavoriteBooks;
     bool applyingServerData;
+    void refreshAllData();
+    void updateControlStates();
     void configureReorderableList(QListWidget *listWidget);
     void populateShelvesList(const QVariantList &shelves);
     void populateAddBookCombo();
