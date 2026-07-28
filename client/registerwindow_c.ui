@@ -16,7 +16,7 @@
   <property name="styleSheet">
    <string notr="true">
 #RegisterWindow_c, #centralwidget {
-    border-image: url(:/wallhaven-49kq3d.jpg) 0 0 0 0 stretch stretch;
+    border-image: url(":/wallhaven-49kq3d.jpg") 0 0 0 0 stretch stretch;
 }
 
 QFrame#mainFrame {
@@ -25,17 +25,23 @@ QFrame#mainFrame {
     border-radius: 20px;
 }
 
-QStackedWidget#publisherFieldsStack,
-#publisherFieldsStack QWidget,
-#publisherFieldsStack #page,
-#publisherFieldsStack #page_2,
-#publisherFieldsStack #page_3 {
-    background: transparent;
-    border: none;
+QGroupBox#publisherFieldsGroupBox {
+    background-color: rgba(255, 255, 255, 80);
+    border: 1px solid rgba(44, 62, 80, 40);
+    border-radius: 10px;
+    margin-top: 10px;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-weight: bold;
+    color: #2c3e50;
+}
+QGroupBox#publisherFieldsGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top right;
+    padding: 0 10px;
 }
 
 QLineEdit,
-#publisherFieldsStack QLineEdit {
+#publisherFieldsGroupBox QLineEdit {
     background-color: rgba(255, 255, 255, 200);
     border: 1px solid rgba(44, 62, 80, 60);
     border-radius: 8px;
@@ -46,7 +52,7 @@ QLineEdit,
 }
 
 QLineEdit:focus,
-#publisherFieldsStack QLineEdit:focus {
+#publisherFieldsGroupBox QLineEdit:focus {
     border: 2px solid #2c3e50;
     background-color: #ffffff;
 }
@@ -123,7 +129,7 @@ QPushButton#backToLoginButton:hover {
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <item row="0" column="0" alignment="Qt::AlignCenter">
+    <item row="0" column="0">
      <widget class="QFrame" name="mainFrame">
       <property name="minimumSize">
        <size>
@@ -156,7 +162,7 @@ QPushButton#backToLoginButton:hover {
        <item>
         <widget class="QGroupBox" name="roleGroupBox">
          <property name="title">
-          <string>                     نوع حساب  </string>
+          <string>                    نوع حساب  </string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <property name="spacing">
@@ -197,7 +203,7 @@ QPushButton#backToLoginButton:hover {
        <item>
         <widget class="QLineEdit" name="usernameLineEdit">
          <property name="echoMode">
-          <enum>QLineEdit::Normal</enum>
+          <enum>QLineEdit::EchoMode::Normal</enum>
          </property>
          <property name="placeholderText">
           <string>نام کاربری</string>
@@ -207,7 +213,7 @@ QPushButton#backToLoginButton:hover {
        <item>
         <widget class="QLineEdit" name="passwordLineEdit">
          <property name="echoMode">
-          <enum>QLineEdit::Password</enum>
+          <enum>QLineEdit::EchoMode::Password</enum>
          </property>
          <property name="placeholderText">
           <string>رمز عبور</string>
@@ -217,7 +223,7 @@ QPushButton#backToLoginButton:hover {
        <item>
         <widget class="QLineEdit" name="confirmPasswordLineEdit">
          <property name="echoMode">
-          <enum>QLineEdit::Password</enum>
+          <enum>QLineEdit::EchoMode::Password</enum>
          </property>
          <property name="placeholderText">
           <string>تکرار رمز عبور</string>
@@ -232,68 +238,72 @@ QPushButton#backToLoginButton:hover {
         </widget>
        </item>
        <item>
-        <widget class="QStackedWidget" name="publisherFieldsStack">
-         <property name="currentIndex">
-          <number>0</number>
+        <widget class="QGroupBox" name="publisherFieldsGroupBox">
+         <property name="visible">
+          <bool>false</bool>
          </property>
-         <widget class="QWidget" name="page"/>
-         <widget class="QWidget" name="page_2">
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <property name="spacing">
-            <number>8</number>
-           </property>
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLineEdit" name="firstNameLineEdit">
-             <property name="placeholderText">
-              <string>نام</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lastNameLineEdit">
-             <property name="placeholderText">
-              <string>نام خانوادگی</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="emailLineEdit">
-             <property name="placeholderText">
-              <string>ایمیل</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="publicationNameLineEdit">
-             <property name="placeholderText">
-              <string>نام انتشارات</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="licenseNumberLineEdit">
-             <property name="placeholderText">
-              <string>شماره پروانه نشر</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QTextEdit" name="shortDescriptionTextEdit"/>
-           </item>
-          </layout>
-         </widget>
+         <property name="title">
+          <string>اطلاعات اختصاصی ناشر</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="spacing">
+           <number>8</number>
+          </property>
+          <property name="leftMargin">
+           <number>12</number>
+          </property>
+          <property name="topMargin">
+           <number>16</number>
+          </property>
+          <property name="rightMargin">
+           <number>12</number>
+          </property>
+          <property name="bottomMargin">
+           <number>12</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="firstNameLineEdit">
+            <property name="placeholderText">
+             <string>نام ناشر</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lastNameLineEdit">
+            <property name="placeholderText">
+             <string>نام خانوادگی ناشر</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="emailLineEdit">
+            <property name="placeholderText">
+             <string>ایمیل ناشر</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="publicationNameLineEdit">
+            <property name="placeholderText">
+             <string>نام انتشارات</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="licenseNumberLineEdit">
+            <property name="placeholderText">
+             <string>شماره پروانه نشر</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="shortDescriptionTextEdit">
+            <property name="placeholderText">
+             <string>توضیح کوتاه درباره ناشر</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -331,29 +341,12 @@ QPushButton#backToLoginButton:hover {
      <x>0</x>
      <y>0</y>
      <width>1182</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>publisherRadio</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>publisherFieldsStack</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>0</x>
-     <y>0</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>0</x>
-     <y>0</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

@@ -7,7 +7,7 @@ class LoginController : public QObject {
 public:
     explicit LoginController(NetworkManager *networkManager, QObject *parent = nullptr);
     void attemptLogin(const QString &username, const QString &password);
-    void attemptRegisterNormalUser(const QString &username, const QString &password, const QString &confirmPassword, const QString &securityAnswer, const QString &firstName, const QString &lastName);
+    void attemptRegisterNormalUser(const QString &username, const QString &password, const QString &confirmPassword, const QString &securityAnswer);
     void attemptRegisterPublisher(const QString &username, const QString &password, const QString &confirmPassword, const QString &securityAnswer, const QString &firstName, const QString &lastName,
     const QString &email, const QString &publicationName, const QString &licenseNumber, const QString &shortDescription);
     void attemptRecoverPassword(const QString &username, const QString &securityAnswer, const QString &newPassword, const QString &confirmNewPassword);
