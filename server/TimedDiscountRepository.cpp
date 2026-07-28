@@ -34,12 +34,9 @@ TimedDiscount* TimedDiscountRepository::loadDiscountById(int discountId){
         return nullptr;
     }
     return new TimedDiscount(
-        query.value(0).toInt(),
-        query.value(1).toInt(),
-        query.value(2).toDouble(),
-        query.value(3).toDateTime(),
-        query.value(4).toDateTime()
-        );
+        query.value(0).toInt(), query.value(1).toInt(),
+        query.value(2).toDouble(), query.value(3).toDateTime(),
+        query.value(4).toDateTime());
 }
 TimedDiscount* TimedDiscountRepository::getActiveDiscountForBook(int bookId){
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
@@ -54,10 +51,8 @@ TimedDiscount* TimedDiscountRepository::getActiveDiscountForBook(int bookId){
         return nullptr;
     }
     return new TimedDiscount(
-        query.value(0).toInt(),
-        query.value(1).toInt(),
-        query.value(2).toDouble(),
-        query.value(3).toDateTime(),
+        query.value(0).toInt(), query.value(1).toInt(),
+        query.value(2).toDouble(), query.value(3).toDateTime(),
         query.value(4).toDateTime());
 }
 TimedDiscount* TimedDiscountRepository::getCurrentOrUpcomingDiscountForBook(int bookId){
@@ -73,10 +68,8 @@ TimedDiscount* TimedDiscountRepository::getCurrentOrUpcomingDiscountForBook(int 
         return nullptr;
     }
     return new TimedDiscount(
-        query.value(0).toInt(),
-        query.value(1).toInt(),
-        query.value(2).toDouble(),
-        query.value(3).toDateTime(),
+        query.value(0).toInt(), query.value(1).toInt(),
+        query.value(2).toDouble(),query.value(3).toDateTime(),
         query.value(4).toDateTime());
 }
 QVector<int> TimedDiscountRepository::getAllDiscountIdsForBook(int bookId){

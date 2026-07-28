@@ -16,15 +16,13 @@ PublisherMainWindow::PublisherMainWindow(NetworkManager *networkManager, QWidget
     , dashboardController(new PublisherDashboardController(networkManager, this))
     , bookController(new PublisherBookController(networkManager, this))
     , profileController(new ProfileController(networkManager, this))
-    , notificationController(new NotificationController(networkManager, this))
-{
+    , notificationController(new NotificationController(networkManager, this)) {
     ui->setupUi(this);
     ui->myBooksTableWidget->setColumnCount(7);
     ui->myBooksTableWidget->setHorizontalHeaderLabels({"شناسه", "نام کتاب", "میانگین امتیاز", "تعداد فروش", "وضعیت", "تخفیف عادی", "تخفیف زمان دار"});
     ui->myBooksTableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->myBooksTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->myBooksTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-
     connect(ui->refreshDashboardButton, &QPushButton::clicked, dashboardController, &PublisherDashboardController::refreshDashboard);
     connect(ui->addNewBookButton, &QPushButton::clicked, this, &PublisherMainWindow::onAddNewBookButtonClicked);
     connect(ui->editBookButton, &QPushButton::clicked, this, &PublisherMainWindow::onEditBookButtonClicked);
@@ -46,25 +44,18 @@ PublisherMainWindow::PublisherMainWindow(NetworkManager *networkManager, QWidget
     connect(notificationController, &NotificationController::unreadCountLoadFailed, this, &PublisherMainWindow::onUnreadCountLoadFailed);
     connect(notificationController, &NotificationController::newNotificationArrived, this, &PublisherMainWindow::onNewNotificationArrived);
     connect(notificationController, &NotificationController::notificationMarkedRead, this, &PublisherMainWindow::onNotificationMarkedRead);
-
     dashboardController->refreshDashboard();
     profileController->loadAccountInfo();
     notificationController->refreshUnreadCount();
 }
-
-PublisherMainWindow::~PublisherMainWindow()
-{
+PublisherMainWindow::~PublisherMainWindow() {
     delete ui;
 }
-
-void PublisherMainWindow::showEvent(QShowEvent *event)
-{
+void PublisherMainWindow::showEvent(QShowEvent *event) {
     QMainWindow::showEvent(event);
     notificationController->refreshUnreadCount();
 }
-
-void PublisherMainWindow::populateBooksTable(const QVariantList &books)
-{
+void PublisherMainWindow::populateBooksTable(const QVariantList &books) {
     currentBooks = books;
     ui->myBooksTableWidget->setRowCount(books.size());
     for (int i = 0; i < books.size(); ++i) {
@@ -74,45 +65,33 @@ void PublisherMainWindow::populateBooksTable(const QVariantList &books)
         ui->myBooksTableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(b.value("averageRating").toDouble(), 'f', 1)));
         ui->myBooksTableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(b.value("soldCount").toInt())));
         ui->myBooksTableWidget->setItem(i, 4, new QTableWidgetItem(b.value("isActive").toBool() ? "فعال" : "غیرفعال"));
-
         double discountPercent = b.value("discountPercent").toDouble();
         QString normalDiscountText = discountPercent > 0 ? QString("%1 %").arg(discountPercent, 0, 'f', 0) : "ندارد";
         ui->myBooksTableWidget->setItem(i, 5, new QTableWidgetItem(normalDiscountText));
-
         QString timedDiscountText = "ندارد";
         if (b.contains("timedDiscountPercent")) {
             double timedPercent = b.value("timedDiscountPercent").toDouble();
             QDateTime start = b.value("timedDiscountStart").toDateTime();
             QDateTime end = b.value("timedDiscountEnd").toDateTime();
-            timedDiscountText = QString("%1 % (از %2 تا %3)")
-                                    .arg(timedPercent, 0, 'f', 0)
-                                    .arg(start.toString("yyyy/MM/dd HH:mm"))
-                                    .arg(end.toString("yyyy/MM/dd HH:mm"));
+            timedDiscountText = QString("%1 % (از %2 تا %3)").arg(timedPercent, 0, 'f', 0).arg(start.toString("yyyy/MM/dd HH:mm")).arg(end.toString("yyyy/MM/dd HH:mm"));
         }
         ui->myBooksTableWidget->setItem(i, 6, new QTableWidgetItem(timedDiscountText));
     }
 }
-
-int PublisherMainWindow::getSelectedBookId() const
-{
+int PublisherMainWindow::getSelectedBookId() const {
     int row = ui->myBooksTableWidget->currentRow();
     if (row < 0) return -1;
     return ui->myBooksTableWidget->item(row, 0)->text().toInt();
 }
-
-bool PublisherMainWindow::getSelectedBookActiveStatus() const
-{
+bool PublisherMainWindow::getSelectedBookActiveStatus() const {
     int row = ui->myBooksTableWidget->currentRow();
     if (row < 0) return false;
     return ui->myBooksTableWidget->item(row, 4)->text() == "فعال";
 }
-
-void PublisherMainWindow::onDashboardLoaded(const QVariantMap &dashboardData)
-{
+void PublisherMainWindow::onDashboardLoaded(const QVariantMap &dashboardData) {
     ui->statusLabel->clear();
     ui->totalBooksLabel->setText("تعداد کل کتاب ها: " + QString::number(dashboardData.value("totalBooksCount").toInt()));
     ui->totalRevenueLabel->setText("مجموع درآمد: " + QString::number(dashboardData.value("totalRevenue").toDouble(), 'f', 0) + " تومان");
-
     ui->topSellingListWidget->clear();
     for(const QVariant &v : dashboardData.value("topSellingBooks").toList()){
         QVariantMap item = v.toMap();
@@ -125,14 +104,10 @@ void PublisherMainWindow::onDashboardLoaded(const QVariantMap &dashboardData)
     }
     populateBooksTable(dashboardData.value("books").toList());
 }
-
-void PublisherMainWindow::onDashboardLoadFailed(const QString &message)
-{
+void PublisherMainWindow::onDashboardLoadFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
-
-void PublisherMainWindow::onAddNewBookButtonClicked()
-{
+void PublisherMainWindow::onAddNewBookButtonClicked() {
     PublisherAddBookWindow_c *addBookWindow = new PublisherAddBookWindow_c(networkManager);
     addBookWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(addBookWindow, &PublisherAddBookWindow_c::backRequested, this, [this, addBookWindow]() {
@@ -143,11 +118,9 @@ void PublisherMainWindow::onAddNewBookButtonClicked()
     showFollowingState(addBookWindow, this);
     this->hide();
 }
-void PublisherMainWindow::onEditBookButtonClicked()
-{
+void PublisherMainWindow::onEditBookButtonClicked() {
     int bookId = getSelectedBookId();
     if(bookId <= 0) { ui->statusLabel->setText("ابتدا یک کتاب را انتخاب کنید"); return; }
-
     PublisherAddBookWindow_c *editBookWindow = new PublisherAddBookWindow_c(networkManager, bookId);
     editBookWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(editBookWindow, &PublisherAddBookWindow_c::backRequested, this, [this, editBookWindow]() {
@@ -158,9 +131,7 @@ void PublisherMainWindow::onEditBookButtonClicked()
     showFollowingState(editBookWindow, this);
     this->hide();
 }
-
-void PublisherMainWindow::onToggleBookActiveButtonClicked()
-{
+void PublisherMainWindow::onToggleBookActiveButtonClicked() {
     int bookId = getSelectedBookId();
     if(bookId <= 0) { ui->statusLabel->setText("ابتدا یک کتاب را انتخاب کنید"); return; }
 
@@ -170,14 +141,12 @@ void PublisherMainWindow::onToggleBookActiveButtonClicked()
     else
         bookController->reactivateBook(bookId);
 }
-
 void PublisherMainWindow::onBookDeactivated(const QString &message) { ui->statusLabel->setText(message); dashboardController->refreshDashboard(); }
 void PublisherMainWindow::onBookDeactivateFailed(const QString &message) { ui->statusLabel->setText(message); }
 void PublisherMainWindow::onBookReactivated(const QString &message) { ui->statusLabel->setText(message); dashboardController->refreshDashboard(); }
 void PublisherMainWindow::onBookReactivateFailed(const QString &message) { ui->statusLabel->setText(message); }
 void PublisherMainWindow::onValidationError(const QString &message) { ui->statusLabel->setText(message); }
-void PublisherMainWindow::onAccountInfoLoaded(const QVariantMap &accountData)
-{
+void PublisherMainWindow::onAccountInfoLoaded(const QVariantMap &accountData) {
     currentAccountData = accountData;
     ui->editAccountButton->setEnabled(true);
     ui->nameLabel->setText("نام و نام خانوادگی: " + accountData.value("firstName").toString() + " " + accountData.value("lastName").toString());
@@ -186,19 +155,15 @@ void PublisherMainWindow::onAccountInfoLoaded(const QVariantMap &accountData)
     ui->licenseNumberLabel->setText("شماره پروانه نشر: " + accountData.value("publisherLicenseNumber").toString());
 }
 void PublisherMainWindow::onAccountInfoLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
-
-void PublisherMainWindow::onEditAccountButtonClicked()
-{
+void PublisherMainWindow::onEditAccountButtonClicked() {
     if (currentAccountData.isEmpty()) {
         ui->statusLabel->setText("اطلاعات حساب هنوز بارگذاری نشده است");
         return;
     }
-
     RegisterWindow_c *editWindow = new RegisterWindow_c(
         networkManager, RegisterWindow_c::Mode::AccountEdit, currentAccountData);
     editWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(editWindow, &RegisterWindow_c::backToProfileRequested,
-            editWindow, &QWidget::close);
+    connect(editWindow, &RegisterWindow_c::backToProfileRequested, editWindow, &QWidget::close);
     connect(editWindow, &QObject::destroyed, this, [this]() {
         profileController->loadAccountInfo();
         this->show();
@@ -206,9 +171,7 @@ void PublisherMainWindow::onEditAccountButtonClicked()
     showFollowingState(editWindow, this);
     this->hide();
 }
-
-void PublisherMainWindow::onNotificationsButtonClicked()
-{
+void PublisherMainWindow::onNotificationsButtonClicked() {
     NotificationWindow_c *notificationWindow = new NotificationWindow_c(networkManager);
     notificationWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(notificationWindow, &NotificationWindow_c::backRequested, this, [this, notificationWindow]() {
@@ -219,26 +182,18 @@ void PublisherMainWindow::onNotificationsButtonClicked()
     showFollowingState(notificationWindow, this);
     this->hide();
 }
-
-void PublisherMainWindow::onUnreadCountLoaded(int count)
-{
+void PublisherMainWindow::onUnreadCountLoaded(int count) {
     ui->notificationsButton->setText(QString("اعلان ها (%1)").arg(count));
 }
-
-void PublisherMainWindow::onUnreadCountLoadFailed(const QString &message)
-{
+void PublisherMainWindow::onUnreadCountLoadFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
-
-void PublisherMainWindow::onNewNotificationArrived(const QVariantMap &notificationData)
-{
+void PublisherMainWindow::onNewNotificationArrived(const QVariantMap &notificationData) {
     notificationController->refreshUnreadCount();
     statusBar()->showMessage(
         QString("اعلان جدید: %1").arg(notificationData.value("title").toString()), 5000);
 }
-
-void PublisherMainWindow::onNotificationMarkedRead(const QString &message)
-{
+void PublisherMainWindow::onNotificationMarkedRead(const QString &message) {
     Q_UNUSED(message)
     notificationController->refreshUnreadCount();
 }

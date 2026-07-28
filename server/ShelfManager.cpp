@@ -24,7 +24,6 @@ bool convertUniquePositiveIds(const QVariantList &values, QVector<int> &ids) {
     }
     return true;
 }
-
 bool containSameIds(const QVector<int> &left, const QVector<int> &right) {
     if (left.size() != right.size())
         return false;
@@ -37,9 +36,7 @@ bool containSameIds(const QVector<int> &left, const QVector<int> &right) {
     return leftSet == rightSet && leftSet.size() == left.size();
 }
 }
-
 ShelfManager::ShelfManager() {}
-
 Response ShelfManager::createShelf(int userId, const QString &shelfName) {
     if (userId <= 0 || shelfName.trimmed().isEmpty() || shelfName.trimmed().length() > 100) {
         return Response(ResponseStatus::ValidationFailed, "نام قفسه نمی تواند خالی باشد و باید حداکثر ۱۰۰ کاراکتر باشد");
@@ -52,16 +49,13 @@ Response ShelfManager::createShelf(int userId, const QString &shelfName) {
     const int newShelfId = shelfRepo.insertShelf(newShelf);
     if (newShelfId == -1)
         return Response(ResponseStatus::Error, "خطا در ساخت قفسه");
-
     QVariantMap data;
     data["shelfId"] = newShelfId;
     return Response(ResponseStatus::Success, "قفسه با موفقیت ساخته شد", data);
 }
-
 Response ShelfManager::renameShelf(int userId, int shelfId, const QString &newName) {
     if (userId <= 0 || shelfId <= 0 || newName.trimmed().isEmpty() || newName.trimmed().length() > 100)
         return Response(ResponseStatus::ValidationFailed, "نام قفسه نامعتبر است");
-
     ShelfRepository shelfRepo;
     if (!shelfRepo.shelfBelongsToUser(shelfId, userId))
         return Response(ResponseStatus::Unauthorized, "شما اجازه ویرایش این قفسه را ندارید");
@@ -71,7 +65,6 @@ Response ShelfManager::renameShelf(int userId, int shelfId, const QString &newNa
         return Response(ResponseStatus::Error, "خطا در تغییر نام قفسه");
     return Response(ResponseStatus::Success, "نام قفسه با موفقیت تغییر یافت");
 }
-
 Response ShelfManager::deleteShelf(int userId, int shelfId) {
     ShelfRepository shelfRepo;
     if (!shelfRepo.shelfBelongsToUser(shelfId, userId))
@@ -80,12 +73,10 @@ Response ShelfManager::deleteShelf(int userId, int shelfId) {
         return Response(ResponseStatus::Error, "خطا در حذف قفسه");
     return Response(ResponseStatus::Success, "قفسه با موفقیت حذف شد");
 }
-
 Response ShelfManager::addBookToShelf(int userId, int shelfId, int bookId) {
     ShelfRepository shelfRepo;
     if (!shelfRepo.shelfBelongsToUser(shelfId, userId))
         return Response(ResponseStatus::Unauthorized, "شما اجازه افزودن کتاب به این قفسه را ندارید");
-
     UserRepository userRepo;
     std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
     if (!user || !user->hasPurchased(bookId)) {
@@ -99,7 +90,6 @@ Response ShelfManager::addBookToShelf(int userId, int shelfId, int bookId) {
     }
     return Response(ResponseStatus::Success, "کتاب به قفسه اضافه شد");
 }
-
 Response ShelfManager::removeBookFromShelf(int userId, int shelfId, int bookId) {
     ShelfRepository shelfRepo;
     if (!shelfRepo.shelfBelongsToUser(shelfId, userId))
@@ -108,21 +98,18 @@ Response ShelfManager::removeBookFromShelf(int userId, int shelfId, int bookId) 
         return Response(ResponseStatus::Error, "کتاب در این قفسه یافت نشد");
     return Response(ResponseStatus::Success, "کتاب از قفسه حذف شد");
 }
-
 Response ShelfManager::moveBookBetweenShelves(int userId, int sourceShelfId, int destShelfId, int bookId) {
     ShelfRepository shelfRepo;
     if (!shelfRepo.shelfBelongsToUser(sourceShelfId, userId))
         return Response(ResponseStatus::Unauthorized, "شما مالک قفسه مبدا نیستید");
     if (!shelfRepo.shelfBelongsToUser(destShelfId, userId))
         return Response(ResponseStatus::Unauthorized, "شما مالک قفسه مقصد نیستید");
-
     UserRepository userRepo;
     std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
     if (!user || !user->hasPurchased(bookId)) {
         return Response(ResponseStatus::Error,
                         "فقط کتاب هایی که خریداری کرده اید قابل جابجایی هستند");
     }
-
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction())
         return Response(ResponseStatus::Error, "خطا در شروع تراکنش انتقال کتاب");
@@ -140,12 +127,10 @@ Response ShelfManager::moveBookBetweenShelves(int userId, int sourceShelfId, int
     }
     return Response(ResponseStatus::Success, "کتاب با موفقیت منتقل شد");
 }
-
 Response ShelfManager::reorderShelves(int userId, const QVariantList &shelfIds) {
     QVector<int> requestedIds;
     if (!convertUniquePositiveIds(shelfIds, requestedIds))
         return Response(ResponseStatus::ValidationFailed, "ترتیب قفسه ها نامعتبر است");
-
     ShelfRepository shelfRepo;
     const QVector<int> currentIds = shelfRepo.getShelfIdsByUser(userId);
     if (!containSameIds(currentIds, requestedIds)) {
@@ -156,16 +141,13 @@ Response ShelfManager::reorderShelves(int userId, const QVariantList &shelfIds) 
         return Response(ResponseStatus::Error, "خطا در ذخیره ترتیب قفسه ها");
     return Response(ResponseStatus::Success, "ترتیب قفسه ها ذخیره شد");
 }
-
 Response ShelfManager::reorderShelfBooks(int userId, int shelfId, const QVariantList &bookIds) {
     ShelfRepository shelfRepo;
     if (!shelfRepo.shelfBelongsToUser(shelfId, userId))
         return Response(ResponseStatus::Unauthorized, "شما اجازه مرتب سازی این قفسه را ندارید");
-
     QVector<int> requestedIds;
     if (!convertUniquePositiveIds(bookIds, requestedIds))
         return Response(ResponseStatus::ValidationFailed, "ترتیب کتاب های قفسه نامعتبر است");
-
     const QVector<int> currentIds = shelfRepo.getBookIdsByShelf(shelfId);
     if (!containSameIds(currentIds, requestedIds)) {
         return Response(ResponseStatus::ValidationFailed, "ترتیب ارسالی باید شامل تمام کتاب های همین قفسه باشد");
@@ -174,18 +156,15 @@ Response ShelfManager::reorderShelfBooks(int userId, int shelfId, const QVariant
         return Response(ResponseStatus::Error, "خطا در ذخیره ترتیب کتاب های قفسه");
     return Response(ResponseStatus::Success, "ترتیب کتاب های قفسه ذخیره شد");
 }
-
 Response ShelfManager::getUserShelves(int userId) {
     ShelfRepository shelfRepo;
     const QVector<int> shelfIds = shelfRepo.getShelfIdsByUser(userId);
     QVariantList shelfList;
     BookRepository bookRepo;
-
     for (int shelfId : shelfIds) {
         std::unique_ptr<Shelf> shelf(shelfRepo.loadShelfById(shelfId));
         if (!shelf)
             return Response(ResponseStatus::Error, "اطلاعات یکی از قفسه ها قابل بازیابی نیست");
-
         QVariantMap shelfData;
         shelfData["shelfId"] = shelf->getShelfId();
         shelfData["shelfName"] = shelf->getShelfName();
@@ -204,7 +183,6 @@ Response ShelfManager::getUserShelves(int userId) {
         shelfData["bookNames"] = bookNameList;
         shelfList.append(shelfData);
     }
-
     QVariantMap data;
     data["shelves"] = shelfList;
     return Response(ResponseStatus::Success, "قفسه ها بازیابی شدند", data);

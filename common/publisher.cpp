@@ -9,24 +9,16 @@ Publisher::Publisher(const QString &username, const QString &plainPassword, cons
                      const QString &publicationName, const QString &publisherLicenseNumber,
                      const QString &shortDescription)
     : User(username, plainPassword, plainAnswer),
-    firstName(firstName.trimmed()),
-    lastName(lastName.trimmed()),
-    email(email.trimmed()),
-    shortDescription(shortDescription),
-    publicationName(publicationName.trimmed()),
-    publisherLicenseNumber(publisherLicenseNumber.trimmed()) {}
+    firstName(firstName.trimmed()), lastName(lastName.trimmed()), email(email.trimmed()),
+    shortDescription(shortDescription), publicationName(publicationName.trimmed()), publisherLicenseNumber(publisherLicenseNumber.trimmed()) {}
 Publisher::Publisher(int userId, const QString &encryptedUsername, const QString &passwordHash,
                      const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive,
                      const QDateTime &registerDate, const QString &firstName, const QString &lastName,
                      const QString &email, const QString &publicationName,
                      const QString &publisherLicenseNumber, const QString &shortDescription)
     : User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, isActive, registerDate),
-    firstName(firstName),
-    lastName(lastName),
-    email(email),
-    shortDescription(shortDescription),
-    publicationName(publicationName),
-    publisherLicenseNumber(publisherLicenseNumber) {}
+    firstName(firstName), lastName(lastName), email(email),
+    shortDescription(shortDescription), publicationName(publicationName), publisherLicenseNumber(publisherLicenseNumber) {}
 Publisher::~Publisher() {}
 QString Publisher::getRole() const { return "Publisher"; }
 QString Publisher::getFirstName() const { return firstName; }

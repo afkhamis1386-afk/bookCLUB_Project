@@ -49,21 +49,11 @@ Book* BookRepository::loadBookById(int bookId){
         return nullptr;
     }
     Book *book = new Book(
-        query.value(0).toInt(),
-        query.value(1).toString(),
-        query.value(2).toString(),
-        query.value(3).toDouble(),
-        query.value(4).toDouble(),
-        query.value(5).toDouble(),
-        query.value(6).toString(),
-        query.value(7).toString(),
-        query.value(8).toDateTime(),
-        query.value(9).toBool(),
-        query.value(10).toBool(),
-        query.value(11).toInt(),
-        query.value(12).toInt(),
-        query.value(13).toInt(),
-        query.value(14).toInt());
+        query.value(0).toInt(), query.value(1).toString(), query.value(2).toString(),
+        query.value(3).toDouble(), query.value(4).toDouble(), query.value(5).toDouble(),
+        query.value(6).toString(), query.value(7).toString(), query.value(8).toDateTime(),
+        query.value(9).toBool(), query.value(10).toBool(), query.value(11).toInt(),
+        query.value(12).toInt(), query.value(13).toInt(),  query.value(14).toInt());
     return book;
 }
 bool BookRepository::updateBook(const Book &book){
@@ -286,8 +276,7 @@ int BookRepository::getSoldCopiesCount(int bookId){
         "SELECT COUNT(*) FROM OrderItems oi "
         "JOIN Orders o ON oi.OrderID = o.OrderID "
         "JOIN Statuses s ON o.StatusID = s.StatusID "
-        "WHERE oi.BookID = :bookId AND s.StatusTitle IN ('Paid', 'Completed')"
-        );
+        "WHERE oi.BookID = :bookId AND s.StatusTitle IN ('Paid', 'Completed')" );
     query.bindValue(":bookId", bookId);
     if(query.exec() && query.next())
         return query.value(0).toInt();
@@ -306,8 +295,7 @@ QVector<int> BookRepository::getTopSellingBooksByPublisher(int publisherUserId, 
         "LEFT JOIN Statuses s ON o.StatusID = s.StatusID "
         "WHERE b.PublisherUserID = :publisherId AND b.IsDeleted = 0 "
         "GROUP BY b.BookID "
-        "ORDER BY SoldCount DESC"
-        );
+        "ORDER BY SoldCount DESC" );
     query.bindValue(":limit", limit);
     query.bindValue(":publisherId", publisherUserId);
     if(query.exec()){
@@ -330,8 +318,7 @@ QVector<int> BookRepository::getBestSellingBookIds(int limit){
         "LEFT JOIN Statuses s ON o.StatusID = s.StatusID "
         "WHERE b.IsActive = 1 AND b.IsDeleted = 0 "
         "GROUP BY b.BookID "
-        "ORDER BY SoldCount DESC, RegisteredIn DESC"
-        );
+        "ORDER BY SoldCount DESC, RegisteredIn DESC" );
     query.bindValue(":limit", limit);
     if(query.exec()){
         while(query.next())
@@ -352,8 +339,7 @@ QVector<int> BookRepository::getMostPopularBookIds(int limit){
         "LEFT JOIN Ratings r ON b.BookID = r.BookID "
         "WHERE b.IsActive = 1 AND b.IsDeleted = 0 "
         "GROUP BY b.BookID "
-        "ORDER BY AvgRating DESC, RatingCount DESC, RegisteredIn DESC"
-        );
+        "ORDER BY AvgRating DESC, RatingCount DESC, RegisteredIn DESC" );
     query.bindValue(":limit", limit);
     if(query.exec()){
         while(query.next())
@@ -374,8 +360,7 @@ QVector<int> BookRepository::getLeastSellingBooksByPublisher(int publisherUserId
         "LEFT JOIN Statuses s ON o.StatusID = s.StatusID "
         "WHERE b.PublisherUserID = :publisherId AND b.IsDeleted = 0 "
         "GROUP BY b.BookID "
-        "ORDER BY SoldCount ASC"
-        );
+        "ORDER BY SoldCount ASC" );
     query.bindValue(":limit", limit);
     query.bindValue(":publisherId", publisherUserId);
     if(query.exec()){

@@ -13,8 +13,7 @@ int NotificationRepository::insertNotification(const Notification &notification)
         "INSERT INTO Notifications "
         "(UserID, NotificationTypeID, Title, Message, IsRead, CreatedAt, TargetID, SenderID) "
         "OUTPUT INSERTED.NotificationID "
-        "VALUES (:userId, :typeId, :title, :message, :isRead, :createdAt, :targetId, :senderId)"
-        );
+        "VALUES (:userId, :typeId, :title, :message, :isRead, :createdAt, :targetId, :senderId)" );
     query.bindValue(":userId", notification.getUserId());
     query.bindValue(":typeId", static_cast<int>(notification.getNotificationType()));
     query.bindValue(":title", notification.getTitle());
@@ -43,8 +42,7 @@ Notification* NotificationRepository::loadNotificationById(int notificationId) {
     query.prepare(
         "SELECT NotificationID, UserID, NotificationTypeID, Title, Message, IsRead, CreatedAt, "
         "TargetID, SenderID "
-        "FROM Notifications WHERE NotificationID = :notificationId"
-        );
+        "FROM Notifications WHERE NotificationID = :notificationId" );
     query.bindValue(":notificationId", notificationId);
     if (!query.exec() || !query.next()) {
         qWarning() << "اعلان یافت نشد:" << query.lastError().text();
@@ -56,13 +54,9 @@ Notification* NotificationRepository::loadNotificationById(int notificationId) {
         query.value(0).toInt(),
         query.value(1).toInt(),
         static_cast<NotificationType>(query.value(2).toInt()),
-        query.value(3).toString(),
-        query.value(4).toString(),
-        query.value(5).toBool(),
-        query.value(6).toDateTime(),
-        targetId,
-        senderId
-        );
+        query.value(3).toString(), query.value(4).toString(),
+        query.value(5).toBool(), query.value(6).toDateTime(),
+        targetId, senderId );
 }
 QVector<int> NotificationRepository::getNotificationIdsByUser(int userId) {
     QVector<int> ids;
@@ -82,8 +76,7 @@ QVector<int> NotificationRepository::getUnreadNotificationIds(int userId) {
     QSqlQuery query(db);
     query.prepare(
         "SELECT NotificationID FROM Notifications WHERE UserID = :userId AND IsRead = 0 "
-        "ORDER BY CreatedAt DESC"
-        );
+        "ORDER BY CreatedAt DESC" );
     query.bindValue(":userId", userId);
     if (query.exec()) {
         while (query.next())

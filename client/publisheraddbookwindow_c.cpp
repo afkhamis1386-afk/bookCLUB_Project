@@ -6,20 +6,14 @@
 #include <QDateTime>
 
 PublisherAddBookWindow_c::PublisherAddBookWindow_c(NetworkManager *networkManager, QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::PublisherAddBookWindow_c)
-    , networkManager(networkManager)
-    , publisherBookController(new PublisherBookController(networkManager, this))
+    : QMainWindow(parent), ui(new Ui::PublisherAddBookWindow_c), networkManager(networkManager), publisherBookController(new PublisherBookController(networkManager, this))
     , profileController(new ProfileController(networkManager, this)) {
     ui->setupUi(this);
     setupCommon();
 }
 PublisherAddBookWindow_c::PublisherAddBookWindow_c(NetworkManager *networkManager, int editBookId, QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::PublisherAddBookWindow_c)
-    , networkManager(networkManager)
-    , publisherBookController(new PublisherBookController(networkManager, this))
-    , profileController(new ProfileController(networkManager, this)) {
+    : QMainWindow(parent), ui(new Ui::PublisherAddBookWindow_c) , networkManager(networkManager)
+    , publisherBookController(new PublisherBookController(networkManager, this)), profileController(new ProfileController(networkManager, this)) {
     ui->setupUi(this);
     isEditMode = true;
     editingBookId = editBookId;
@@ -59,7 +53,6 @@ void PublisherAddBookWindow_c::setupCommon() {
     onDiscountTypeToggled();
     profileController->loadGenres();
 }
-
 PublisherAddBookWindow_c::~PublisherAddBookWindow_c() {
     delete ui;
 }
@@ -91,10 +84,7 @@ void PublisherAddBookWindow_c::applySelectedDiscount(int bookId) {
     bool normal = ui->normalDiscountRadio->isChecked();
     bool timed = ui->timedDiscountRadio->isChecked();
     double percent = ui->discountPercentSpinBox->value();
-    const bool preserveAmountDiscount = isEditMode
-                                        && originalDiscountAmount > 0.0
-                                        && !discountSelectionChangedByUser
-                                        && ui->noDiscountRadio->isChecked();
+    const bool preserveAmountDiscount = isEditMode && originalDiscountAmount > 0.0 && !discountSelectionChangedByUser && ui->noDiscountRadio->isChecked();
     if (isEditMode && !preserveAmountDiscount) {
         publisherBookController->applyDiscount(bookId, normal ? percent : 0, 0);
     }
@@ -139,29 +129,17 @@ void PublisherAddBookWindow_c::onSubmitButtonClicked() {
     if (!isEditMode) {
         double addDiscountPercent = normal ? percent : 0.0;
         publisherBookController->addBook(
-            ui->bookNameLineEdit->text(),
-            ui->descriptionTextEdit->toPlainText(),
-            ui->priceDoubleSpinBox->value(),
-            ui->genreComboBox->currentText(),
-            ui->categoryTitleLineEdit->text(),
-            ui->authorNameLineEdit->text(),
-            selectedCoverPath,
-            selectedPdfPath,
-            addDiscountPercent
-            );
+            ui->bookNameLineEdit->text(), ui->descriptionTextEdit->toPlainText(),
+            ui->priceDoubleSpinBox->value(), ui->genreComboBox->currentText(),
+            ui->categoryTitleLineEdit->text(), ui->authorNameLineEdit->text(),
+            selectedCoverPath, selectedPdfPath, addDiscountPercent);
     }
     else{
         publisherBookController->updateBook(
-            editingBookId,
-            ui->bookNameLineEdit->text(),
-            ui->descriptionTextEdit->toPlainText(),
-            ui->priceDoubleSpinBox->value(),
-            ui->genreComboBox->currentText(),
-            ui->categoryTitleLineEdit->text(),
-            ui->authorNameLineEdit->text(),
-            selectedCoverPath,
-            selectedPdfPath
-            );
+            editingBookId, ui->bookNameLineEdit->text(),
+            ui->descriptionTextEdit->toPlainText(), ui->priceDoubleSpinBox->value(),
+            ui->genreComboBox->currentText(), ui->categoryTitleLineEdit->text(),
+            ui->authorNameLineEdit->text(), selectedCoverPath,selectedPdfPath);
     }
 }
 void PublisherAddBookWindow_c::onBookAdded(int bookId, const QString &message) {
@@ -219,13 +197,8 @@ void PublisherAddBookWindow_c::onBookDetailsForEditLoaded(const QVariantMap &boo
     const bool hasCoverImage = bookData.value("hasCoverImage").toBool()
                                || !bookData.value("coverImagePath").toString().trimmed().isEmpty();
     const bool hasPdfFile = bookData.value("hasPdfFile").toBool();
-    ui->coverPathLabel->setText(hasCoverImage
-                                    ? "عکس جلد فعلی ثبت شده است؛ برای جایگزینی، فایل جدید انتخاب کنید"
-                                    : "عکس جلدی ثبت نشده است؛ برای افزودن، فایل انتخاب کنید");
-    ui->pdfPathLabel->setText(hasPdfFile
-                                  ? "فایل PDF فعلی ثبت شده است؛ برای جایگزینی، فایل جدید انتخاب کنید"
-                                  : "فایل PDF فعلی ثبت نشده است؛ برای افزودن، فایل انتخاب کنید");
-
+    ui->coverPathLabel->setText(hasCoverImage ? "عکس جلد فعلی ثبت شده است؛ برای جایگزینی، فایل جدید انتخاب کنید" : "عکس جلدی ثبت نشده است؛ برای افزودن، فایل انتخاب کنید");
+    ui->pdfPathLabel->setText(hasPdfFile? "فایل PDF فعلی ثبت شده است؛ برای جایگزینی، فایل جدید انتخاب کنید" : "فایل PDF فعلی ثبت نشده است؛ برای افزودن، فایل انتخاب کنید");
     pendingGenreTitle = bookData.value("genreTitle").toString();
     pendingGenreSelection = true;
     if (ui->genreComboBox->count() > 0) {
@@ -233,7 +206,6 @@ void PublisherAddBookWindow_c::onBookDetailsForEditLoaded(const QVariantMap &boo
         if (idx >= 0) ui->genreComboBox->setCurrentIndex(idx);
         pendingGenreSelection = false;
     }
-
     hadTimedDiscount = bookData.contains("timedDiscountId");
     double normalPercent = bookData.value("discountPercent").toDouble();
     originalDiscountAmount = bookData.value("discountAmount").toDouble();

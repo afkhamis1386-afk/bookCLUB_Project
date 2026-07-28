@@ -31,8 +31,7 @@ Review* ReviewRepository::loadReviewById(int reviewId){
     QSqlQuery query(db);
     query.prepare(
         "SELECT ReviewID, UserID, BookID, CommentText, ParentID, IsDeleted, ReviewDate "
-        "FROM Reviews WHERE ReviewID = :reviewId"
-        );
+        "FROM Reviews WHERE ReviewID = :reviewId" );
     query.bindValue(":reviewId", reviewId);
     if(!query.exec() || !query.next()){
         qWarning() << "نظر یافت نشد:" << query.lastError().text();
@@ -40,12 +39,9 @@ Review* ReviewRepository::loadReviewById(int reviewId){
     }
     int parentId = query.value(4).isNull() ? -1 : query.value(4).toInt();
     return new Review(
-        query.value(0).toInt(),
-        query.value(1).toInt(),
-        query.value(2).toInt(),
-        query.value(3).toString(),
-        parentId,
-        query.value(5).toBool(),
+        query.value(0).toInt(), query.value(1).toInt(),
+        query.value(2).toInt(), query.value(3).toString(),
+        parentId, query.value(5).toBool(),
         query.value(6).toDateTime());
 }
 bool ReviewRepository::updateCommentText(int reviewId, const QString &newComment){
@@ -78,10 +74,8 @@ QVector<int> ReviewRepository::getReviewIdsByBook(int bookId){
     QSqlQuery query(db);
     query.prepare(
         "SELECT ReviewID FROM Reviews WHERE BookID = :bookId AND IsDeleted = 0 "
-        "ORDER BY ReviewDate DESC"
-        );
+        "ORDER BY ReviewDate DESC" );
     query.bindValue(":bookId", bookId);
-
     if(query.exec()){
         while (query.next())
             ids.append(query.value(0).toInt());
@@ -131,9 +125,7 @@ bool ReviewRepository::reviewBelongsToUser(int reviewId, int userId){
     query.prepare("SELECT COUNT(*) FROM Reviews WHERE ReviewID = :reviewId AND UserID = :userId");
     query.bindValue(":reviewId", reviewId);
     query.bindValue(":userId", userId);
-
     if(query.exec() && query.next())
         return query.value(0).toInt() > 0;
     return false;
 }
-

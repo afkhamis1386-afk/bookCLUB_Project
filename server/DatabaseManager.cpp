@@ -33,8 +33,7 @@ QSqlDatabase DatabaseManager::getConnection(){
      "DRIVER={ODBC Driver 17 for SQL Server};"
      "SERVER=%1;"
      "DATABASE=%2;"
-     "Trusted_Connection=Yes;"
-     ).arg(serverName, databaseName);
+     "Trusted_Connection=Yes;" ).arg(serverName, databaseName);
     db.setDatabaseName(connectionString);
     if(!username.isEmpty()){
         db.setUserName(username);

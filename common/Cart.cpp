@@ -1,8 +1,7 @@
 #include "Cart.h"
 CartItem::CartItem() :
     bookId(-1), price(0), discountPercent(0), discountAmount(0) {}
-CartItem::CartItem(int bookId, double price, double discountPercent, double discountAmount)
-    : bookId(bookId), price(price), discountPercent(discountPercent), discountAmount(discountAmount) {}
+CartItem::CartItem(int bookId, double price, double discountPercent, double discountAmount) : bookId(bookId), price(price), discountPercent(discountPercent), discountAmount(discountAmount) {}
 int CartItem::getBookId() const { return bookId; }
 double CartItem::getPrice() const { return price; }
 double CartItem::getDiscountPercent() const { return discountPercent; }
@@ -22,17 +21,14 @@ QDataStream& operator<<(QDataStream& out, const CartItem& item) {
     return out;
 }
 QDataStream& operator>>(QDataStream& in, CartItem& item) {
-    in >> item.bookId
-        >> item.price
-        >> item.discountPercent
-        >> item.discountAmount;
+    in >> item.bookId >> item.price >> item.discountPercent >> item.discountAmount;
     return in;
 }
 Cart::Cart() : cartId(-1), userId(-1) {}
 Cart::Cart(int userId) : cartId(-1), userId(userId) { lastUpdated = QDateTime::currentDateTime(); }
 int Cart::getUserId() const { return userId; }
 bool Cart::addBook(int bookId, double price, double discountPercent, double discountAmount) {
-    for(const CartItem& item : items)
+    for(const CartItem& item : qAsConst(items))
         if(item.getBookId() == bookId)
             return false;
     items.append(CartItem(bookId, price, discountPercent, discountAmount));
@@ -85,16 +81,10 @@ void Cart::clearCart(){
 }
 QDateTime Cart::getLastUpdated() const { return lastUpdated; }
 QDataStream& operator<<(QDataStream& out, const Cart& cart) {
-    out << cart.cartId
-        << cart.userId
-        << cart.items
-        << cart.lastUpdated;
+    out << cart.cartId << cart.userId << cart.items << cart.lastUpdated;
     return out;
 }
 QDataStream& operator>>(QDataStream& in, Cart& cart) {
-    in >> cart.cartId
-        >> cart.userId
-        >> cart.items
-        >> cart.lastUpdated;
+    in >> cart.cartId >> cart.userId >> cart.items >> cart.lastUpdated;
     return in;
 }

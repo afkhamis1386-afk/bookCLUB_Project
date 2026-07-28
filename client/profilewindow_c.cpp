@@ -8,13 +8,9 @@
 #include <QDateTime>
 #include <QMessageBox>
 ProfileWindow_c::ProfileWindow_c(NetworkManager *networkManager, QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::ProfileWindow_c)
-    , networkManager(networkManager)
-    , profileController(new ProfileController(networkManager, this))
-{
+    : QMainWindow(parent) , ui(new Ui::ProfileWindow_c)
+    , networkManager(networkManager) , profileController(new ProfileController(networkManager, this)) {
     ui->setupUi(this);
-
     QStringList headers = {"شماره سفارش", "نام کتاب ها", "تاریخ", "مبلغ نهایی", "وضعیت"};
     ui->ordersTableWidget->setColumnCount(5);
     ui->ordersTableWidget->setHorizontalHeaderLabels(headers);
@@ -43,28 +39,20 @@ ProfileWindow_c::ProfileWindow_c(NetworkManager *networkManager, QWidget *parent
     profileController->loadAccountInfo();
     profileController->loadOrderHistory();
 }
-
-ProfileWindow_c::~ProfileWindow_c()
-{
+ProfileWindow_c::~ProfileWindow_c() {
     delete ui;
 }
-
-void ProfileWindow_c::onAccountInfoLoaded(const QVariantMap &accountData)
-{
+void ProfileWindow_c::onAccountInfoLoaded(const QVariantMap &accountData) {
     currentAccountData = accountData;
     ui->editAccountButton->setEnabled(true);
     ui->usernameLabel->setText("نام کاربری: " + accountData.value("username").toString());
     ui->registerDateLabel->setText("تاریخ عضویت: " + accountData.value("registerDate").toDateTime().toString("yyyy/MM/dd"));
     ui->purchasedCountLabel->setText("تعداد کتاب های خریداری شده: " + QString::number(accountData.value("purchasedCount").toInt()));
 }
-
-void ProfileWindow_c::onAccountInfoLoadFailed(const QString &message)
-{
+void ProfileWindow_c::onAccountInfoLoadFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
-
-void ProfileWindow_c::onOrderHistoryLoaded(const QVariantList &orders)
-{
+void ProfileWindow_c::onOrderHistoryLoaded(const QVariantList &orders) {
     ui->ordersTableWidget->setRowCount(orders.size());
     for (int i = 0; i < orders.size(); ++i) {
         QVariantMap order = orders[i].toMap();
@@ -75,41 +63,28 @@ void ProfileWindow_c::onOrderHistoryLoaded(const QVariantList &orders)
         ui->ordersTableWidget->setItem(i, 4, new QTableWidgetItem(order.value("status").toString()));
     }
 }
-
-void ProfileWindow_c::onOrderHistoryLoadFailed(const QString &message)
-{
+void ProfileWindow_c::onOrderHistoryLoadFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
-
-void ProfileWindow_c::onChangePasswordButtonClicked()
-{
+void ProfileWindow_c::onChangePasswordButtonClicked() {
     profileController->changePassword(ui->oldPasswordLineEdit->text(), ui->newPasswordLineEdit->text());
 }
-
-void ProfileWindow_c::onPasswordChanged(const QString &message)
-{
+void ProfileWindow_c::onPasswordChanged(const QString &message) {
     ui->statusLabel->setText(message);
     ui->oldPasswordLineEdit->clear();
     ui->newPasswordLineEdit->clear();
 }
-
-void ProfileWindow_c::onPasswordChangeFailed(const QString &message)
-{
+void ProfileWindow_c::onPasswordChangeFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
-
-void ProfileWindow_c::onEditAccountButtonClicked()
-{
+void ProfileWindow_c::onEditAccountButtonClicked() {
     if (currentAccountData.isEmpty()) {
         ui->statusLabel->setText("اطلاعات حساب هنوز بارگذاری نشده است");
         return;
     }
-
-    RegisterWindow_c *editWindow = new RegisterWindow_c(
-        networkManager, RegisterWindow_c::Mode::AccountEdit, currentAccountData);
+    RegisterWindow_c *editWindow = new RegisterWindow_c( networkManager, RegisterWindow_c::Mode::AccountEdit, currentAccountData);
     editWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(editWindow, &RegisterWindow_c::backToProfileRequested,
-            editWindow, &QWidget::close);
+    connect(editWindow, &RegisterWindow_c::backToProfileRequested, editWindow, &QWidget::close);
     connect(editWindow, &QObject::destroyed, this, [this]() {
         profileController->loadAccountInfo();
         this->show();
@@ -117,9 +92,7 @@ void ProfileWindow_c::onEditAccountButtonClicked()
     showFollowingState(editWindow, this);
     this->hide();
 }
-
-void ProfileWindow_c::onEditGenresButtonClicked()
-{
+void ProfileWindow_c::onEditGenresButtonClicked() {
     GenreSelectionWindow_c *genreWindow = new GenreSelectionWindow_c(networkManager);
     genreWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(genreWindow, &GenreSelectionWindow_c::genresConfirmed, genreWindow, &QWidget::close);
@@ -129,19 +102,13 @@ void ProfileWindow_c::onEditGenresButtonClicked()
     showFollowingState(genreWindow, this);
     this->hide();
 }
-
-void ProfileWindow_c::onValidationError(const QString &message)
-{
+void ProfileWindow_c::onValidationError(const QString &message) {
     ui->statusLabel->setText(message);
 }
-
-void ProfileWindow_c::onBackButtonClicked()
-{
+void ProfileWindow_c::onBackButtonClicked() {
     emit backRequested();
 }
-
-void ProfileWindow_c::onLogoutButtonClicked()
-{
+void ProfileWindow_c::onLogoutButtonClicked() {
     if(QMessageBox::question(this, "خروج از حساب کاربری", "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟",
     QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
         networkManager->logout();

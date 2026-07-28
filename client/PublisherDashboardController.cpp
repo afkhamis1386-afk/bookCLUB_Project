@@ -1,10 +1,8 @@
 #include "PublisherDashboardController.h"
 
 PublisherDashboardController::PublisherDashboardController(NetworkManager *networkManager, QObject *parent)
-    : QObject(parent), networkManager(networkManager)
-{
-    connect(networkManager, &NetworkManager::responseReceived,
-            this, &PublisherDashboardController::onResponseReceived);
+    : QObject(parent), networkManager(networkManager) {
+    connect(networkManager, &NetworkManager::responseReceived, this, &PublisherDashboardController::onResponseReceived);
 }
 void PublisherDashboardController::refreshDashboard() {
     if (!networkManager->isConnected()) {

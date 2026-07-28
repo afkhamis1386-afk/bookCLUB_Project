@@ -74,4 +74,3 @@ int CategoryRepository::getOrCreateCategory(const QString &categoryTitle){
         return -1;
     return insertCategory(newCategory);
 }
-

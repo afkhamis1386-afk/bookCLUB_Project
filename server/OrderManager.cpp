@@ -59,19 +59,15 @@ Response OrderManager::checkout(int userId, const QString &cardNumber) {
         std::unique_ptr<TimedDiscount> activeDiscount( timedDiscountRepo.getActiveDiscountForBook(cartItem.getBookId()) );
         double timedPercent = activeDiscount ? activeDiscount->getDiscountPercent() : 0;
         double effectivePercent = PriceCalculator::calculateEffectivePercent(
-            book->getDiscountPercent(), timedPercent
-            );
+            book->getDiscountPercent(), timedPercent );
         double itemPrice = book->getBookPrice();
         double itemFinalPrice = PriceCalculator::calculateFinalPrice(
-            itemPrice, effectivePercent, book->getDiscountAmount()
-            );
+            itemPrice, effectivePercent, book->getDiscountAmount() );
         double itemDiscountTotal = itemPrice - itemFinalPrice;
         OrderItem orderItem(book->getBookId(), itemPrice, effectivePercent, book->getDiscountAmount());
         newOrder.addItem(orderItem);
         soldBooks.push_back(SoldBookInfo{
-            book->getPublisherUserId(),
-            book->getBookId(),
-            book->getBookName()
+            book->getPublisherUserId(), book->getBookId(), book->getBookName()
         });
         totalPrice += itemPrice;
         totalDiscountAmount += itemDiscountTotal;
@@ -93,10 +89,7 @@ Response OrderManager::checkout(int userId, const QString &cardNumber) {
         return Response(ResponseStatus::Error, "خطا در ثبت سفارش. لطفاً دوباره تلاش کنید");
     }
     QString lastFourDigits = cleanCardNumber.right(4);
-    QString transactionCode = QString("TXN-%1-%2-%3")
-                                  .arg(newOrderId)
-                                  .arg(lastFourDigits)
-                                  .arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
+    QString transactionCode = QString("TXN-%1-%2-%3").arg(newOrderId).arg(lastFourDigits).arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
     Payment newPayment(newOrderId, finalPrice, transactionCode);
     newPayment.setPaymentStatusId(static_cast<int>(PaymentStatus::Successful));
     PaymentRepository paymentRepo;
@@ -141,9 +134,7 @@ Response OrderManager::getOrderHistory(int userId) {
         QVariantMap orderData;
         orderData["orderId"] = order->getOrderId();
         const QStringList bookNames = orderRepo.getBookNamesByOrderId(orderId);
-        orderData["bookNames"] = bookNames.isEmpty()
-                                     ? QString("ثبت نشده")
-                                     : bookNames.join(QStringLiteral("، "));
+        orderData["bookNames"] = bookNames.isEmpty() ? QString("ثبت نشده") : bookNames.join(QStringLiteral("، "));
         orderData["orderDate"] = order->getOrderDate();
         orderData["finalPrice"] = order->getFinalPrice();
         orderData["status"] = order->getStatusTitle();

@@ -52,7 +52,6 @@ void ServerApplication::incomingConnection(qintptr socketDescriptor){
         activeThreads.insert(socketDescriptor, thread);
     }
     thread->start();
-
     emit clientConnected(socketDescriptor);
     emit logMessage(QString("کلاینت جدید متصل شد. تعداد کل: %1").arg(getOnlineClientCount()));
 }

@@ -14,7 +14,6 @@ private:
     QMutex mapMutex;
     QMap<int, ClientHandler*> onlineUsers;
     ClientRegistry();
-
 public:
     static ClientRegistry* getInstance();
     void registerClient(int userId, ClientHandler *handler);

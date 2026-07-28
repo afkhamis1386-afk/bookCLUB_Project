@@ -1,16 +1,6 @@
 #include "Payment.h"
-Payment::Payment()
-    : paymentId(-1)
-    , orderId(-1)
-    , amount(0)
-    , transactionCode(QString())
-    , paymentDate(QDateTime::currentDateTime())
-    , paymentStatusId(static_cast<int>(PaymentStatus::Pending)) {}
-Payment::Payment(int orderId, double amount, const QString& transactionCode)
-    : paymentId(-1)
-    , orderId(orderId)
-    , paymentDate(QDateTime::currentDateTime())
-    , paymentStatusId(static_cast<int>(PaymentStatus::Pending)) {
+Payment::Payment() : paymentId(-1) , orderId(-1), amount(0), transactionCode(QString()), paymentDate(QDateTime::currentDateTime()), paymentStatusId(static_cast<int>(PaymentStatus::Pending)) {}
+Payment::Payment(int orderId, double amount, const QString& transactionCode) : paymentId(-1), orderId(orderId), paymentDate(QDateTime::currentDateTime()), paymentStatusId(static_cast<int>(PaymentStatus::Pending)) {
     if (!setAmount(amount)) {
         this->amount = 0;
     }
@@ -56,12 +46,7 @@ bool Payment::isSuccessful() const { return paymentStatusId == static_cast<int>(
 bool Payment::isPending() const { return paymentStatusId == static_cast<int>(PaymentStatus::Pending); }
 bool Payment::isFailed() const { return paymentStatusId == static_cast<int>(PaymentStatus::Failed); }
 QDataStream& operator<<(QDataStream& out, const Payment& payment) {
-    out << payment.paymentId
-        << payment.orderId
-        << payment.amount
-        << payment.transactionCode
-        << payment.paymentDate
-        << payment.paymentStatusId;
+    out << payment.paymentId << payment.orderId << payment.amount << payment.transactionCode << payment.paymentDate << payment.paymentStatusId;
     return out;
 }
 QDataStream& operator>>(QDataStream& in, Payment& payment) {

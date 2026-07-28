@@ -6,8 +6,7 @@ PublisherBookController::PublisherBookController(NetworkManager *networkManager,
     connect(networkManager, &NetworkManager::responseReceived, this, &PublisherBookController::onResponseReceived);
 }
 void PublisherBookController::addBook(const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle,
-                                      const QString &authorName, const QString &coverImageFilePath,
-                                      const QString &pdfFilePath, double discountPercent) {
+                                      const QString &authorName, const QString &coverImageFilePath, const QString &pdfFilePath, double discountPercent) {
     if (bookName.trimmed().isEmpty() || bookName.length() > 60) {
         emit validationError("نام کتاب نامعتبر است (حداکثر ۶۰ کاراکتر)");
         return;
@@ -24,8 +23,7 @@ void PublisherBookController::addBook(const QString &bookName, const QString &de
         emit validationError("درصد تخفیف باید بین ۰ تا ۱۰۰ باشد");
         return;
     }
-    if (genreTitle.trimmed().isEmpty() || genreTitle.length() > 30
-        || categoryTitle.trimmed().isEmpty() || categoryTitle.length() > 50
+    if (genreTitle.trimmed().isEmpty() || genreTitle.length() > 30 || categoryTitle.trimmed().isEmpty() || categoryTitle.length() > 50
         || authorName.trimmed().isEmpty() || authorName.length() > 60) {
         emit validationError("ژانر، دسته بندی و نام نویسنده باید معتبر و مطابق محدودیت طول فیلدها باشند");
         return;
@@ -57,8 +55,7 @@ void PublisherBookController::addBook(const QString &bookName, const QString &de
         emit bookAddFailed("اتصال به سرور برقرار نیست");
         return;
     }
-    networkManager->addBook(bookName.trimmed(), description.trimmed(), price,
-                            genreTitle.trimmed(), categoryTitle.trimmed(), authorName.trimmed(),
+    networkManager->addBook(bookName.trimmed(), description.trimmed(), price, genreTitle.trimmed(), categoryTitle.trimmed(), authorName.trimmed(),
                             coverData, coverExtension, pdfData, discountPercent);
 }
 void PublisherBookController::updateBook(int bookId, const QString &bookName, const QString &description, double price,
