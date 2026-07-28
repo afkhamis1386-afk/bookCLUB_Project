@@ -318,8 +318,7 @@ Response ClientHandler::handleAuthRequest(const Request &req) {
         }
         return authManager.registerNormalUser(
             p.value("username").toString(), p.value("password").toString(),
-            p.value("securityAnswer").toString(), p.value("firstName").toString(),
-            p.value("lastName").toString());
+            p.value("securityAnswer").toString());
     case RequestType::Login:
         return authManager.login(p.value("username").toString(), p.value("password").toString());
     case RequestType::ChangePassword:
