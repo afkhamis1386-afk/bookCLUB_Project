@@ -5,7 +5,6 @@
 RegisterWindow_c::RegisterWindow_c(NetworkManager *networkManager, QWidget *parent)
     : RegisterWindow_c(networkManager, Mode::Registration, QVariantMap(), parent)
 {}
-
 RegisterWindow_c::RegisterWindow_c(NetworkManager *networkManager, Mode mode, const QVariantMap &accountData, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::RegisterWindow_c)
@@ -18,10 +17,11 @@ RegisterWindow_c::RegisterWindow_c(NetworkManager *networkManager, Mode mode, co
     ui->setupUi(this);
     ui->passwordLineEdit->setEchoMode(QLineEdit::Password);
     ui->confirmPasswordLineEdit->setEchoMode(QLineEdit::Password);
-    ui->publisherFieldsStack->setCurrentIndex(1);
+    ui->publisherFieldsGroupBox->setVisible(false);
     onRoleToggled();
 
     connect(ui->normalUserRadio, &QRadioButton::toggled, this, &RegisterWindow_c::onRoleToggled);
+    connect(ui->publisherRadio, &QRadioButton::toggled, this, &RegisterWindow_c::onRoleToggled);
     connect(ui->registerButton, &QPushButton::clicked, this, &RegisterWindow_c::onRegisterButtonClicked);
     connect(ui->backToLoginButton, &QPushButton::clicked, this, &RegisterWindow_c::onBackToLoginButtonClicked);
     connect(loginController, &LoginController::registrationSucceeded, this, &RegisterWindow_c::onRegistrationSucceeded);
@@ -31,7 +31,7 @@ RegisterWindow_c::RegisterWindow_c(NetworkManager *networkManager, Mode mode, co
     connect(profileController, &ProfileController::accountUpdateFailed, this, &RegisterWindow_c::onAccountUpdateFailed);
     connect(profileController, &ProfileController::validationError, this, &RegisterWindow_c::onValidationError);
 
-    if(mode == Mode::AccountEdit)
+    if (mode == Mode::AccountEdit)
         configureAccountEdit(accountData);
 }
 
@@ -60,26 +60,23 @@ void RegisterWindow_c::configureAccountEdit(const QVariantMap &accountData)
     ui->confirmPasswordLineEdit->setPlaceholderText("تکرار رمز عبور جدید");
     ui->securityAnswerLineEdit->setEchoMode(QLineEdit::Password);
     ui->securityAnswerLineEdit->setPlaceholderText("پاسخ امنیتی جدید (برای عدم تغییر خالی بگذارید)");
-    ui->firstNameLineEdit->setText(accountData.value("firstName").toString());
-    ui->lastNameLineEdit->setText(accountData.value("lastName").toString());
+
     if (isPublisher) {
+        ui->firstNameLineEdit->setText(accountData.value("firstName").toString());
+        ui->lastNameLineEdit->setText(accountData.value("lastName").toString());
         ui->emailLineEdit->setText(accountData.value("email").toString());
         ui->publicationNameLineEdit->setText(accountData.value("publicationName").toString());
         ui->licenseNumberLineEdit->setText(accountData.value("publisherLicenseNumber").toString());
         ui->shortDescriptionTextEdit->setPlainText(accountData.value("shortDescription").toString());
     }
 
-    ui->statusLabel->setText("رمز عبور و پاسخ امنیتی فقط در صورت وارد کردن مقدار جدید تغییر می کنند.");
+    ui->statusLabel->setText("رمز عبور و پاسخ امنیتی فقط در صورت وارد کردن مقدار جدید تغییر می‌کنند.");
 }
 
 void RegisterWindow_c::onRoleToggled()
 {
     const bool isPublisher = ui->publisherRadio->isChecked();
-    ui->publisherFieldsStack->setCurrentIndex(1);
-    ui->emailLineEdit->setVisible(isPublisher);
-    ui->publicationNameLineEdit->setVisible(isPublisher);
-    ui->licenseNumberLineEdit->setVisible(isPublisher);
-    ui->shortDescriptionTextEdit->setVisible(isPublisher);
+    ui->publisherFieldsGroupBox->setVisible(isPublisher);
 }
 
 QVariantMap RegisterWindow_c::buildAccountUpdatePayload() const
@@ -89,10 +86,10 @@ QVariantMap RegisterWindow_c::buildAccountUpdatePayload() const
     payload["password"] = ui->passwordLineEdit->text();
     payload["securityAnswer"] = ui->securityAnswerLineEdit->text().trimmed();
     payload["role"] = static_cast<int>(editRole);
-    payload["firstName"] = ui->firstNameLineEdit->text().trimmed();
-    payload["lastName"] = ui->lastNameLineEdit->text().trimmed();
 
     if (editRole == UserRole::Publisher) {
+        payload["firstName"] = ui->firstNameLineEdit->text().trimmed();
+        payload["lastName"] = ui->lastNameLineEdit->text().trimmed();
         payload["email"] = ui->emailLineEdit->text().trimmed();
         payload["publicationName"] = ui->publicationNameLineEdit->text().trimmed();
         payload["licenseNumber"] = ui->licenseNumberLineEdit->text().trimmed();
@@ -112,13 +109,10 @@ void RegisterWindow_c::onRegisterButtonClicked()
             ui->statusLabel->setText("رمز عبور جدید و تکرار آن یکسان نیستند");
             return;
         }
-        if (ui->firstNameLineEdit->text().trimmed().isEmpty() ||
-            ui->lastNameLineEdit->text().trimmed().isEmpty()) {
-            ui->statusLabel->setText("نام و نام خانوادگی را وارد کنید");
-            return;
-        }
         if (editRole == UserRole::Publisher &&
-            (ui->emailLineEdit->text().trimmed().isEmpty() ||
+            (ui->firstNameLineEdit->text().trimmed().isEmpty() ||
+             ui->lastNameLineEdit->text().trimmed().isEmpty() ||
+             ui->emailLineEdit->text().trimmed().isEmpty() ||
              ui->publicationNameLineEdit->text().trimmed().isEmpty() ||
              ui->licenseNumberLineEdit->text().trimmed().isEmpty())) {
             ui->statusLabel->setText("تمامی فیلدهای اجباری ناشر را پر کنید");
@@ -135,9 +129,7 @@ void RegisterWindow_c::onRegisterButtonClicked()
             ui->usernameLineEdit->text(),
             ui->passwordLineEdit->text(),
             ui->confirmPasswordLineEdit->text(),
-            ui->securityAnswerLineEdit->text(),
-            ui->firstNameLineEdit->text(),
-            ui->lastNameLineEdit->text()
+            ui->securityAnswerLineEdit->text()
             );
     } else if (ui->publisherRadio->isChecked()) {
         loginController->attemptRegisterPublisher(

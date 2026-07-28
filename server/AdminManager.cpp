@@ -23,8 +23,8 @@ Response AdminManager::getAllUsers(){
     GenreRepository genreRepo;
     QHash<int, QString> genreTitlesById;
     const QVector<Genre> allGenres = genreRepo.getAllGenres();
-    for(const Genre &genre : allGenres)
-    genreTitlesById.insert(genre.getGenreId(), genre.getGenreTitle());
+    for (const Genre &genre : allGenres)
+        genreTitlesById.insert(genre.getGenreId(), genre.getGenreTitle());
 
     for(int userId : qAsConst(normalUserIds)){
         std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
@@ -33,12 +33,11 @@ Response AdminManager::getAllUsers(){
         userData["userId"] = user->getUserId();
         userData["username"] = user->getUsername();
         userData["role"] = "NormalUser";
-        userData["firstName"] = user->getFirstName();
-        userData["lastName"] = user->getLastName();
+        userData["purchasedCount"] = user->getPurchasedCount();
         QVariantList favoriteGenreTitles;
-        for(int genreId : user->getFavoriteGenres()) {
+        for (int genreId : user->getFavoriteGenres()) {
             const auto title = genreTitlesById.constFind(genreId);
-            if(title != genreTitlesById.constEnd())
+            if (title != genreTitlesById.constEnd())
                 favoriteGenreTitles.append(title.value());
         }
         userData["favoriteGenreTitles"] = favoriteGenreTitles;
@@ -96,8 +95,6 @@ Response AdminManager::getNormalUserDetails(int userId){
     QVariantMap data;
     data["userId"] = user->getUserId();
     data["username"] = user->getUsername();
-    data["firstName"] = user->getFirstName();
-    data["lastName"] = user->getLastName();
     data["isBlocked"] = user->getIsBlocked();
     data["isDeleted"] = user->getIsDeleted();
     data["isActive"] = user->getIsActive();
@@ -109,7 +106,7 @@ Response AdminManager::getNormalUserDetails(int userId){
     data["favoriteGenres"] = genreList;
     QVariantList genreTitles;
     GenreRepository genreRepo;
-    for(int genreId : user->getFavoriteGenres()) {
+    for (int genreId : user->getFavoriteGenres()) {
         std::unique_ptr<Genre> genre(genreRepo.loadGenreById(genreId));
         if (genre)
             genreTitles.append(genre->getGenreTitle());
