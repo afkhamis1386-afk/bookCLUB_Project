@@ -18,6 +18,7 @@ class AdminMainWindow : public QMainWindow
 public:
     explicit AdminMainWindow(NetworkManager *networkManager, QWidget *parent = nullptr);
     ~AdminMainWindow() override;
+
 signals:
     void logoutRequested();
 private slots:
@@ -44,8 +45,6 @@ private slots:
     void onDeleteBookButtonClicked();
     void onEditBookButtonClicked();
     void onBookDeleted(const QString &message);
-    void onBookUpdated(const QString &message);
-    void onBookUpdateFailed(const QString &message);
     void onBookDeleteFailed(const QString &message);
     void onAllReviewsLoaded(const QVariantList &reviews);
     void onAllReviewsLoadFailed(const QString &message);
@@ -69,4 +68,5 @@ private:
 };
 
 #endif // ADMINMAINWINDOW_H
+
 
