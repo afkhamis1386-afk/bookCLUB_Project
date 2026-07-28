@@ -15,6 +15,7 @@ public:
     bool updateShelfName(int shelfId, const QString &newName);
     bool deleteShelf(int shelfId);
     bool addBookToShelf(int shelfId, int bookId);
+    bool shelfContainsBook(int shelfId, int bookId);
     bool removeBookFromShelf(int shelfId, int bookId);
     bool reorderShelves(int userId, const QVector<int> &shelfIds);
     bool reorderShelfBooks(int shelfId, const QVector<int> &bookIds);

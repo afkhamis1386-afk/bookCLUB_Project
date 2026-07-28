@@ -16,39 +16,40 @@
   <property name="styleSheet">
    <string notr="true">
 #RegisterWindow_c, #centralwidget {
-    border-image: url(":/wallhaven-49kq3d.jpg") 0 0 0 0 stretch stretch;
+    border-image: url(&quot;:/wallhaven-49kq3d.jpg&quot;) 0 0 0 0 stretch stretch;
 }
 
 QFrame#mainFrame {
-    background-color: rgba(255, 255, 255, 120);
+    background-color: rgba(255, 255, 255, 150);
     border: 1px solid rgba(255, 255, 255, 180);
     border-radius: 20px;
 }
 
-QGroupBox#publisherFieldsGroupBox {
-    background-color: rgba(255, 255, 255, 80);
-    border: 1px solid rgba(44, 62, 80, 40);
+QGroupBox#publisherFieldsGroupBox, QGroupBox#roleGroupBox {
+    background-color: rgba(255, 255, 255, 90);
+    border: 1px solid rgba(44, 62, 80, 80);
     border-radius: 10px;
     margin-top: 10px;
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-weight: bold;
-    color: #2c3e50;
+    color: #000000;
 }
-QGroupBox#publisherFieldsGroupBox::title {
+
+QGroupBox#publisherFieldsGroupBox::title, QGroupBox#roleGroupBox::title {
     subcontrol-origin: margin;
     subcontrol-position: top right;
-    padding: 0 10px;
+    padding: 0 8px;
 }
 
 QLineEdit,
 #publisherFieldsGroupBox QLineEdit {
-    background-color: rgba(255, 255, 255, 200);
-    border: 1px solid rgba(44, 62, 80, 60);
-    border-radius: 8px;
-    padding: 6px 10px;
-    color: #2c3e50;
+    background-color: #ffffff;
+    border: 1px solid rgba(44, 62, 80, 100);
+    border-radius: 6px;
+    padding: 4px 8px;
+    color: #000000;
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
-    font-size: 11pt;
+    font-size: 10pt;
 }
 
 QLineEdit:focus,
@@ -58,31 +59,23 @@ QLineEdit:focus,
 }
 
 QTextEdit#shortDescriptionTextEdit {
-    background-color: rgba(255, 255, 255, 200);
-    border: 1px solid rgba(44, 62, 80, 60);
-    border-radius: 8px;
-    color: #2c3e50;
+    background-color: #ffffff;
+    border: 1px solid rgba(44, 62, 80, 100);
+    border-radius: 6px;
+    color: #000000;
+    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
+    font-size: 10pt;
+    padding: 4px;
+    max-height: 40px;
 }
+
 QTextEdit#shortDescriptionTextEdit:focus {
     border: 2px solid #2c3e50;
     background-color: #ffffff;
 }
 
-QGroupBox#roleGroupBox {
-    background-color: rgba(255, 255, 255, 80);
-    border: 1px solid rgba(44, 62, 80, 40);
-    border-radius: 10px;
-    font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
-    font-weight: bold;
-    color: #2c3e50;
-}
-QGroupBox#roleGroupBox::title {
-    subcontrol-origin: margin;
-    subcontrol-position: top right;
-    padding: 0 10px;
-}
 QRadioButton {
-    color: #2c3e50;
+    color: #000000;
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-weight: bold;
     background: transparent;
@@ -95,9 +88,10 @@ QPushButton#registerButton {
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-size: 11pt;
     font-weight: bold;
-    padding: 8px;
+    padding: 6px;
     min-height: 35px;
 }
+
 QPushButton#registerButton:hover {
     background-color: #34495e;
 }
@@ -109,8 +103,9 @@ QPushButton#backToLoginButton {
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;;
     font-size: 10pt;
     text-decoration: underline;
-    min-height: 30px;
+    min-height: 25px;
 }
+
 QPushButton#backToLoginButton:hover {
     color: #d4af37;
 }</string>
@@ -145,40 +140,40 @@ QPushButton#backToLoginButton:hover {
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="spacing">
-        <number>12</number>
+        <number>4</number>
        </property>
        <property name="leftMargin">
         <number>25</number>
        </property>
        <property name="topMargin">
-        <number>25</number>
+        <number>15</number>
        </property>
        <property name="rightMargin">
         <number>25</number>
        </property>
        <property name="bottomMargin">
-        <number>25</number>
+        <number>15</number>
        </property>
        <item>
         <widget class="QGroupBox" name="roleGroupBox">
          <property name="title">
-          <string>                    نوع حساب  </string>
+          <string>نوع حساب</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <property name="spacing">
-           <number>8</number>
+           <number>4</number>
           </property>
           <property name="leftMargin">
            <number>12</number>
           </property>
           <property name="topMargin">
-           <number>12</number>
+           <number>8</number>
           </property>
           <property name="rightMargin">
            <number>12</number>
           </property>
           <property name="bottomMargin">
-           <number>12</number>
+           <number>8</number>
           </property>
           <item>
            <widget class="QRadioButton" name="normalUserRadio">
@@ -203,7 +198,7 @@ QPushButton#backToLoginButton:hover {
        <item>
         <widget class="QLineEdit" name="usernameLineEdit">
          <property name="echoMode">
-          <enum>QLineEdit::EchoMode::Normal</enum>
+          <enum>QLineEdit::Normal</enum>
          </property>
          <property name="placeholderText">
           <string>نام کاربری</string>
@@ -213,7 +208,7 @@ QPushButton#backToLoginButton:hover {
        <item>
         <widget class="QLineEdit" name="passwordLineEdit">
          <property name="echoMode">
-          <enum>QLineEdit::EchoMode::Password</enum>
+          <enum>QLineEdit::Password</enum>
          </property>
          <property name="placeholderText">
           <string>رمز عبور</string>
@@ -223,7 +218,7 @@ QPushButton#backToLoginButton:hover {
        <item>
         <widget class="QLineEdit" name="confirmPasswordLineEdit">
          <property name="echoMode">
-          <enum>QLineEdit::EchoMode::Password</enum>
+          <enum>QLineEdit::Password</enum>
          </property>
          <property name="placeholderText">
           <string>تکرار رمز عبور</string>
@@ -247,19 +242,19 @@ QPushButton#backToLoginButton:hover {
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="spacing">
-           <number>8</number>
+           <number>4</number>
           </property>
           <property name="leftMargin">
            <number>12</number>
           </property>
           <property name="topMargin">
-           <number>16</number>
+           <number>10</number>
           </property>
           <property name="rightMargin">
            <number>12</number>
           </property>
           <property name="bottomMargin">
-           <number>12</number>
+           <number>8</number>
           </property>
           <item>
            <widget class="QLineEdit" name="firstNameLineEdit">
