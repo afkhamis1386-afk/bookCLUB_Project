@@ -152,13 +152,18 @@ void ClientHandler::processRequest(const Request &req) {
             response = handleBookRequest(req);
             break;
         case RequestType::AddBook:
-        case RequestType::UpdateBook:
         case RequestType::DeactivateBook:
         case RequestType::ReactivateBook:
+            if (checkRole({UserRole::Publisher}, accessError))
+                response = handleBookRequest(req);
+            else
+                response = accessError;
+            break;
+        case RequestType::UpdateBook:
         case RequestType::ApplyDiscount:
         case RequestType::ApplyTimedDiscount:
         case RequestType::CancelTimedDiscount:
-            if (checkRole({UserRole::Publisher}, accessError))
+            if (checkRole({UserRole::Publisher, UserRole::Admin}, accessError))
                 response = handleBookRequest(req);
             else
                 response = accessError;
@@ -398,6 +403,7 @@ Response ClientHandler::handleBookRequest(const Request &req) {
     case RequestType::UpdateBook:
         return bookManager.updateBook(
             authenticatedUserId,
+            authenticatedRole,
             p.value("bookId").toInt(),
             p.value("bookName").toString(),
             p.value("description").toString(),
@@ -415,18 +421,20 @@ Response ClientHandler::handleBookRequest(const Request &req) {
     case RequestType::ApplyDiscount:
         return bookManager.applyDiscount(
             authenticatedUserId,
+            authenticatedRole,
             p.value("bookId").toInt(),
             p.value("discountPercent").toDouble(),
             p.value("discountAmount").toDouble());
     case RequestType::ApplyTimedDiscount:
         return bookManager.applyTimedDiscount(
             authenticatedUserId,
+            authenticatedRole,
             p.value("bookId").toInt(),
             p.value("discountPercent").toDouble(),
             p.value("startDate").toDateTime(),
             p.value("endDate").toDateTime());
     case RequestType::CancelTimedDiscount:
-        return bookManager.cancelTimedDiscount(authenticatedUserId, p.value("bookId").toInt());
+        return bookManager.cancelTimedDiscount(authenticatedUserId, authenticatedRole, p.value("bookId").toInt());
     default:
         return Response(ResponseStatus::Error, "درخواست کتاب نامعتبر");
     }
