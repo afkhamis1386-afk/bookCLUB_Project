@@ -82,16 +82,40 @@ bool SavedBookRepository::isFavoriteBook(int userId, int bookId) {
 }
 bool SavedBookRepository::addFavoriteBook(int userId, int bookId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
-    QSqlQuery query(db);
-    query.prepare(
+    if (!db.isOpen()) {
+        qWarning() << "اتصال دیتابیس برای افزودن علاقه مندی باز نیست:" << db.lastError().text();
+        return false;
+    }
+    if (!db.transaction()) {
+        qWarning() << "خطا در شروع تراکنش افزودن علاقه مندی:" << db.lastError().text();
+        return false;
+    }
+    QSqlQuery orderQuery(db);
+    orderQuery.prepare(
+        "SELECT COALESCE(MAX(DisplayOrder), -1) + 1 "
+        "FROM FavouriteBooks WITH (UPDLOCK, HOLDLOCK) WHERE UserID = :userId");
+    orderQuery.bindValue(":userId", userId);
+    if (!orderQuery.exec() || !orderQuery.next()) {
+        qWarning() << "خطا در محاسبه ترتیب علاقه مندی جدید:" << orderQuery.lastError().text();
+        db.rollback();
+        return false;
+    }
+    QSqlQuery insertQuery(db);
+    insertQuery.prepare(
         "INSERT INTO FavouriteBooks (UserID, BookID, DisplayOrder) "
-        "SELECT :userIdValue, :bookId, COALESCE(MAX(DisplayOrder), -1) + 1 "
-        "FROM FavouriteBooks WHERE UserID = :userIdOrder");
-    query.bindValue(":userIdValue", userId);
-    query.bindValue(":bookId", bookId);
-    query.bindValue(":userIdOrder", userId);
-    if (!query.exec()) {
-        qWarning() << "خطا در افزودن کتاب به لیست علاقه مندی ها:" << query.lastError().text();
+        "VALUES (:userId, :bookId, :displayOrder)");
+    insertQuery.bindValue(":userId", userId);
+    insertQuery.bindValue(":bookId", bookId);
+    insertQuery.bindValue(":displayOrder", orderQuery.value(0).toInt());
+    if (!insertQuery.exec()) {
+        qWarning() << "خطا در افزودن کتاب به لیست علاقه مندی ها:"
+                   << insertQuery.lastError().text();
+        db.rollback();
+        return false;
+    }
+    if (!db.commit()) {
+        qWarning() << "خطا در نهایی سازی افزودن علاقه مندی:" << db.lastError().text();
+        db.rollback();
         return false;
     }
     return true;

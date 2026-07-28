@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>کتابخانه من</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QTabWidget {
@@ -373,6 +373,12 @@ QLineEdit:focus {
             </item>
             <item>
              <widget class="QPushButton" name="addBookToShelfButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="toolTip">
+               <string>افزودن کتاب خریداری‌شده به قفسه انتخاب‌شده</string>
+              </property>
               <property name="text">
                <string>افزودن کتاب به قفسه</string>
               </property>
@@ -380,6 +386,12 @@ QLineEdit:focus {
             </item>
             <item>
              <widget class="QPushButton" name="removeBookFromShelfButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="toolTip">
+               <string>حذف کتاب انتخاب‌شده از قفسه</string>
+              </property>
               <property name="text">
                <string>حذف کتاب از قفسه</string>
               </property>
@@ -394,6 +406,12 @@ QLineEdit:focus {
             </item>
             <item>
              <widget class="QPushButton" name="createShelfButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="toolTip">
+               <string>ساخت قفسه با نام واردشده</string>
+              </property>
               <property name="text">
                <string>ساخت قفسه</string>
               </property>
@@ -401,6 +419,12 @@ QLineEdit:focus {
             </item>
             <item>
              <widget class="QPushButton" name="renameShelfButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="toolTip">
+               <string>تغییر نام قفسه انتخاب‌شده</string>
+              </property>
               <property name="text">
                <string>تغییر نام قفسه</string>
               </property>
@@ -408,6 +432,12 @@ QLineEdit:focus {
             </item>
             <item>
              <widget class="QPushButton" name="deleteShelfButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="toolTip">
+               <string>حذف قفسه انتخاب‌شده</string>
+              </property>
               <property name="text">
                <string>حذف قفسه</string>
               </property>
@@ -421,7 +451,7 @@ QLineEdit:focus {
       </widget>
       <widget class="QWidget" name="savedBooksTab">
        <attribute name="title">
-        <string>                    کتاب های ذخیره شده و علاقه مندی ها                    </string>
+        <string>                  کتاب های ذخیره شده و علاقه مندی ها          </string>
        </attribute>
        <widget class="QLabel" name="savedBooksLabel">
         <property name="geometry">
@@ -498,6 +528,9 @@ QLineEdit:focus {
         </property>
        </widget>
        <widget class="QPushButton" name="removeSavedBookButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>20</x>
@@ -505,6 +538,9 @@ QLineEdit:focus {
           <width>451</width>
           <height>42</height>
          </rect>
+        </property>
+        <property name="toolTip">
+         <string>حذف کتاب انتخاب‌شده از کتاب‌های ذخیره‌شده</string>
         </property>
         <property name="text">
          <string>حذف از کتاب های ذخیره شده</string>
@@ -537,6 +573,9 @@ QComboBox QAbstractItemView {
         </property>
        </widget>
        <widget class="QPushButton" name="addFavoriteBookButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>520</x>
@@ -545,11 +584,17 @@ QComboBox QAbstractItemView {
           <height>42</height>
          </rect>
         </property>
+        <property name="toolTip">
+         <string>افزودن کتاب ذخیره‌شده به لیست علاقه‌مندی‌ها</string>
+        </property>
         <property name="text">
          <string>افزودن به علاقه مندی ها</string>
         </property>
        </widget>
        <widget class="QPushButton" name="removeFavoriteBookButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>760</x>
@@ -557,6 +602,9 @@ QComboBox QAbstractItemView {
           <width>221</width>
           <height>42</height>
          </rect>
+        </property>
+        <property name="toolTip">
+         <string>حذف کتاب انتخاب‌شده از لیست علاقه‌مندی‌ها</string>
         </property>
         <property name="text">
          <string>حذف از علاقه مندی ها</string>
@@ -590,7 +638,7 @@ QComboBox QAbstractItemView {
       </widget>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>                               کتاب های من                             </string>
+        <string>                               کتاب های من                        </string>
        </attribute>
        <widget class="QListWidget" name="myBooksListWidget">
         <property name="geometry">
@@ -614,6 +662,12 @@ QComboBox QAbstractItemView {
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QPushButton" name="viewBookDetailButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="toolTip">
+            <string>مشاهده جزئیات کتاب انتخاب‌شده</string>
+           </property>
            <property name="text">
             <string>مشاهده جزئیات کتاب</string>
            </property>
@@ -621,6 +675,12 @@ QComboBox QAbstractItemView {
          </item>
          <item>
           <widget class="QPushButton" name="openBookButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="toolTip">
+            <string>بازکردن کتاب انتخاب‌شده برای مطالعه</string>
+           </property>
            <property name="text">
             <string>مشاهده / مطالعه </string>
            </property>
