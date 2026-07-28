@@ -16,16 +16,18 @@ void PublisherBookController::addBook(const QString &bookName, const QString &de
         emit validationError("توضیحات کتاب نمی تواند خالی باشد");
         return;
     }
-    if (price < 0) {
-        emit validationError("قیمت کتاب نمی تواند منفی باشد");
+    if (price < 0 || price > 99999999.99) {
+        emit validationError("قیمت کتاب باید بین صفر و ۹۹٬۹۹۹٬۹۹۹٫۹۹ باشد");
         return;
     }
     if (discountPercent < 0 || discountPercent > 100) {
         emit validationError("درصد تخفیف باید بین ۰ تا ۱۰۰ باشد");
         return;
     }
-    if (genreTitle.trimmed().isEmpty() || categoryTitle.trimmed().isEmpty() || authorName.trimmed().isEmpty()) {
-        emit validationError("ژانر، دسته بندی و نام نویسنده الزامی هستند");
+    if (genreTitle.trimmed().isEmpty() || genreTitle.length() > 30
+        || categoryTitle.trimmed().isEmpty() || categoryTitle.length() > 50
+        || authorName.trimmed().isEmpty() || authorName.length() > 60) {
+        emit validationError("ژانر، دسته بندی و نام نویسنده باید معتبر و مطابق محدودیت طول فیلدها باشند");
         return;
     }
     if (pdfFilePath.trimmed().isEmpty()) {
@@ -74,8 +76,14 @@ void PublisherBookController::updateBook(int bookId, const QString &bookName, co
         emit validationError("توضیحات کتاب نمی تواند خالی باشد");
         return;
     }
-    if (price < 0) {
-        emit validationError("قیمت کتاب نمی تواند منفی باشد");
+    if (price < 0 || price > 99999999.99) {
+        emit validationError("قیمت کتاب باید بین صفر و ۹۹٬۹۹۹٬۹۹۹٫۹۹ باشد");
+        return;
+    }
+    if (genreTitle.trimmed().isEmpty() || genreTitle.length() > 30
+        || categoryTitle.trimmed().isEmpty() || categoryTitle.length() > 50
+        || authorName.trimmed().isEmpty() || authorName.length() > 60) {
+        emit validationError("ژانر، دسته بندی و نام نویسنده باید معتبر و مطابق محدودیت طول فیلدها باشند");
         return;
     }
     QByteArray pdfData;
@@ -129,8 +137,8 @@ void PublisherBookController::applyDiscount(int bookId, double discountPercent, 
         emit validationError("فقط یکی از تخفیف درصدی یا مبلغی را می توانید تعیین کنید");
         return;
     }
-    if (discountPercent < 0 || discountAmount < 0) {
-        emit validationError("مقدار تخفیف نمی تواند منفی باشد");
+    if (discountPercent < 0 || discountAmount < 0 || discountAmount > 99999999.99) {
+        emit validationError("مقدار تخفیف باید با محدودیت عددی پایگاه داده سازگار باشد");
         return;
     }
     if (!networkManager->isConnected()) { emit discountApplyFailed("اتصال به سرور برقرار نیست"); return; }
