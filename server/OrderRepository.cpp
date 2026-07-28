@@ -165,6 +165,31 @@ Order* OrderRepository::loadOrderById(int orderId) {
     order->setItems(items);
     return order;
 }
+QStringList OrderRepository::getBookNamesByOrderId(int orderId) {
+    QStringList bookNames;
+    QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    QSqlQuery query(db);
+    query.prepare(
+        "SELECT b.BookName "
+        "FROM OrderItems oi "
+        "INNER JOIN Books b ON b.BookID = oi.BookID "
+        "WHERE oi.OrderID = :orderId "
+        "ORDER BY oi.OrderItemID ASC"
+        );
+    query.bindValue(":orderId", orderId);
+    if (!query.exec()) {
+        qWarning() << "خطا در دریافت نام کتاب‌های سفارش:"
+                   << query.lastError().text();
+        return bookNames;
+    }
+    while (query.next()) {
+        const QString bookName = query.value("BookName").toString().trimmed();
+        if (!bookName.isEmpty()) {
+            bookNames.append(bookName);
+        }
+    }
+    return bookNames;
+}
 QVector<int> OrderRepository::getOrderIdsByUser(int userId) {
     QVector<int> orderIds;
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();

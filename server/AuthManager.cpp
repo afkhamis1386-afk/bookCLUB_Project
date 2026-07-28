@@ -15,12 +15,9 @@
 #include <exception>
 AuthManager::AuthManager() {}
 Response AuthManager::validateNormalUserRegistration(const QString &username, const QString &plainPassword,
-                                                     const QString &plainAnswer, const QString &firstName,
-                                                     const QString &lastName) const {
+                                                     const QString &plainAnswer) const {
     const QString cleanUsername = username.trimmed();
     const QString cleanAnswer = plainAnswer.trimmed();
-    const QString cleanFirstName = firstName.trimmed();
-    const QString cleanLastName = lastName.trimmed();
     if (!User::isValidUsername(cleanUsername)) {
         return Response(ResponseStatus::ValidationFailed, "نام کاربری نامعتبر است. طول مجاز ۳ تا ۱۵ کاراکتر و فقط حروف انگلیسی، اعداد، خط تیره و زیرخط");
     }
@@ -29,12 +26,6 @@ Response AuthManager::validateNormalUserRegistration(const QString &username, co
     }
     if (cleanAnswer.isEmpty()) {
         return Response(ResponseStatus::ValidationFailed, "پاسخ سوال امنیتی نمی تواند خالی باشد");
-    }
-    if (cleanFirstName.isEmpty() || cleanFirstName.length() > 30) {
-        return Response(ResponseStatus::ValidationFailed, "نام باید بین ۱ تا ۳۰ کاراکتر باشد");
-    }
-    if (cleanLastName.isEmpty() || cleanLastName.length() > 30) {
-        return Response(ResponseStatus::ValidationFailed, "نام خانوادگی باید بین ۱ تا ۳۰ کاراکتر باشد");
     }
     return Response(ResponseStatus::Success, "");
 }
@@ -120,17 +111,14 @@ Response AuthManager::buildLoginSuccessResponse(int userId, const QString &usern
     return Response(ResponseStatus::Success, "ورود موفقیت آمیز بود", data);
 }
 Response AuthManager::registerNormalUser(const QString &username, const QString &plainPassword,
-                                         const QString &plainAnswer, const QString &firstName,
-                                         const QString &lastName) {
+                                         const QString &plainAnswer) {
     try {
-        Response validation = validateNormalUserRegistration(username, plainPassword, plainAnswer, firstName, lastName);
+        Response validation = validateNormalUserRegistration(username, plainPassword, plainAnswer);
         if (validation.getStatus() != ResponseStatus::Success) {
             return validation;
         }
         const QString cleanUsername = username.trimmed();
         const QString cleanAnswer = plainAnswer.trimmed();
-        const QString cleanFirstName = firstName.trimmed();
-        const QString cleanLastName = lastName.trimmed();
         const QString encryptedUsername = User::encryptString(cleanUsername);
         UserRepository userRepo;
         int existingUserId = -1;
@@ -138,7 +126,7 @@ Response AuthManager::registerNormalUser(const QString &username, const QString 
         if (userRepo.findUserRoleAndId(encryptedUsername, existingUserId, existingRole)) {
             return Response(ResponseStatus::Error, "این نام کاربری قبلاً استفاده شده است");
         }
-        NormalUser newUser(cleanUsername, plainPassword, cleanAnswer, cleanFirstName, cleanLastName);
+        NormalUser newUser(cleanUsername, plainPassword, cleanAnswer);
         const int newUserId = userRepo.insertNormalUser(newUser);
         if (newUserId == -1) {
             return Response(ResponseStatus::Error, "خطا در ثبت نام. لطفاً دوباره تلاش کنید");
@@ -478,8 +466,6 @@ Response AuthManager::getAccountInfo(int userId, UserRole role) {
             QVariantMap data;
             data["userId"] = user->getUserId();
             data["username"] = user->getUsername();
-            data["firstName"] = user->getFirstName();
-            data["lastName"] = user->getLastName();
             data["registerDate"] = user->getRegisterDate();
             data["purchasedCount"] = user->getPurchasedCount();
             QVariantList genreList;
@@ -534,8 +520,7 @@ Response AuthManager::updateAccount(int userId, UserRole role, const QVariantMap
         const QString username = accountData.value("username").toString().trimmed();
         const QString newPassword = accountData.value("password").toString();
         const QString securityAnswer = accountData.value("securityAnswer").toString().trimmed();
-        const QString firstName = accountData.value("firstName").toString().trimmed();
-        const QString lastName = accountData.value("lastName").toString().trimmed();
+
         if (!User::isValidUsername(username)) {
             return Response(ResponseStatus::ValidationFailed,
                             "نام کاربری نامعتبر است. طول مجاز ۳ تا ۱۵ کاراکتر و فقط حروف انگلیسی، اعداد، خط تیره و زیرخط است");
@@ -544,46 +529,41 @@ Response AuthManager::updateAccount(int userId, UserRole role, const QVariantMap
             return Response(ResponseStatus::ValidationFailed,
                             "رمز عبور جدید ضعیف است. باید حداقل ۸ کاراکتر و شامل حروف بزرگ، کوچک و عدد باشد");
         }
-        if (firstName.isEmpty() || firstName.length() > 30) {
-            return Response(ResponseStatus::ValidationFailed, "نام باید بین ۱ تا ۳۰ کاراکتر باشد");
-        }
-        if (lastName.isEmpty() || lastName.length() > 30) {
-            return Response(ResponseStatus::ValidationFailed, "نام خانوادگی باید بین ۱ تا ۳۰ کاراکتر باشد");
-        }
-
         const QString encryptedUsername = User::encryptString(username);
         const QString passwordHash = newPassword.isEmpty() ? QString() : User::hashString(newPassword);
         const QString securityAnswerHash = securityAnswer.isEmpty() ? QString() : User::hashString(securityAnswer);
-
         UserRepository userRepo;
         if (userRepo.isUsernameTakenByOther(encryptedUsername, userId)) {
             return Response(ResponseStatus::Error, "این نام کاربری قبلاً استفاده شده است");
         }
-
         if (role == UserRole::NormalUser) {
             std::unique_ptr<NormalUser> currentUser(userRepo.loadNormalUserById(userId));
             if (!currentUser) {
                 return Response(ResponseStatus::NotFound, "کاربر یافت نشد");
             }
             if (!userRepo.updateNormalUserAccount(userId, encryptedUsername, passwordHash,
-                                                  securityAnswerHash, firstName, lastName)) {
+                                                  securityAnswerHash)) {
                 return Response(ResponseStatus::Error, "خطا در به روزرسانی حساب کاربری");
             }
-
             QVariantMap data;
             data["userId"] = userId;
             data["role"] = static_cast<int>(role);
             data["username"] = username;
-            data["firstName"] = firstName;
-            data["lastName"] = lastName;
             return Response(ResponseStatus::Success, "حساب کاربری با موفقیت ویرایش شد", data);
         }
-
+        const QString firstName = accountData.value("firstName").toString().trimmed();
+        const QString lastName = accountData.value("lastName").toString().trimmed();
         const QString email = accountData.value("email").toString().trimmed();
         const QString publicationName = accountData.value("publicationName").toString().trimmed();
         const QString licenseNumber = accountData.value("licenseNumber").toString().trimmed();
         const QString shortDescription = accountData.value("shortDescription").toString().trimmed();
 
+        if (firstName.isEmpty() || firstName.length() > 30) {
+            return Response(ResponseStatus::ValidationFailed, "نام باید بین ۱ تا ۳۰ کاراکتر باشد");
+        }
+        if (lastName.isEmpty() || lastName.length() > 30) {
+            return Response(ResponseStatus::ValidationFailed, "نام خانوادگی باید بین ۱ تا ۳۰ کاراکتر باشد");
+        }
         if (email.isEmpty() || email.length() > 120 || !isValidEmail(email)) {
             return Response(ResponseStatus::ValidationFailed, "ایمیل نامعتبر است");
         }
@@ -614,7 +594,6 @@ Response AuthManager::updateAccount(int userId, UserRole role, const QVariantMap
                                          publicationName, licenseNumber)) {
             return Response(ResponseStatus::Error, "خطا در به روزرسانی حساب ناشر");
         }
-
         QVariantMap data;
         data["userId"] = userId;
         data["role"] = static_cast<int>(role);

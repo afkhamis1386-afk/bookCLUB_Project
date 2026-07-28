@@ -20,7 +20,6 @@ public:
     explicit PublisherAddBookWindow_c(NetworkManager *networkManager, QWidget *parent = nullptr);
     explicit PublisherAddBookWindow_c(NetworkManager *networkManager, int editBookId, QWidget *parent = nullptr);
     ~PublisherAddBookWindow_c() override;
-
 signals:
     void backRequested();
 private slots:
@@ -39,23 +38,22 @@ private slots:
     void onBookUpdateFailed(const QString &message);
     void onBookDetailsForEditLoaded(const QVariantMap &bookData);
     void onBookDetailsForEditLoadFailed(const QString &message);
-
 private:
     void setupCommon();
     void applySelectedDiscount(int bookId);
-
     Ui::PublisherAddBookWindow_c *ui;
     NetworkManager *networkManager;
     PublisherBookController *publisherBookController;
     ProfileController *profileController;
     QString selectedCoverPath;
     QString selectedPdfPath;
-
     bool isEditMode = false;
     int editingBookId = -1;
     bool pendingGenreSelection = false;
     QString pendingGenreTitle;
     bool hadTimedDiscount = false;
+    double originalDiscountAmount = 0.0;
+    bool discountSelectionChangedByUser = false;
 };
 
 #endif // PUBLISHERADDBOOKWINDOW_C_H

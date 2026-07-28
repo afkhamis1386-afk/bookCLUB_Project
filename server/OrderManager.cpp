@@ -18,6 +18,7 @@
 #include "../common/normaluser.h"
 #include <QRegularExpression>
 #include <QDateTime>
+#include <QStringList>
 #include <memory>
 
 OrderManager::OrderManager() {}
@@ -139,6 +140,10 @@ Response OrderManager::getOrderHistory(int userId) {
         if (!order) continue;
         QVariantMap orderData;
         orderData["orderId"] = order->getOrderId();
+        const QStringList bookNames = orderRepo.getBookNamesByOrderId(orderId);
+        orderData["bookNames"] = bookNames.isEmpty()
+                                     ? QString("ثبت نشده")
+                                     : bookNames.join(QStringLiteral("، "));
         orderData["orderDate"] = order->getOrderDate();
         orderData["finalPrice"] = order->getFinalPrice();
         orderData["status"] = order->getStatusTitle();

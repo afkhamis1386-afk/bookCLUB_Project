@@ -14,7 +14,6 @@ PublisherAddBookWindow_c::PublisherAddBookWindow_c(NetworkManager *networkManage
     ui->setupUi(this);
     setupCommon();
 }
-
 PublisherAddBookWindow_c::PublisherAddBookWindow_c(NetworkManager *networkManager, int editBookId, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::PublisherAddBookWindow_c)
@@ -36,7 +35,6 @@ PublisherAddBookWindow_c::PublisherAddBookWindow_c(NetworkManager *networkManage
     connect(publisherBookController, &PublisherBookController::bookUpdateFailed, this, &PublisherAddBookWindow_c::onBookUpdateFailed);
     publisherBookController->loadBookForEdit(editingBookId);
 }
-
 void PublisherAddBookWindow_c::setupCommon() {
     ui->descriptionTextEdit->setPlaceholderText("توضیحات کتاب");
     ui->priceDoubleSpinBox->setSuffix(" تومان");
@@ -49,6 +47,9 @@ void PublisherAddBookWindow_c::setupCommon() {
     connect(ui->noDiscountRadio, &QRadioButton::toggled, this, &PublisherAddBookWindow_c::onDiscountTypeToggled);
     connect(ui->normalDiscountRadio, &QRadioButton::toggled, this, &PublisherAddBookWindow_c::onDiscountTypeToggled);
     connect(ui->timedDiscountRadio, &QRadioButton::toggled, this, &PublisherAddBookWindow_c::onDiscountTypeToggled);
+    connect(ui->noDiscountRadio, &QRadioButton::clicked, this, [this]() { discountSelectionChangedByUser = true; });
+    connect(ui->normalDiscountRadio, &QRadioButton::clicked, this, [this]() { discountSelectionChangedByUser = true; });
+    connect(ui->timedDiscountRadio, &QRadioButton::clicked, this, [this]() { discountSelectionChangedByUser = true; });
     connect(publisherBookController, &PublisherBookController::bookAdded, this, &PublisherAddBookWindow_c::onBookAdded);
     connect(publisherBookController, &PublisherBookController::bookAddFailed, this, &PublisherAddBookWindow_c::onBookAddFailed);
     connect(publisherBookController, &PublisherBookController::bookFileReadFailed, this, &PublisherAddBookWindow_c::onBookFileReadFailed);
@@ -90,7 +91,11 @@ void PublisherAddBookWindow_c::applySelectedDiscount(int bookId) {
     bool normal = ui->normalDiscountRadio->isChecked();
     bool timed = ui->timedDiscountRadio->isChecked();
     double percent = ui->discountPercentSpinBox->value();
-    if (isEditMode) {
+    const bool preserveAmountDiscount = isEditMode
+                                        && originalDiscountAmount > 0.0
+                                        && !discountSelectionChangedByUser
+                                        && ui->noDiscountRadio->isChecked();
+    if (isEditMode && !preserveAmountDiscount) {
         publisherBookController->applyDiscount(bookId, normal ? percent : 0, 0);
     }
     if (timed) {
@@ -211,6 +216,16 @@ void PublisherAddBookWindow_c::onBookDetailsForEditLoaded(const QVariantMap &boo
     ui->categoryTitleLineEdit->setText(bookData.value("categoryTitle").toString());
     ui->authorNameLineEdit->setText(bookData.value("authorName").toString());
 
+    const bool hasCoverImage = bookData.value("hasCoverImage").toBool()
+                               || !bookData.value("coverImagePath").toString().trimmed().isEmpty();
+    const bool hasPdfFile = bookData.value("hasPdfFile").toBool();
+    ui->coverPathLabel->setText(hasCoverImage
+                                    ? "عکس جلد فعلی ثبت شده است؛ برای جایگزینی، فایل جدید انتخاب کنید"
+                                    : "عکس جلدی ثبت نشده است؛ برای افزودن، فایل انتخاب کنید");
+    ui->pdfPathLabel->setText(hasPdfFile
+                                  ? "فایل PDF فعلی ثبت شده است؛ برای جایگزینی، فایل جدید انتخاب کنید"
+                                  : "فایل PDF فعلی ثبت نشده است؛ برای افزودن، فایل انتخاب کنید");
+
     pendingGenreTitle = bookData.value("genreTitle").toString();
     pendingGenreSelection = true;
     if (ui->genreComboBox->count() > 0) {
@@ -221,6 +236,8 @@ void PublisherAddBookWindow_c::onBookDetailsForEditLoaded(const QVariantMap &boo
 
     hadTimedDiscount = bookData.contains("timedDiscountId");
     double normalPercent = bookData.value("discountPercent").toDouble();
+    originalDiscountAmount = bookData.value("discountAmount").toDouble();
+    discountSelectionChangedByUser = false;
     if (hadTimedDiscount) {
         ui->timedDiscountRadio->setChecked(true);
         ui->discountPercentSpinBox->setValue(bookData.value("timedDiscountPercent").toDouble());
@@ -231,6 +248,11 @@ void PublisherAddBookWindow_c::onBookDetailsForEditLoaded(const QVariantMap &boo
         ui->discountPercentSpinBox->setValue(normalPercent);
     } else {
         ui->noDiscountRadio->setChecked(true);
+        if (originalDiscountAmount > 0.0) {
+            ui->statusLabel->setText(
+                QString("این کتاب %1 تومان تخفیف مبلغی دارد. تا زمانی که نوع تخفیف را تغییر ندهید، مقدار فعلی حفظ می شود.")
+                    .arg(originalDiscountAmount, 0, 'f', 2));
+        }
     }
     onDiscountTypeToggled();
 }

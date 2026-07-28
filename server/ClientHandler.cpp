@@ -152,13 +152,18 @@ void ClientHandler::processRequest(const Request &req) {
             response = handleBookRequest(req);
             break;
         case RequestType::AddBook:
-        case RequestType::UpdateBook:
         case RequestType::DeactivateBook:
         case RequestType::ReactivateBook:
+            if (checkRole({UserRole::Publisher}, accessError))
+                response = handleBookRequest(req);
+            else
+                response = accessError;
+            break;
+        case RequestType::UpdateBook:
         case RequestType::ApplyDiscount:
         case RequestType::ApplyTimedDiscount:
         case RequestType::CancelTimedDiscount:
-            if (checkRole({UserRole::Publisher}, accessError))
+            if (checkRole({UserRole::Publisher, UserRole::Admin}, accessError))
                 response = handleBookRequest(req);
             else
                 response = accessError;
@@ -211,6 +216,8 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::AddBookToShelf:
         case RequestType::RemoveBookFromShelf:
         case RequestType::MoveBookBetweenShelves:
+        case RequestType::ReorderShelves:
+        case RequestType::ReorderShelfBooks:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleShelfRequest(req);
             else
@@ -227,6 +234,10 @@ void ClientHandler::processRequest(const Request &req) {
         case RequestType::SaveBook:
         case RequestType::UnsaveBook:
         case RequestType::GetSavedBooks:
+        case RequestType::AddFavoriteBook:
+        case RequestType::RemoveFavoriteBook:
+        case RequestType::GetFavoriteBooks:
+        case RequestType::ReorderFavoriteBooks:
             if (checkRole({UserRole::NormalUser}, accessError))
                 response = handleSavedBookRequest(req);
             else
@@ -307,8 +318,7 @@ Response ClientHandler::handleAuthRequest(const Request &req) {
         }
         return authManager.registerNormalUser(
             p.value("username").toString(), p.value("password").toString(),
-            p.value("securityAnswer").toString(), p.value("firstName").toString(),
-            p.value("lastName").toString());
+            p.value("securityAnswer").toString());
     case RequestType::Login:
         return authManager.login(p.value("username").toString(), p.value("password").toString());
     case RequestType::ChangePassword:
@@ -398,6 +408,7 @@ Response ClientHandler::handleBookRequest(const Request &req) {
     case RequestType::UpdateBook:
         return bookManager.updateBook(
             authenticatedUserId,
+            authenticatedRole,
             p.value("bookId").toInt(),
             p.value("bookName").toString(),
             p.value("description").toString(),
@@ -415,18 +426,20 @@ Response ClientHandler::handleBookRequest(const Request &req) {
     case RequestType::ApplyDiscount:
         return bookManager.applyDiscount(
             authenticatedUserId,
+            authenticatedRole,
             p.value("bookId").toInt(),
             p.value("discountPercent").toDouble(),
             p.value("discountAmount").toDouble());
     case RequestType::ApplyTimedDiscount:
         return bookManager.applyTimedDiscount(
             authenticatedUserId,
+            authenticatedRole,
             p.value("bookId").toInt(),
             p.value("discountPercent").toDouble(),
             p.value("startDate").toDateTime(),
             p.value("endDate").toDateTime());
     case RequestType::CancelTimedDiscount:
-        return bookManager.cancelTimedDiscount(authenticatedUserId, p.value("bookId").toInt());
+        return bookManager.cancelTimedDiscount(authenticatedUserId, authenticatedRole, p.value("bookId").toInt());
     default:
         return Response(ResponseStatus::Error, "درخواست کتاب نامعتبر");
     }
@@ -502,7 +515,11 @@ Response ClientHandler::handleShelfRequest(const Request &req) {
     case RequestType::RemoveBookFromShelf:
         return shelfManager.removeBookFromShelf(authenticatedUserId, p.value("shelfId").toInt(), p.value("bookId").toInt());
     case RequestType::MoveBookBetweenShelves:
-        return shelfManager.moveBookBetweenShelves(authenticatedUserId,p.value("sourceShelfId").toInt(), p.value("destShelfId").toInt(), p.value("bookId").toInt());
+        return shelfManager.moveBookBetweenShelves(authenticatedUserId, p.value("sourceShelfId").toInt(), p.value("destShelfId").toInt(), p.value("bookId").toInt());
+    case RequestType::ReorderShelves:
+        return shelfManager.reorderShelves(authenticatedUserId, p.value("shelfIds").toList());
+    case RequestType::ReorderShelfBooks:
+        return shelfManager.reorderShelfBooks(authenticatedUserId, p.value("shelfId").toInt(), p.value("bookIds").toList());
     default:
         return Response(ResponseStatus::Error, "درخواست قفسه نامعتبر");
     }
@@ -517,6 +534,14 @@ Response ClientHandler::handleSavedBookRequest(const Request &req) {
         return savedBookManager.unsaveBook(authenticatedUserId, p.value("bookId").toInt());
     case RequestType::GetSavedBooks:
         return savedBookManager.getSavedBooks(authenticatedUserId);
+    case RequestType::AddFavoriteBook:
+        return savedBookManager.addFavoriteBook(authenticatedUserId, p.value("bookId").toInt());
+    case RequestType::RemoveFavoriteBook:
+        return savedBookManager.removeFavoriteBook(authenticatedUserId, p.value("bookId").toInt());
+    case RequestType::GetFavoriteBooks:
+        return savedBookManager.getFavoriteBooks(authenticatedUserId);
+    case RequestType::ReorderFavoriteBooks:
+        return savedBookManager.reorderFavoriteBooks(authenticatedUserId, p.value("bookIds").toList());
     default:
         return Response(ResponseStatus::Error, "درخواست کتاب ذخیره شده نامعتبر");
     }

@@ -2,6 +2,8 @@
 #define LIBRARYWINDOW_C_H
 
 #include <QMainWindow>
+#include <QModelIndex>
+#include <QVariantList>
 #include "NetworkManager.h"
 #include "LibraryController.h"
 #include "SavedBookController.h"
@@ -11,6 +13,8 @@ namespace Ui {
 class LibraryWindow_c;
 }
 QT_END_NAMESPACE
+
+class QListWidget;
 
 class LibraryWindow_c : public QMainWindow
 {
@@ -42,26 +46,58 @@ private slots:
     void onRemoveBookFromShelfButtonClicked();
     void onBookRemovedFromShelf(const QString &message);
     void onBookRemoveFromShelfFailed(const QString &message);
-    void onSavedBooksLoaded(const QVariantList &bookIds);
+    void onShelvesRowsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd,
+                            const QModelIndex &destinationParent, int destinationRow);
+    void onShelfBooksRowsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd,
+                               const QModelIndex &destinationParent, int destinationRow);
+    void onShelvesReordered(const QString &message);
+    void onShelvesReorderFailed(const QString &message);
+    void onShelfBooksReordered(const QString &message);
+    void onShelfBooksReorderFailed(const QString &message);
+
+    void onSavedBooksLoaded(const QVariantList &books);
     void onSavedBooksLoadFailed(const QString &message);
     void onRemoveSavedBookButtonClicked();
     void onBookUnsaved(const QString &message);
     void onBookUnsaveFailed(const QString &message);
-    void onViewSavedBookButtonClicked();
+    void onFavoriteBooksLoaded(const QVariantList &books);
+    void onFavoriteBooksLoadFailed(const QString &message);
+    void onAddFavoriteBookButtonClicked();
+    void onRemoveFavoriteBookButtonClicked();
+    void onFavoriteBookAdded(const QString &message);
+    void onFavoriteBookAddFailed(const QString &message);
+    void onFavoriteBookRemoved(const QString &message);
+    void onFavoriteBookRemoveFailed(const QString &message);
+    void onFavoriteBooksRowsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd,
+                                  const QModelIndex &destinationParent, int destinationRow);
+    void onFavoriteBooksReordered(const QString &message);
+    void onFavoriteBooksReorderFailed(const QString &message);
+
     void onValidationError(const QString &message);
     void onBackButtonClicked();
     void onPurchasedBooksLoaded(const QVariantList &bookIds);
     void onPurchasedBooksLoadFailed(const QString &message);
     void onOpenBookButtonClicked();
     void onViewBookDetailButtonClicked();
+
 private:
     Ui::LibraryWindow_c *ui;
     NetworkManager *networkManager;
     LibraryController *libraryController;
     SavedBookController *savedBookController;
     QVariantList currentShelves;
+    QVariantList currentSavedBooks;
+    QVariantList currentFavoriteBooks;
+    bool applyingServerData;
+    void configureReorderableList(QListWidget *listWidget);
     void populateShelvesList(const QVariantList &shelves);
     void populateAddBookCombo();
+    void populateSavedBooksList();
+    void populateFavoriteBooksList();
+    void populateFavoriteBookCombo();
+    void syncCurrentShelvesToWidgetOrder();
+    QVariantList itemIds(const QListWidget *listWidget) const;
+    QVariantMap selectedShelfData() const;
     int getSelectedShelfId() const;
 };
 

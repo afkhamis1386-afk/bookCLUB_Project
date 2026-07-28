@@ -15,8 +15,7 @@ class Admin;
 class AuthManager {
 public:
     AuthManager();
-    Response registerNormalUser(const QString &username, const QString &plainPassword, const QString &plainAnswer,
-                                const QString &firstName, const QString &lastName);
+    Response registerNormalUser(const QString &username, const QString &plainPassword, const QString &plainAnswer);
     Response registerPublisher(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName,
                                const QString &lastName, const QString &email,const QString &publicationName,
                                const QString &licenseNumber, const QString &shortDescription);
@@ -29,8 +28,7 @@ public:
     Response getAccountInfo(int userId, UserRole role);
     Response updateAccount(int userId, UserRole role, const QVariantMap &accountData);
 private:
-    Response validateNormalUserRegistration(const QString &username, const QString &plainPassword, const QString &plainAnswer,
-                                            const QString &firstName, const QString &lastName) const;
+    Response validateNormalUserRegistration(const QString &username, const QString &plainPassword, const QString &plainAnswer) const;
     Response validatePublisherRegistration(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName,
                                            const QString &lastName, const QString &email, const QString &publicationName, const QString &licenseNumber) const;
     Response validatePasswordChangeInput(const QString &oldPassword, const QString &newPassword) const;

@@ -244,7 +244,7 @@ QLineEdit:focus {
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="shelvesTab">
        <attribute name="title">
@@ -421,43 +421,171 @@ QLineEdit:focus {
       </widget>
       <widget class="QWidget" name="savedBooksTab">
        <attribute name="title">
-        <string>                               کتاب های ذخیره شده                       </string>
+        <string>                    کتاب های ذخیره شده و علاقه مندی ها                    </string>
        </attribute>
-       <widget class="QListWidget" name="saveBooksListWidget">
+       <widget class="QLabel" name="savedBooksLabel">
         <property name="geometry">
          <rect>
           <x>20</x>
           <y>20</y>
-          <width>961</width>
-          <height>301</height>
+          <width>451</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+    color: #2c3e50;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(112, 146, 190, 0.5);
+    border-radius: 8px;
+    padding: 5px 15px;
+    font-size: 14px;
+    font-weight: bold;
+}</string>
+        </property>
+        <property name="text">
+         <string>کتاب های ذخیره شده</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="favoriteBooksLabel">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>20</y>
+          <width>461</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+    color: #2c3e50;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(112, 146, 190, 0.5);
+    border-radius: 8px;
+    padding: 5px 15px;
+    font-size: 14px;
+    font-weight: bold;
+}</string>
+        </property>
+        <property name="text">
+         <string>لیست علاقه مندی ها</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QListWidget" name="saveBooksListWidget">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>60</y>
+          <width>451</width>
+          <height>311</height>
          </rect>
         </property>
        </widget>
-       <widget class="QWidget" name="layoutWidget_savedBooks">
+       <widget class="QListWidget" name="favoriteBooksListWidget">
         <property name="geometry">
          <rect>
-          <x>230</x>
-          <y>340</y>
-          <width>531</width>
-          <height>87</height>
+          <x>520</x>
+          <y>60</y>
+          <width>461</width>
+          <height>311</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QPushButton" name="removeSavedBookButton">
-           <property name="text">
-            <string>حذف از لیست ذخیره ها</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="viewSavedBookButton">
-           <property name="text">
-            <string>مشاهده جزئیات</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       </widget>
+       <widget class="QPushButton" name="removeSavedBookButton">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>390</y>
+          <width>451</width>
+          <height>42</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>حذف از کتاب های ذخیره شده</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="favoriteBooksComboBox">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>390</y>
+          <width>461</width>
+          <height>36</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QComboBox {
+    background-color: rgba(0, 0, 0, 100);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 30);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+QComboBox::drop-down { border: none; }
+QComboBox QAbstractItemView {
+    background-color: rgba(0, 0, 0, 200);
+    color: white;
+    selection-background-color: rgba(45, 95, 139, 150);
+}</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="addFavoriteBookButton">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>440</y>
+          <width>221</width>
+          <height>42</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>افزودن به علاقه مندی ها</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="removeFavoriteBookButton">
+        <property name="geometry">
+         <rect>
+          <x>760</x>
+          <y>440</y>
+          <width>221</width>
+          <height>42</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>حذف از علاقه مندی ها</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="favoriteOrderHintLabel">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>495</y>
+          <width>461</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+    color: #2c3e50;
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 8px;
+    padding: 6px;
+    font-weight: bold;
+}</string>
+        </property>
+        <property name="text">
+         <string>برای تغییر ترتیب، کتاب ها را با ماوس جابه جا کنید.</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
        </widget>
       </widget>
       <widget class="QWidget" name="tab">

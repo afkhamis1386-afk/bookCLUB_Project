@@ -32,14 +32,11 @@ void NetworkManager::sendRequest(RequestType type, const QVariantMap &payload) {
     pendingRequestQueue.append(type);
     socket->sendRequest(req);
 }
-void NetworkManager::registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer,
-                                        const QString &firstName, const QString &lastName) {
+void NetworkManager::registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer) {
     QVariantMap p;
     p["username"] = username;
     p["password"] = password;
     p["securityAnswer"] = securityAnswer;
-    p["firstName"] = firstName;
-    p["lastName"] = lastName;
     p["role"] = static_cast<int>(UserRole::NormalUser);
     sendRequest(RequestType::Register, p);
 }
@@ -341,6 +338,35 @@ void NetworkManager::removeBookFromShelf(int shelfId, int bookId) {
     p["shelfId"] = shelfId;
     p["bookId"] = bookId;
     sendRequest(RequestType::RemoveBookFromShelf, p);
+}
+void NetworkManager::reorderShelves(const QVariantList &shelfIds) {
+    QVariantMap p;
+    p["shelfIds"] = shelfIds;
+    sendRequest(RequestType::ReorderShelves, p);
+}
+void NetworkManager::reorderShelfBooks(int shelfId, const QVariantList &bookIds) {
+    QVariantMap p;
+    p["shelfId"] = shelfId;
+    p["bookIds"] = bookIds;
+    sendRequest(RequestType::ReorderShelfBooks, p);
+}
+void NetworkManager::addFavoriteBook(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::AddFavoriteBook, p);
+}
+void NetworkManager::removeFavoriteBook(int bookId) {
+    QVariantMap p;
+    p["bookId"] = bookId;
+    sendRequest(RequestType::RemoveFavoriteBook, p);
+}
+void NetworkManager::getFavoriteBooks() {
+    sendRequest(RequestType::GetFavoriteBooks);
+}
+void NetworkManager::reorderFavoriteBooks(const QVariantList &bookIds) {
+    QVariantMap p;
+    p["bookIds"] = bookIds;
+    sendRequest(RequestType::ReorderFavoriteBooks, p);
 }
 void NetworkManager::getNotifications() {
     sendRequest(RequestType::GetNotifications);

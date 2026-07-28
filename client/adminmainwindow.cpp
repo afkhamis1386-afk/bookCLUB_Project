@@ -1,11 +1,12 @@
 #include "adminmainwindow.h"
 #include "ui_adminmainwindow.h"
 #include "createadmindialog.h"
+#include "publisheraddbookwindow_c.h"
+#include "windownav.h"
 #include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QDateTime>
-#include <QInputDialog>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QStringList>
@@ -59,8 +60,6 @@ AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent
     connect(adminController, &AdminController::bookDetailsForReviewLoadFailed, this, &AdminMainWindow::onBookDetailsForReviewLoadFailed);
     connect(adminController, &AdminController::bookDeleted, this, &AdminMainWindow::onBookDeleted);
     connect(adminController, &AdminController::bookDeleteFailed, this, &AdminMainWindow::onBookDeleteFailed);
-    connect(adminController, &AdminController::bookUpdated, this, &AdminMainWindow::onBookUpdated);
-    connect(adminController, &AdminController::bookUpdateFailed, this, &AdminMainWindow::onBookUpdateFailed);
     connect(adminController, &AdminController::allReviewsLoaded, this, &AdminMainWindow::onAllReviewsLoaded);
     connect(adminController, &AdminController::allReviewsLoadFailed, this, &AdminMainWindow::onAllReviewsLoadFailed);
     connect(adminController, &AdminController::reviewDeleted, this, &AdminMainWindow::onReviewDeleted);
@@ -141,7 +140,6 @@ void AdminMainWindow::onViewUserDetailsButtonClicked() {
         ui->statusLabel->setText("ابتدا یک کاربر را انتخاب کنید");
         return;
     }
-
     QVariantMap selectedUser;
     for (const QVariant &value : qAsConst(allUsersCache)) {
         const QVariantMap userData = value.toMap();
@@ -171,11 +169,16 @@ void AdminMainWindow::onViewUserDetailsButtonClicked() {
             if (!title.isEmpty())
                 genreTitles.append(title);
         }
-        details = QString("نوع حساب: کاربر عادی\nنام کاربری: %1\nنام: %2\nنام خانوادگی: %3\nژانرهای مورد علاقه: %4")
+        const QString registerDate = selectedUser.value("registerDate").toDateTime().toString("yyyy/MM/dd");
+        const QString activeStatus = selectedUser.value("isActive").toBool() ? "فعال" : "غیرفعال";
+        const QString blockedStatus = selectedUser.value("isBlocked").toBool() ? "مسدود" : "مسدود نیست";
+        details = QString("نوع حساب: کاربر عادی\nنام کاربری: %1\nژانرهای مورد علاقه: %2\nتعداد کتاب‌های خریداری‌شده: %3\nتاریخ ثبت‌نام: %4\nوضعیت حساب: %5\nوضعیت دسترسی: %6")
                       .arg(username)
-                      .arg(displayValue(selectedUser.value("firstName").toString()))
-                      .arg(displayValue(selectedUser.value("lastName").toString()))
-                      .arg(genreTitles.isEmpty() ? QString("انتخاب نشده") : genreTitles.join("، "));
+                      .arg(genreTitles.isEmpty() ? QString("انتخاب نشده") : genreTitles.join("، "))
+                      .arg(selectedUser.value("purchasedCount").toInt())
+                      .arg(registerDate.isEmpty() ? QString("ثبت نشده") : registerDate)
+                      .arg(activeStatus)
+                      .arg(blockedStatus);
     } else if (role == "Publisher") {
         details = QString("نوع حساب: ناشر\nنام کاربری: %1\nنام: %2\nنام خانوادگی: %3\nنام انتشارات: %4\nشماره پروانه نشر: %5\nایمیل: %6")
                       .arg(username)
@@ -265,22 +268,22 @@ void AdminMainWindow::onDeleteBookButtonClicked() {
 }
 void AdminMainWindow::onBookDeleted(const QString &message) { ui->statusLabel->setText(message); adminController->loadAllBooks(); }
 void AdminMainWindow::onEditBookButtonClicked() {
-    int id = getSelectedBookId();
-    if (id <= 0) { ui->statusLabel->setText("ابتدا یک کتاب را انتخاب کنید"); return; }
-    int row = ui->booksTableWidget->currentRow();
-    QString currentName = (row >= 0 && ui->booksTableWidget->item(row, 1))
-                              ? ui->booksTableWidget->item(row, 1)->text() : QString();
-    bool ok;
-    QString newName = QInputDialog::getText(this, "ویرایش کتاب", "نام جدید کتاب:", QLineEdit::Normal, currentName, &ok);
-    if (!ok) return;
-    QString newDescription = QInputDialog::getMultiLineText(this, "ویرایش کتاب", "توضیحات جدید:", "", &ok);
-    if (!ok) return;
-    double newPrice = QInputDialog::getDouble(this, "ویرایش کتاب", "قیمت جدید:", 0, 0, 100000000, 0, &ok);
-    if (!ok) return;
-    adminController->updateBook(id, newName, newDescription, newPrice);
+    const int bookId = getSelectedBookId();
+    if (bookId <= 0) {
+        ui->statusLabel->setText("ابتدا یک کتاب را انتخاب کنید");
+        return;
+    }
+
+    auto *editBookWindow = new PublisherAddBookWindow_c(networkManager, bookId);
+    editBookWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(editBookWindow, &PublisherAddBookWindow_c::backRequested, this, [this, editBookWindow]() {
+        editBookWindow->close();
+        adminController->loadAllBooks();
+        this->show();
+    });
+    showFollowingState(editBookWindow, this);
+    this->hide();
 }
-void AdminMainWindow::onBookUpdated(const QString &message) { ui->statusLabel->setText(message); adminController->loadAllBooks(); }
-void AdminMainWindow::onBookUpdateFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onBookDeleteFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onAllReviewsLoaded(const QVariantList &reviews) {
     ui->reviewsTableWidget->setRowCount(reviews.size());

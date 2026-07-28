@@ -2,6 +2,7 @@
 #define NETWORKMANAGER_H
 #include <QObject>
 #include <QDateTime>
+#include <QVariantList>
 #include "ClientSocket.h"
 #include "../common/Response.h"
 #include "../common/Enums.h"
@@ -18,8 +19,7 @@ public:
     bool getHasFavoriteGenres() const;
     bool isLoggedIn() const;
     void logout();
-    void registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer,
-                            const QString &firstName, const QString &lastName);
+    void registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer);
     void registerPublisher(const QString &username, const QString &password, const QString &securityAnswer,
                            const QString &firstName, const QString &lastName, const QString &email,
                            const QString &publicationName, const QString &licenseNumber,
@@ -78,6 +78,12 @@ public:
     void getSavedBooks();
     void moveBookBetweenShelves(int sourceShelfId, int destShelfId, int bookId);
     void removeBookFromShelf(int shelfId, int bookId);
+    void reorderShelves(const QVariantList &shelfIds);
+    void reorderShelfBooks(int shelfId, const QVariantList &bookIds);
+    void addFavoriteBook(int bookId);
+    void removeFavoriteBook(int bookId);
+    void getFavoriteBooks();
+    void reorderFavoriteBooks(const QVariantList &bookIds);
     void getNotifications();
     void markNotificationRead(int notificationId);
     void getUnreadNotificationCount();
