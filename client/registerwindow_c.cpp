@@ -2,10 +2,9 @@
 #include "ui_registerwindow_c.h"
 #include <QMessageBox>
 
-RegisterWindow_c::RegisterWindow_c(NetworkManager *networkManager, QWidget *parent)
-    : RegisterWindow_c(networkManager, Mode::Registration, QVariantMap(), parent) {}
+RegisterWindow_c::RegisterWindow_c(NetworkManager *networkManager, QWidget *parent):RegisterWindow_c(networkManager, Mode::Registration, QVariantMap(), parent) {}
 RegisterWindow_c::RegisterWindow_c(NetworkManager *networkManager, Mode mode, const QVariantMap &accountData, QWidget *parent)
-    : QMainWindow(parent)
+    :QMainWindow(parent)
     , ui(new Ui::RegisterWindow_c) , networkManager(networkManager) , loginController(new LoginController(networkManager, this))
     , profileController(new ProfileController(networkManager, this)) , mode(mode) , editRole(networkManager->getCurrentUserRole()) {
     ui->setupUi(this);
@@ -46,7 +45,7 @@ void RegisterWindow_c::configureAccountEdit(const QVariantMap &accountData) {
     ui->confirmPasswordLineEdit->setPlaceholderText("تکرار رمز عبور جدید");
     ui->securityAnswerLineEdit->setEchoMode(QLineEdit::Password);
     ui->securityAnswerLineEdit->setPlaceholderText("پاسخ امنیتی جدید (برای عدم تغییر خالی بگذارید)");
-    if (isPublisher) {
+    if(isPublisher){
         ui->firstNameLineEdit->setText(accountData.value("firstName").toString());
         ui->lastNameLineEdit->setText(accountData.value("lastName").toString());
         ui->emailLineEdit->setText(accountData.value("email").toString());
@@ -85,11 +84,8 @@ void RegisterWindow_c::onRegisterButtonClicked() {
             ui->statusLabel->setText("رمز عبور جدید و تکرار آن یکسان نیستند");
             return;
         }
-        if (editRole == UserRole::Publisher &&
-            (ui->firstNameLineEdit->text().trimmed().isEmpty() || ui->lastNameLineEdit->text().trimmed().isEmpty() ||
-             ui->emailLineEdit->text().trimmed().isEmpty() || ui->publicationNameLineEdit->text().trimmed().isEmpty() ||
-             ui->licenseNumberLineEdit->text().trimmed().isEmpty())) {
-            ui->statusLabel->setText("تمامی فیلدهای اجباری ناشر را پر کنید");
+        if(editRole == UserRole::Publisher && (ui->firstNameLineEdit->text().trimmed().isEmpty() || ui->lastNameLineEdit->text().trimmed().isEmpty() || ui->emailLineEdit->text().trimmed().isEmpty() || ui->publicationNameLineEdit->text().trimmed().isEmpty() || ui->licenseNumberLineEdit->text().trimmed().isEmpty())) {
+         ui->statusLabel->setText("تمامی فیلدهای اجباری ناشر را پر کنید");
             return;
         }
         ui->registerButton->setEnabled(false);
@@ -129,6 +125,8 @@ void RegisterWindow_c::onRegistrationFailed(const QString &message) {
 }
 void RegisterWindow_c::onAccountUpdated(const QString &message) {
     ui->registerButton->setEnabled(true);
+    disconnect(profileController, &ProfileController::accountUpdated, this, &RegisterWindow_c::onAccountUpdated);
+
     QMessageBox::information(this, "ویرایش حساب", message);
     emit backToProfileRequested();
 }
