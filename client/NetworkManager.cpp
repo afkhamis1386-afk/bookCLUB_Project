@@ -32,14 +32,11 @@ void NetworkManager::sendRequest(RequestType type, const QVariantMap &payload) {
     pendingRequestQueue.append(type);
     socket->sendRequest(req);
 }
-void NetworkManager::registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer,
-                                        const QString &firstName, const QString &lastName) {
+void NetworkManager::registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer) {
     QVariantMap p;
     p["username"] = username;
     p["password"] = password;
     p["securityAnswer"] = securityAnswer;
-    p["firstName"] = firstName;
-    p["lastName"] = lastName;
     p["role"] = static_cast<int>(UserRole::NormalUser);
     sendRequest(RequestType::Register, p);
 }

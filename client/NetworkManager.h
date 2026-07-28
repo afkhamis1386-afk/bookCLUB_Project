@@ -19,8 +19,7 @@ public:
     bool getHasFavoriteGenres() const;
     bool isLoggedIn() const;
     void logout();
-    void registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer,
-                            const QString &firstName, const QString &lastName);
+    void registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer);
     void registerPublisher(const QString &username, const QString &password, const QString &securityAnswer,
                            const QString &firstName, const QString &lastName, const QString &email,
                            const QString &publicationName, const QString &licenseNumber,
