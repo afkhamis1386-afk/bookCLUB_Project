@@ -8,13 +8,10 @@ class PublisherBookController : public QObject {
     Q_OBJECT
 public:
     explicit PublisherBookController(NetworkManager *networkManager, QObject *parent = nullptr);
-    void addBook(const QString &bookName, const QString &description, double price,
-                 const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-                 const QString &coverImageFilePath, const QString &pdfFilePath,
-                 double discountPercent = 0.0);
-    void updateBook(int bookId, const QString &bookName, const QString &description, double price,
-                    const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-                    const QString &coverImageFilePath, const QString &pdfFilePath);
+    void addBook(const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+    const QString &coverImageFilePath, const QString &pdfFilePath, double discountPercent = 0.0);
+    void updateBook(int bookId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+    const QString &coverImageFilePath, const QString &pdfFilePath);
     void deactivateBook(int bookId);
     void reactivateBook(int bookId);
     void applyDiscount(int bookId, double discountPercent, double discountAmount);

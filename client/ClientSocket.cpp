@@ -1,8 +1,6 @@
 #include "ClientSocket.h"
 #include <QDebug>
-
-ClientSocket::ClientSocket(QObject *parent)
-    : QObject(parent) , socket(new QTcpSocket(this)) {
+ClientSocket::ClientSocket(QObject *parent):QObject(parent), socket(new QTcpSocket(this)) {
     connect(socket, &QTcpSocket::connected, this, &ClientSocket::connected);
     connect(socket, &QTcpSocket::disconnected, this, &ClientSocket::disconnected);
     connect(socket, &QTcpSocket::readyRead, this, &ClientSocket::onReadyRead);

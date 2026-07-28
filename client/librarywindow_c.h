@@ -47,10 +47,8 @@ private slots:
     void onRemoveBookFromShelfButtonClicked();
     void onBookRemovedFromShelf(const QString &message);
     void onBookRemoveFromShelfFailed(const QString &message);
-    void onShelvesRowsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd,
-                            const QModelIndex &destinationParent, int destinationRow);
-    void onShelfBooksRowsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd,
-                               const QModelIndex &destinationParent, int destinationRow);
+    void onShelvesRowsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd, const QModelIndex &destinationParent, int destinationRow);
+    void onShelfBooksRowsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd, const QModelIndex &destinationParent, int destinationRow);
     void onShelvesReordered(const QString &message);
     void onShelvesReorderFailed(const QString &message);
     void onShelfBooksReordered(const QString &message);
@@ -68,11 +66,9 @@ private slots:
     void onFavoriteBookAddFailed(const QString &message);
     void onFavoriteBookRemoved(const QString &message);
     void onFavoriteBookRemoveFailed(const QString &message);
-    void onFavoriteBooksRowsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd,
-                                  const QModelIndex &destinationParent, int destinationRow);
+    void onFavoriteBooksRowsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd, const QModelIndex &destinationParent, int destinationRow);
     void onFavoriteBooksReordered(const QString &message);
     void onFavoriteBooksReorderFailed(const QString &message);
-
     void onValidationError(const QString &message);
     void onBackButtonClicked();
     void onPurchasedBooksLoaded(const QVariantList &bookIds);

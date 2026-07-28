@@ -1,10 +1,7 @@
 #include "BookStoreController.h"
 
-BookStoreController::BookStoreController(NetworkManager *networkManager, QObject *parent)
-    : QObject(parent), networkManager(networkManager), lastBookListRequest(RequestType::GetBooks)
-{
-    connect(networkManager, &NetworkManager::responseReceived,
-            this, &BookStoreController::onResponseReceived);
+BookStoreController::BookStoreController(NetworkManager *networkManager, QObject *parent):QObject(parent), networkManager(networkManager), lastBookListRequest(RequestType::GetBooks) {
+    connect(networkManager, &NetworkManager::responseReceived, this, &BookStoreController::onResponseReceived);
 }
 void BookStoreController::loadAllBooks() {
     if (!networkManager->isConnected()) {

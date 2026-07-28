@@ -18,15 +18,10 @@ private:
     bool isValidName(const QString &name) const;
 public:
     Publisher();
-    Publisher(const QString &username, const QString &plainPassword, const QString &plainAnswer,
-              const QString &firstName, const QString &lastName, const QString &email,
-              const QString &publicationName, const QString &publisherLicenseNumber,
-              const QString &shortDescription = QString());
-    Publisher(int userId, const QString &encryptedUsername, const QString &passwordHash,
-              const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive,
-              const QDateTime &registerDate, const QString &firstName, const QString &lastName,
-              const QString &email, const QString &publicationName,
-              const QString &publisherLicenseNumber, const QString &shortDescription);
+    Publisher(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName, const QString &lastName, const QString &email, const QString &publicationName, const QString &publisherLicenseNumber,
+    const QString &shortDescription = QString());
+    Publisher(int userId, const QString &encryptedUsername, const QString &passwordHash, const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive, const QDateTime &registerDate, const QString &firstName, const QString &lastName,
+    const QString &email, const QString &publicationName, const QString &publisherLicenseNumber, const QString &shortDescription);
     ~Publisher() override;
     QString getRole() const override;
     QString getFirstName() const;

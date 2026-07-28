@@ -8,8 +8,7 @@
 #include <QTextEdit>
 #include <QPushButton>
 
-BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int bookId, QWidget *parent)
-    : QMainWindow(parent)
+BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int bookId, QWidget *parent):QMainWindow(parent)
     , ui(new Ui::BookDetailsWindow_c)
     , networkManager(networkManager)
     , bookId(bookId)
@@ -51,8 +50,7 @@ BookDetailsWindow_c::BookDetailsWindow_c(NetworkManager *networkManager, int boo
     connect(networkManager, &NetworkManager::bookLiveUpdateReceived, this, &BookDetailsWindow_c::onBookLiveUpdateReceived);
     bookStoreController->loadBookDetails(bookId);
     bookStoreController->loadCoverImage(bookId);
-    reviewController->loadReviewsForBook(bookId);
-}
+    reviewController->loadReviewsForBook(bookId); }
 BookDetailsWindow_c::~BookDetailsWindow_c() {
     delete ui;
 }
@@ -205,9 +203,7 @@ void BookDetailsWindow_c::onDeleteReviewClicked() {
         ui->statusLabel->setText("شما فقط می توانید نظرات خود را حذف کنید");
         return;
     }
-    QMessageBox::StandardButton reply = QMessageBox::question(
-        this, "حذف نظر", "آیا از حذف نظر خود مطمئن هستید؟",
-        QMessageBox::Yes | QMessageBox::No);
+    QMessageBox::StandardButton reply = QMessageBox::question( this, "حذف نظر", "آیا از حذف نظر خود مطمئن هستید؟", QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         reviewController->deleteReview(reviewId);
     }

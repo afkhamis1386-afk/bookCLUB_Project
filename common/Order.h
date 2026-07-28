@@ -6,8 +6,8 @@
 #include <QDataStream>
 #include <QString>
 enum class OrderStatus {
-    Pending   = 1,
-    Paid      = 2,
+    Pending = 1,
+    Paid = 2,
     Cancelled = 3,
     Completed = 4
 };

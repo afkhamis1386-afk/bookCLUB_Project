@@ -2,8 +2,7 @@
 #include "ui_GenreSelectionWindow_c.h"
 #include <QMessageBox>
 
-GenreSelectionWindow_c::GenreSelectionWindow_c(NetworkManager *networkManager, QWidget *parent)
-    : QMainWindow(parent)
+GenreSelectionWindow_c::GenreSelectionWindow_c(NetworkManager *networkManager, QWidget *parent):QMainWindow(parent)
     , ui(new Ui::GenreSelectionWindow_c)
     , networkManager(networkManager)
     , profileController(new ProfileController(networkManager, this)) {
@@ -15,7 +14,6 @@ GenreSelectionWindow_c::GenreSelectionWindow_c(NetworkManager *networkManager, Q
     connect(profileController, &ProfileController::favoriteGenresSaved, this, &GenreSelectionWindow_c::onFavoriteGenresSaved);
     connect(profileController, &ProfileController::favoriteGenresSaveFailed, this, &GenreSelectionWindow_c::onFavoriteGenresSaveFailed);
     connect(profileController, &ProfileController::validationError, this, &GenreSelectionWindow_c::onValidationError);
-
     profileController->loadGenres();
 }
 GenreSelectionWindow_c::~GenreSelectionWindow_c() {
@@ -43,8 +41,7 @@ void GenreSelectionWindow_c::onGenresLoaded(const QVariantList &genres) {
 void GenreSelectionWindow_c::onGenresLoadFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
-void GenreSelectionWindow_c::onListItemChanged(QListWidgetItem *item)
-{
+void GenreSelectionWindow_c::onListItemChanged(QListWidgetItem *item) {
     if (item->checkState() == Qt::Checked && countCheckedItems() > 3) {
         ui->genresListWidget->blockSignals(true);
         item->setCheckState(Qt::Unchecked);
@@ -52,7 +49,6 @@ void GenreSelectionWindow_c::onListItemChanged(QListWidgetItem *item)
         ui->genresListWidget->blockSignals(false);
     }
 }
-
 void GenreSelectionWindow_c::onConfirmButtonClicked() {
     ui->statusLabel->clear();
     QVector<int> selectedGenreIds;

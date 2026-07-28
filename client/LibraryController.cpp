@@ -1,10 +1,8 @@
 #include "LibraryController.h"
-
 LibraryController::LibraryController(NetworkManager *networkManager, QObject *parent)
-    : QObject(parent), networkManager(networkManager) {
+    :QObject(parent), networkManager(networkManager) {
     connect(networkManager, &NetworkManager::responseReceived, this, &LibraryController::onResponseReceived);
 }
-
 void LibraryController::refreshShelves() {
     if (!networkManager->isConnected()) {
         emit shelvesLoadFailed("اتصال به سرور برقرار نیست");
@@ -12,7 +10,6 @@ void LibraryController::refreshShelves() {
     }
     networkManager->getShelf();
 }
-
 void LibraryController::createShelf(const QString &shelfName) {
     if (shelfName.trimmed().isEmpty() || shelfName.trimmed().length() > 100) {
         emit validationError("نام قفسه نامعتبر است (باید بین ۱ تا ۱۰۰ کاراکتر باشد)");
@@ -24,7 +21,6 @@ void LibraryController::createShelf(const QString &shelfName) {
     }
     networkManager->createShelf(shelfName.trimmed());
 }
-
 void LibraryController::renameShelf(int shelfId, const QString &newName) {
     if (shelfId <= 0 || newName.trimmed().isEmpty() || newName.trimmed().length() > 100) {
         emit validationError("ورودی نامعتبر است");
@@ -36,7 +32,6 @@ void LibraryController::renameShelf(int shelfId, const QString &newName) {
     }
     networkManager->renameShelf(shelfId, newName.trimmed());
 }
-
 void LibraryController::deleteShelf(int shelfId) {
     if (shelfId <= 0) {
         emit validationError("شناسه قفسه نامعتبر است");
@@ -48,7 +43,6 @@ void LibraryController::deleteShelf(int shelfId) {
     }
     networkManager->deleteShelf(shelfId);
 }
-
 void LibraryController::addBookToShelf(int shelfId, int bookId) {
     if (shelfId <= 0 || bookId <= 0) {
         emit validationError("ورودی نامعتبر است");
@@ -60,7 +54,6 @@ void LibraryController::addBookToShelf(int shelfId, int bookId) {
     }
     networkManager->addBookToShelf(shelfId, bookId);
 }
-
 void LibraryController::removeBookFromShelf(int shelfId, int bookId) {
     if (shelfId <= 0 || bookId <= 0) {
         emit validationError("ورودی نامعتبر است");
@@ -72,7 +65,6 @@ void LibraryController::removeBookFromShelf(int shelfId, int bookId) {
     }
     networkManager->removeBookFromShelf(shelfId, bookId);
 }
-
 void LibraryController::reorderShelves(const QVariantList &shelfIds) {
     if (!networkManager->isConnected()) {
         emit shelvesReorderFailed("اتصال به سرور برقرار نیست");
@@ -80,7 +72,6 @@ void LibraryController::reorderShelves(const QVariantList &shelfIds) {
     }
     networkManager->reorderShelves(shelfIds);
 }
-
 void LibraryController::reorderShelfBooks(int shelfId, const QVariantList &bookIds) {
     if (shelfId <= 0) {
         emit validationError("شناسه قفسه نامعتبر است");
@@ -92,7 +83,6 @@ void LibraryController::reorderShelfBooks(int shelfId, const QVariantList &bookI
     }
     networkManager->reorderShelfBooks(shelfId, bookIds);
 }
-
 void LibraryController::refreshPurchasedBooks() {
     if (!networkManager->isConnected()) {
         emit purchasedBooksLoadFailed("اتصال به سرور برقرار نیست");
@@ -100,7 +90,6 @@ void LibraryController::refreshPurchasedBooks() {
     }
     networkManager->getPurchasedBooks();
 }
-
 void LibraryController::onResponseReceived(RequestType type, const Response &response) {
     switch (type) {
     case RequestType::GetShelf:

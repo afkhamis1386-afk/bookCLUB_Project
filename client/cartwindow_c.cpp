@@ -4,9 +4,7 @@
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QTableWidgetItem>
-
-CartWindow_c::CartWindow_c(NetworkManager *networkManager, QWidget *parent)
-    : QMainWindow(parent)
+CartWindow_c::CartWindow_c(NetworkManager *networkManager, QWidget *parent):QMainWindow(parent)
     , ui(new Ui::CartWindow_c)
     , networkManager(networkManager)
     , cartController(new CartController(networkManager, this)) {
@@ -26,11 +24,9 @@ CartWindow_c::CartWindow_c(NetworkManager *networkManager, QWidget *parent)
     connect(cartController, &CartController::removeFromCartFailed, this, &CartWindow_c::onRemoveFailed);
     connect(cartController, &CartController::checkoutSucceeded, this, &CartWindow_c::onCheckoutSucceeded);
     connect(cartController, &CartController::checkoutFailed, this, &CartWindow_c::onCheckoutFailed);
-    cartController->refreshCart();
-}
+    cartController->refreshCart(); }
 CartWindow_c::~CartWindow_c() {
-    delete ui;
-}
+    delete ui; }
 void CartWindow_c::populateTable(const QVariantList &items) {
     ui->cartTableWidget->setRowCount(items.size());
     for (int i = 0; i < items.size(); ++i) {
@@ -58,8 +54,7 @@ void CartWindow_c::onCartLoaded(const QVariantMap &cartData) {
     ui->totalPriceLabel->setText(QString("جمع کل: %1 تومان").arg(totalPrice, 0, 'f', 0));
     ui->discountLabel->setText(QString("تخفیف: %1 تومان").arg(totalDiscount, 0, 'f', 0));
     ui->finalPriceLabel->setText(QString("مبلغ قابل پرداخت: %1 تومان").arg(finalPrice, 0, 'f', 0));
-    ui->checkoutButton->setEnabled(cartData.value("itemCount").toInt() > 0);
-}
+    ui->checkoutButton->setEnabled(cartData.value("itemCount").toInt() > 0); }
 void CartWindow_c::onCartLoadFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }

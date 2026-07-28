@@ -7,15 +7,13 @@
 #include "windownav.h"
 #include <QMessageBox>
 #include <QScrollArea>
-HomeWindow_c::HomeWindow_c(NetworkManager *networkManager, QWidget *parent)
-    : QMainWindow(parent)
+HomeWindow_c::HomeWindow_c(NetworkManager *networkManager, QWidget *parent):QMainWindow(parent)
     , ui(new Ui::HomeWindow_c)
     , networkManager(networkManager)
     , bookStoreController(new BookStoreController(networkManager, this))
     , cartController(new CartController(networkManager, this))
     , notificationController(new NotificationController(networkManager, this))
-    , profileController(new ProfileController(networkManager, this))
-{
+    , profileController(new ProfileController(networkManager, this)) {
     ui->setupUi(this);
     gridContainer = new QWidget();
     gridLayout = new QGridLayout(gridContainer);
@@ -54,20 +52,14 @@ HomeWindow_c::HomeWindow_c(NetworkManager *networkManager, QWidget *parent)
     notificationController->refreshUnreadCount();
     profileController->loadGenres();
 }
-
-HomeWindow_c::~HomeWindow_c()
-{
+HomeWindow_c::~HomeWindow_c() {
     delete ui;
 }
-
-void HomeWindow_c::showEvent(QShowEvent *event)
-{
+void HomeWindow_c::showEvent(QShowEvent *event) {
     QMainWindow::showEvent(event);
     cartController->refreshCart();
 }
-
-void HomeWindow_c::clearBookGrid()
-{
+void HomeWindow_c::clearBookGrid() {
     QLayoutItem *item;
     while ((item = gridLayout->takeAt(0)) != nullptr) {
         delete item->widget();
@@ -75,17 +67,13 @@ void HomeWindow_c::clearBookGrid()
     }
     cardsByBookId.clear();
 }
-
-void HomeWindow_c::displayBooks(const QVariantList &bookIds)
-{
+void HomeWindow_c::displayBooks(const QVariantList &bookIds) {
     clearBookGrid();
     ui->statusLabel->clear();
-
     if(bookIds.isEmpty()){
         ui->statusLabel->setText("کتابی برای نمایش یافت نشد");
         return;
     }
-
     const int columnsPerRow = 4;
     int row = 0, col = 0;
     for(const QVariant &v : bookIds){
@@ -100,13 +88,11 @@ void HomeWindow_c::displayBooks(const QVariantList &bookIds)
         if (col >= columnsPerRow) { col = 0; row++; }
     }
 }
-void HomeWindow_c::loadBookNameFromDetails(int bookId, BookCardWidget *card)
-{
+void HomeWindow_c::loadBookNameFromDetails(int bookId, BookCardWidget *card) {
     card->setBookInfo("در حال بارگذاری...", 0);
     bookStoreController->loadBookDetails(bookId);
 }
-void HomeWindow_c::onBookDetailsReceived(const QVariantMap &bookData)
-{
+void HomeWindow_c::onBookDetailsReceived(const QVariantMap &bookData) {
     int bookId = bookData.value("bookId").toInt();
     if(!cardsByBookId.contains(bookId))
         return;
@@ -122,14 +108,11 @@ void HomeWindow_c::onRecommendedBooksLoaded(const QVariantList &bookIds) { displ
 void HomeWindow_c::onRecommendedBooksLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
 void HomeWindow_c::onSearchResultsReceived(const QVariantList &bookIds) { displayBooks(bookIds); }
 void HomeWindow_c::onSearchFailed(const QString &message) { ui->statusLabel->setText(message); }
-void HomeWindow_c::onCoverImageLoaded(int bookId, const QByteArray &imageData)
-{
+void HomeWindow_c::onCoverImageLoaded(int bookId, const QByteArray &imageData) {
     if (cardsByBookId.contains(bookId))
         cardsByBookId[bookId]->setCoverImage(imageData);
 }
-
-void HomeWindow_c::onSearchButtonClicked()
-{
+void HomeWindow_c::onSearchButtonClicked() {
     QString query = ui->searchLineEdit->text().trimmed();
     resetGenreFilterUi();
     if (query.isEmpty()) {
@@ -138,23 +121,18 @@ void HomeWindow_c::onSearchButtonClicked()
     }
     bookStoreController->search(query);
 }
-
 void HomeWindow_c::onRecommendedTabClicked() { resetGenreFilterUi(); currentTab = RequestType::GetRecommendedBooks; bookStoreController->loadRecommendedBooks(); }
 void HomeWindow_c::onNewestTabClicked() { resetGenreFilterUi(); currentTab = RequestType::GetNewestBooks; bookStoreController->loadNewestBooks(20); }
 void HomeWindow_c::onFreeTabClicked() { resetGenreFilterUi(); currentTab = RequestType::GetFreeBooks; bookStoreController->loadFreeBooks(); }
 void HomeWindow_c::onBestSellersTabClicked() { resetGenreFilterUi(); currentTab = RequestType::GetBestSellers; bookStoreController->loadBestSellers(20); }
 void HomeWindow_c::onPopularTabClicked() { resetGenreFilterUi(); currentTab = RequestType::GetPopularBooks; bookStoreController->loadPopularBooks(20); }
 void HomeWindow_c::onAllTabClicked() { resetGenreFilterUi(); currentTab = RequestType::GetBooks; bookStoreController->loadAllBooks(); }
-
-void HomeWindow_c::resetGenreFilterUi()
-{
+void HomeWindow_c::resetGenreFilterUi() {
     ui->genreFilterComboBox->blockSignals(true);
     ui->genreFilterComboBox->setCurrentIndex(0);
     ui->genreFilterComboBox->blockSignals(false);
 }
-
-void HomeWindow_c::onGenresLoaded(const QVariantList &genres)
-{
+void HomeWindow_c::onGenresLoaded(const QVariantList &genres) {
     genreNamesById.clear();
     ui->genreFilterComboBox->blockSignals(true);
     ui->genreFilterComboBox->clear();
@@ -168,9 +146,7 @@ void HomeWindow_c::onGenresLoaded(const QVariantList &genres)
     }
     ui->genreFilterComboBox->blockSignals(false);
 }
-
-void HomeWindow_c::onGenreFilterChanged(int index)
-{
+void HomeWindow_c::onGenreFilterChanged(int index) {
     int genreId = ui->genreFilterComboBox->itemData(index).toInt();
     if (genreId <= 0) {
         currentTab = RequestType::GetBooks;
@@ -180,7 +156,7 @@ void HomeWindow_c::onGenreFilterChanged(int index)
         bookStoreController->loadBooksByGenre(genreId);
     }
 }
-void HomeWindow_c::onBookLiveUpdateReceived(const QString &updateType, const QVariantMap &data){
+void HomeWindow_c::onBookLiveUpdateReceived(const QString &updateType, const QVariantMap &data) {
     Q_UNUSED(data)
     if (updateType == "newRating" && currentTab == RequestType::GetPopularBooks){
         bookStoreController->loadPopularBooks(20);
@@ -188,14 +164,13 @@ void HomeWindow_c::onBookLiveUpdateReceived(const QString &updateType, const QVa
         bookStoreController->loadBestSellers(20);
     }
 }
-void HomeWindow_c::onCardClicked(int bookId)
-{
+void HomeWindow_c::onCardClicked(int bookId) {
     if (bookDetailsWindow) {
         bookDetailsWindow->close();
         delete bookDetailsWindow;
     }
     bookDetailsWindow = new BookDetailsWindow_c(networkManager, bookId);
-    connect(bookDetailsWindow, &BookDetailsWindow_c::backRequested, this, [this](){
+    connect(bookDetailsWindow, &BookDetailsWindow_c::backRequested, this, [this]() {
         bookDetailsWindow->close();
         this->show();
     });
@@ -206,7 +181,7 @@ void HomeWindow_c::onCartButtonClicked()
 {
     CartWindow_c *cartWindow = new CartWindow_c(networkManager);
     cartWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(cartWindow, &CartWindow_c::backRequested, this, [this, cartWindow](){
+    connect(cartWindow, &CartWindow_c::backRequested, this, [this, cartWindow]() {
         cartWindow->close();
         cartController->refreshCart();
         this->show();
@@ -214,12 +189,10 @@ void HomeWindow_c::onCartButtonClicked()
     showFollowingState(cartWindow, this);
     this->hide();
 }
-
-void HomeWindow_c::onNotificationsButtonClicked()
-{
+void HomeWindow_c::onNotificationsButtonClicked() {
     NotificationWindow_c *notificationWindow = new NotificationWindow_c(networkManager);
     notificationWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(notificationWindow, &NotificationWindow_c::backRequested, this, [this, notificationWindow](){
+    connect(notificationWindow, &NotificationWindow_c::backRequested, this, [this, notificationWindow]() {
         notificationWindow->close();
         notificationController->refreshUnreadCount();
         this->show();
@@ -227,51 +200,41 @@ void HomeWindow_c::onNotificationsButtonClicked()
     showFollowingState(notificationWindow, this);
     this->hide();
 }
-void HomeWindow_c::onLibraryButtonClicked()
-{
+void HomeWindow_c::onLibraryButtonClicked() {
     LibraryWindow_c *libraryWindow =  new LibraryWindow_c(networkManager);
     libraryWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(libraryWindow,  &LibraryWindow_c::backRequested,  this, [this, libraryWindow](){
+    connect(libraryWindow,  &LibraryWindow_c::backRequested,  this, [this, libraryWindow]() {
         libraryWindow->close();
         this->show();
     });
-
     showFollowingState(libraryWindow, this);
     this->hide();
 }
-void HomeWindow_c::onProfileButtonClicked()
-{
+void HomeWindow_c::onProfileButtonClicked() {
     ProfileWindow_c *profileWindow = new ProfileWindow_c(networkManager);
     profileWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(profileWindow, &ProfileWindow_c::backRequested, this, [this, profileWindow](){
+    connect(profileWindow, &ProfileWindow_c::backRequested, this, [this, profileWindow]() {
         profileWindow->close();
         this->show();
     });
-    connect(profileWindow, &ProfileWindow_c::logoutRequested, this, [this, profileWindow](){
+    connect(profileWindow, &ProfileWindow_c::logoutRequested, this, [this, profileWindow]() {
         profileWindow->close();
         emit logoutRequested();
     });
     showFollowingState(profileWindow, this);
     this->hide();
 }
-void HomeWindow_c::onCartLoaded(const QVariantMap &cartData)
-{
+void HomeWindow_c::onCartLoaded(const QVariantMap &cartData) {
     int itemCount = cartData.value("itemCount").toInt();
     ui->cartButton->setText(QString("سبد خرید (%1)").arg(itemCount));
 }
-
-void HomeWindow_c::onCartChanged()
-{
+void HomeWindow_c::onCartChanged() {
     cartController->refreshCart();
 }
-
-void HomeWindow_c::onUnreadCountLoaded(int count)
-{
+void HomeWindow_c::onUnreadCountLoaded(int count) {
     ui->notificationsButton->setText(QString("اعلان ها (%1)").arg(count));
 }
-
-void HomeWindow_c::onNewNotificationArrived(const QVariantMap &notificationData)
-{
+void HomeWindow_c::onNewNotificationArrived(const QVariantMap &notificationData) {
     notificationController->refreshUnreadCount();
     statusBar()->showMessage(
         QString("اعلان جدید: %1").arg(notificationData.value("title").toString()), 5000);
