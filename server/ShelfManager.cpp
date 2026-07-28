@@ -41,9 +41,8 @@ bool containSameIds(const QVector<int> &left, const QVector<int> &right) {
 ShelfManager::ShelfManager() {}
 
 Response ShelfManager::createShelf(int userId, const QString &shelfName) {
-    if (shelfName.trimmed().isEmpty() || shelfName.length() > 100) {
-        return Response(ResponseStatus::ValidationFailed,
-                        "نام قفسه نمی تواند خالی باشد و باید حداکثر ۱۰۰ کاراکتر باشد");
+    if (userId <= 0 || shelfName.trimmed().isEmpty() || shelfName.trimmed().length() > 100) {
+        return Response(ResponseStatus::ValidationFailed, "نام قفسه نمی تواند خالی باشد و باید حداکثر ۱۰۰ کاراکتر باشد");
     }
     ShelfRepository shelfRepo;
     if (shelfRepo.shelfNameExistsForUser(userId, shelfName.trimmed())) {
@@ -60,7 +59,7 @@ Response ShelfManager::createShelf(int userId, const QString &shelfName) {
 }
 
 Response ShelfManager::renameShelf(int userId, int shelfId, const QString &newName) {
-    if (newName.trimmed().isEmpty() || newName.length() > 100)
+    if (userId <= 0 || shelfId <= 0 || newName.trimmed().isEmpty() || newName.trimmed().length() > 100)
         return Response(ResponseStatus::ValidationFailed, "نام قفسه نامعتبر است");
 
     ShelfRepository shelfRepo;
@@ -92,8 +91,11 @@ Response ShelfManager::addBookToShelf(int userId, int shelfId, int bookId) {
     if (!user || !user->hasPurchased(bookId)) {
         return Response(ResponseStatus::Error, "فقط کتاب هایی که خریداری کرده اید قابل افزودن به قفسه هستند");
     }
+    if (shelfRepo.shelfContainsBook(shelfId, bookId)) {
+        return Response(ResponseStatus::ValidationFailed, "این کتاب قبلاً در قفسه انتخاب شده قرار دارد");
+    }
     if (!shelfRepo.addBookToShelf(shelfId, bookId)) {
-        return Response(ResponseStatus::Error,"خطا در افزودن کتاب به قفسه (احتمالاً کتاب قبلاً در این قفسه موجود است)");
+        return Response(ResponseStatus::Error, "خطا در افزودن کتاب به قفسه (احتمالاً کتاب قبلاً در این قفسه موجود است)");
     }
     return Response(ResponseStatus::Success, "کتاب به قفسه اضافه شد");
 }
@@ -147,7 +149,8 @@ Response ShelfManager::reorderShelves(int userId, const QVariantList &shelfIds) 
     ShelfRepository shelfRepo;
     const QVector<int> currentIds = shelfRepo.getShelfIdsByUser(userId);
     if (!containSameIds(currentIds, requestedIds)) {
-        return Response(ResponseStatus::Unauthorized, "ترتیب ارسالی باید فقط شامل تمام قفسه های متعلق به همین کاربر باشد");
+        return Response(ResponseStatus::Unauthorized,
+                        "ترتیب ارسالی باید فقط شامل تمام قفسه های متعلق به همین کاربر باشد");
     }
     if (!shelfRepo.reorderShelves(userId, requestedIds))
         return Response(ResponseStatus::Error, "خطا در ذخیره ترتیب قفسه ها");
@@ -165,7 +168,7 @@ Response ShelfManager::reorderShelfBooks(int userId, int shelfId, const QVariant
 
     const QVector<int> currentIds = shelfRepo.getBookIdsByShelf(shelfId);
     if (!containSameIds(currentIds, requestedIds)) {
-        return Response(ResponseStatus::ValidationFailed,"ترتیب ارسالی باید شامل تمام کتاب های همین قفسه باشد");
+        return Response(ResponseStatus::ValidationFailed, "ترتیب ارسالی باید شامل تمام کتاب های همین قفسه باشد");
     }
     if (!shelfRepo.reorderShelfBooks(shelfId, requestedIds))
         return Response(ResponseStatus::Error, "خطا در ذخیره ترتیب کتاب های قفسه");
@@ -182,16 +185,17 @@ Response ShelfManager::getUserShelves(int userId) {
         std::unique_ptr<Shelf> shelf(shelfRepo.loadShelfById(shelfId));
         if (!shelf)
             return Response(ResponseStatus::Error, "اطلاعات یکی از قفسه ها قابل بازیابی نیست");
+
         QVariantMap shelfData;
         shelfData["shelfId"] = shelf->getShelfId();
         shelfData["shelfName"] = shelf->getShelfName();
         shelfData["bookCount"] = shelf->getBookCount();
         QVariantList bookIdList;
         QVariantList bookNameList;
-        for(int bookId : shelf->getBookIds()) {
+        for (int bookId : shelf->getBookIds()) {
             std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
             if (!book) {
-                return Response(ResponseStatus::Error,"نام یکی از کتاب های قفسه با جدول Books تطبیق ندارد");
+                return Response(ResponseStatus::Error, "نام یکی از کتاب های قفسه با جدول Books تطبیق ندارد");
             }
             bookIdList.append(bookId);
             bookNameList.append(book->getBookName());

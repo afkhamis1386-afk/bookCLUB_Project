@@ -38,8 +38,7 @@ Response buildBookListResponse(const QVector<int> &ids, const QString &message) 
     for (int id : ids) {
         std::unique_ptr<Book> book(bookRepo.loadBookById(id));
         if (!book) {
-            return Response(ResponseStatus::Error,
-                            "اطلاعات کتاب ذخیره شده با جدول Books تطبیق ندارد");
+            return Response(ResponseStatus::Error, "اطلاعات کتاب ذخیره شده با جدول Books تطبیق ندارد");
         }
         QVariantMap bookData;
         bookData["bookId"] = id;
@@ -78,12 +77,16 @@ Response SavedBookManager::unsaveBook(int userId, int bookId) {
         return Response(ResponseStatus::Error, "خطا در حذف کتاب از کتاب های ذخیره شده");
     return Response(ResponseStatus::Success, "کتاب از کتاب های ذخیره شده و لیست علاقه مندی حذف شد");
 }
+
 Response SavedBookManager::getSavedBooks(int userId) {
     SavedBookRepository savedRepo;
     return buildBookListResponse(savedRepo.getSavedBookIds(userId), "کتاب های ذخیره شده بازیابی شدند");
 }
 
 Response SavedBookManager::addFavoriteBook(int userId, int bookId) {
+    if (userId <= 0 || bookId <= 0)
+        return Response(ResponseStatus::ValidationFailed, "شناسه کاربر یا کتاب نامعتبر است");
+
     SavedBookRepository savedRepo;
     if (!savedRepo.isBookSaved(userId, bookId)) {
         return Response(ResponseStatus::ValidationFailed, "فقط کتاب های ذخیره شده را می توان به لیست علاقه مندی افزود");
@@ -96,6 +99,9 @@ Response SavedBookManager::addFavoriteBook(int userId, int bookId) {
 }
 
 Response SavedBookManager::removeFavoriteBook(int userId, int bookId) {
+    if (userId <= 0 || bookId <= 0)
+        return Response(ResponseStatus::ValidationFailed, "شناسه کاربر یا کتاب نامعتبر است");
+
     SavedBookRepository savedRepo;
     if (!savedRepo.isFavoriteBook(userId, bookId))
         return Response(ResponseStatus::Error, "این کتاب در لیست علاقه مندی ها نیست");
@@ -106,7 +112,7 @@ Response SavedBookManager::removeFavoriteBook(int userId, int bookId) {
 
 Response SavedBookManager::getFavoriteBooks(int userId) {
     SavedBookRepository savedRepo;
-    return buildBookListResponse(savedRepo.getFavoriteBookIds(userId),  "لیست علاقه مندی ها بازیابی شد");
+    return buildBookListResponse(savedRepo.getFavoriteBookIds(userId), "لیست علاقه مندی ها بازیابی شد");
 }
 
 Response SavedBookManager::reorderFavoriteBooks(int userId, const QVariantList &bookIds) {

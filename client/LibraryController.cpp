@@ -1,11 +1,12 @@
 #include "LibraryController.h"
+
 LibraryController::LibraryController(NetworkManager *networkManager, QObject *parent)
     : QObject(parent), networkManager(networkManager) {
     connect(networkManager, &NetworkManager::responseReceived, this, &LibraryController::onResponseReceived);
 }
 
 void LibraryController::refreshShelves() {
-    if(!networkManager->isConnected()) {
+    if (!networkManager->isConnected()) {
         emit shelvesLoadFailed("اتصال به سرور برقرار نیست");
         return;
     }
@@ -13,7 +14,7 @@ void LibraryController::refreshShelves() {
 }
 
 void LibraryController::createShelf(const QString &shelfName) {
-    if (shelfName.trimmed().isEmpty() || shelfName.length() > 100) {
+    if (shelfName.trimmed().isEmpty() || shelfName.trimmed().length() > 100) {
         emit validationError("نام قفسه نامعتبر است (باید بین ۱ تا ۱۰۰ کاراکتر باشد)");
         return;
     }
@@ -25,7 +26,7 @@ void LibraryController::createShelf(const QString &shelfName) {
 }
 
 void LibraryController::renameShelf(int shelfId, const QString &newName) {
-    if (shelfId <= 0 || newName.trimmed().isEmpty() || newName.length() > 100) {
+    if (shelfId <= 0 || newName.trimmed().isEmpty() || newName.trimmed().length() > 100) {
         emit validationError("ورودی نامعتبر است");
         return;
     }
