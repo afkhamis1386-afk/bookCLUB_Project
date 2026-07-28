@@ -30,14 +30,34 @@ bool SavedBookRepository::saveBook(int userId, int bookId) {
 }
 bool SavedBookRepository::unsaveBook(int userId, int bookId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
+    if (!db.transaction()) {
+        qWarning() << "خطا در شروع تراکنش حذف کتاب:" << db.lastError().text();
+        return false;
+    }
+    QSqlQuery favoriteQuery(db);
+    favoriteQuery.prepare("DELETE FROM FavouriteBooks WHERE UserID = :userId AND BookID = :bookId");
+    favoriteQuery.bindValue(":userId", userId);
+    favoriteQuery.bindValue(":bookId", bookId);
+    if (!favoriteQuery.exec()) {
+        qWarning() << "خطا در حذف کتاب از لیست علاقه مندی:" << favoriteQuery.lastError().text();
+        db.rollback();
+        return false;
+    }
     QSqlQuery query(db);
     query.prepare("DELETE FROM SavedBooks WHERE UserID = :userId AND BookID = :bookId");
     query.bindValue(":userId", userId);
     query.bindValue(":bookId", bookId);
     if (!query.exec()) {
         qWarning() << "خطا در حذف کتاب ذخیره شده:" << query.lastError().text();
+        db.rollback();
         return false;
     }
+    if (!db.commit()) {
+        qWarning() << "خطا در نهایی سازی حذف کتاب:" << db.lastError().text();
+        db.rollback();
+        return false;
+    }
+
     return query.numRowsAffected() > 0;
 }
 QVector<int> SavedBookRepository::getSavedBookIds(int userId) {
