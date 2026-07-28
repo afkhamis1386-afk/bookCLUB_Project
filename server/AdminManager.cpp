@@ -25,7 +25,6 @@ Response AdminManager::getAllUsers(){
     const QVector<Genre> allGenres = genreRepo.getAllGenres();
     for (const Genre &genre : allGenres)
         genreTitlesById.insert(genre.getGenreId(), genre.getGenreTitle());
-
     for(int userId : qAsConst(normalUserIds)){
         std::unique_ptr<NormalUser> user(userRepo.loadNormalUserById(userId));
         if (!user) continue;
@@ -152,7 +151,6 @@ Response AdminManager::blockUser(int actingAdminUserId, int userId){
     }
     return Response(ResponseStatus::Success, "کاربر با موفقیت مسدود شد");
 }
-
 Response AdminManager::unblockUser(int actingAdminUserId, int userId){
     Q_UNUSED(actingAdminUserId)
     UserRepository userRepo;
@@ -161,7 +159,6 @@ Response AdminManager::unblockUser(int actingAdminUserId, int userId){
     }
     return Response(ResponseStatus::Success, "مسدودیت کاربر با موفقیت رفع شد");
 }
-
 Response AdminManager::deleteUser(int actingAdminUserId, int userId){
     if(userId == actingAdminUserId){
         return Response(ResponseStatus::ValidationFailed, "نمی توانید حساب کاربری خودتان را حذف کنید");
@@ -179,7 +176,6 @@ Response AdminManager::deleteUser(int actingAdminUserId, int userId){
     }
     return Response(ResponseStatus::Success, "حساب کاربری با موفقیت حذف شد");
 }
-
 Response AdminManager::setUserActiveStatus(int actingAdminUserId, int targetUserId, bool active){
     if(!active && targetUserId == actingAdminUserId){
         return Response(ResponseStatus::ValidationFailed, "نمی توانید حساب کاربری خودتان را غیرفعال کنید");
@@ -222,19 +218,16 @@ Response AdminManager::getBookDetailsForReview(int bookId){
     if(!book){
         return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
     }
-
     AuthorRepository authorRepo;
     std::unique_ptr<Author> author(authorRepo.loadAuthorById(book->getAuthorId()));
     if(!author){
         return Response(ResponseStatus::Error, "اطلاعات نویسنده کتاب یافت نشد");
     }
-
     GenreRepository genreRepo;
     std::unique_ptr<Genre> genre(genreRepo.loadGenreById(book->getGenreId()));
     if(!genre){
         return Response(ResponseStatus::Error, "اطلاعات ژانر کتاب یافت نشد");
     }
-
     QVariantMap data;
     data["bookId"] = book->getBookId();
     data["bookName"] = book->getBookName();

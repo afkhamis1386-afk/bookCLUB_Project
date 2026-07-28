@@ -80,7 +80,6 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     if(categoryId == -1){
         return Response(ResponseStatus::ValidationFailed, "دسته بندی انتخاب شده معتبر نیست (حداکثر ۵۰ کاراکتر)");
     }
-
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if(!db.transaction()){
         return Response(ResponseStatus::Error, "خطا در شروع تراکنش ثبت کتاب");
@@ -529,7 +528,8 @@ Response BookManager::getBookDetails(int bookId){
         data["timedDiscountPercent"] = activeDiscount->getDiscountPercent();
         data["timedDiscountStart"] = activeDiscount->getStartDate();
         data["timedDiscountEnd"] = activeDiscount->getEndDate();
-    } else {
+    }
+    else {
         std::unique_ptr<TimedDiscount> upcoming(timedDiscountRepo.getCurrentOrUpcomingDiscountForBook(bookId));
         if(upcoming){
             data["timedDiscountId"] = upcoming->getDiscountId();

@@ -42,8 +42,7 @@ void NetworkManager::registerNormalUser(const QString &username, const QString &
 }
 void NetworkManager::registerPublisher(const QString &username, const QString &password, const QString &securityAnswer,
                                        const QString &firstName, const QString &lastName, const QString &email,
-                                       const QString &publicationName, const QString &licenseNumber,
-                                       const QString &shortDescription) {
+                                       const QString &publicationName, const QString &licenseNumber, const QString &shortDescription) {
     QVariantMap p;
     p["username"] = username;
     p["password"] = password;
@@ -63,7 +62,6 @@ void NetworkManager::login(const QString &username, const QString &password) {
     p["password"] = password;
     sendRequest(RequestType::Login, p);
 }
-
 void NetworkManager::changePassword(const QString &oldPassword, const QString &newPassword) {
     QVariantMap p;
     p["oldPassword"] = oldPassword;
@@ -122,7 +120,6 @@ void NetworkManager::getBookFile(int bookId) {
     QVariantMap p;
     p["bookId"] = bookId;
     sendRequest(RequestType::GetBookFile, p);
-
 }
 void NetworkManager::getPurchasedBooks() {
     sendRequest(RequestType::GetPurchasedBooks);
@@ -166,8 +163,7 @@ void NetworkManager::getRecommendedBooks() {
 }
 void NetworkManager::addBook(const QString &bookName, const QString &description, double price,
                              const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-                             const QByteArray &coverImageData, const QString &coverImageExtension,
-                             const QByteArray &pdfData, double discountPercent) {
+                             const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData, double discountPercent) {
     QVariantMap p;
     p["bookName"] = bookName;
     p["description"] = description;
@@ -459,7 +455,8 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
         QVariantMap data = response.getData();
         if (data.contains("liveUpdateType")) {
             emit bookLiveUpdateReceived(data.value("liveUpdateType").toString(), data);
-        } else {
+        }
+        else {
             emit pushNotificationReceived(data);
         }
         return;
@@ -477,7 +474,8 @@ void NetworkManager::onSocketResponseReceived(const Response &response) {
             hasFavoriteGenres = response.getData().value("hasFavoriteGenres").toBool();
             loggedIn = true;
             emit loginSucceeded(currentUserId, currentUserRole);
-        } else {
+        }
+        else {
             emit loginFailed(response.getMessage());
         }
     }

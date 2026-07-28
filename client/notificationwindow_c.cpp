@@ -3,11 +3,7 @@
 #include <QFont>
 
 NotificationWindow_c::NotificationWindow_c(NetworkManager *networkManager, QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::NotificationWindow_c)
-    , networkManager(networkManager)
-    , notificationController(new NotificationController(networkManager, this))
-{
+    : QMainWindow(parent), ui(new Ui::NotificationWindow_c), networkManager(networkManager), notificationController(new NotificationController(networkManager, this)) {
     ui->setupUi(this);
     connect(ui->refreshButton, &QPushButton::clicked, this, &NotificationWindow_c::onRefreshButtonClicked);
     connect(ui->backButton, &QPushButton::clicked, this, &NotificationWindow_c::onBackButtonClicked);
@@ -19,8 +15,7 @@ NotificationWindow_c::NotificationWindow_c(NetworkManager *networkManager, QWidg
     connect(notificationController, &NotificationController::newNotificationArrived, this, &NotificationWindow_c::onNewNotificationArrived);
     notificationController->refreshNotifications();
 }
-NotificationWindow_c::~NotificationWindow_c()
-{
+NotificationWindow_c::~NotificationWindow_c() {
     delete ui;
 }
 void NotificationWindow_c::addNotificationToList(int notificationId, const QString &title, const QString &message, const QString &relativeTime, bool isRead, bool prepend)
@@ -38,9 +33,7 @@ void NotificationWindow_c::addNotificationToList(int notificationId, const QStri
     else
         ui->notificationsListWidget->addItem(item);
 }
-
-QListWidgetItem* NotificationWindow_c::findItemByNotificationId(int notificationId) const
-{
+QListWidgetItem* NotificationWindow_c::findItemByNotificationId(int notificationId) const {
     for (int i = 0; i < ui->notificationsListWidget->count(); ++i) {
         QListWidgetItem *item = ui->notificationsListWidget->item(i);
         if (item->data(Qt::UserRole).toInt() == notificationId)
@@ -48,37 +41,28 @@ QListWidgetItem* NotificationWindow_c::findItemByNotificationId(int notification
     }
     return nullptr;
 }
-void NotificationWindow_c::onNotificationsLoaded(const QVariantList &notifications)
-{
+void NotificationWindow_c::onNotificationsLoaded(const QVariantList &notifications) {
     ui->statusLabel->clear();
     ui->notificationsListWidget->clear();
     for (const QVariant &v : notifications) {
         QVariantMap notif = v.toMap();
         addNotificationToList(
-            notif.value("notificationId").toInt(),
-            notif.value("title").toString(),
-            notif.value("message").toString(),
-            notif.value("relativeTime").toString(),
-            notif.value("isRead").toBool(),
-            false
-            );
+            notif.value("notificationId").toInt(), notif.value("title").toString(),notif.value("message").toString(),
+            notif.value("relativeTime").toString(),notif.value("isRead").toBool(), false );
     }
     if (notifications.isEmpty())
         ui->statusLabel->setText("هیچ اعلانی وجود ندارد");
 }
-void NotificationWindow_c::onNotificationsLoadFailed(const QString &message)
-{
+void NotificationWindow_c::onNotificationsLoadFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
-void NotificationWindow_c::onNotificationItemClicked(QListWidgetItem *item)
-{
+void NotificationWindow_c::onNotificationItemClicked(QListWidgetItem *item) {
     bool alreadyRead = item->data(Qt::UserRole + 1).toBool();
     if (alreadyRead) return;
     int notificationId = item->data(Qt::UserRole).toInt();
     notificationController->markAsRead(notificationId);
 }
-void NotificationWindow_c::onNotificationMarkedRead(const QString &message)
-{
+void NotificationWindow_c::onNotificationMarkedRead(const QString &message) {
     ui->statusLabel->setText(message);
     QListWidgetItem *item = ui->notificationsListWidget->currentItem();
     if (!item) return;
@@ -88,27 +72,16 @@ void NotificationWindow_c::onNotificationMarkedRead(const QString &message)
     item->setFont(font);
     item->setForeground(QColor(0x7f, 0x8c, 0x8d));
 }
-
-void NotificationWindow_c::onNotificationMarkReadFailed(const QString &message)
-{
+void NotificationWindow_c::onNotificationMarkReadFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
-void NotificationWindow_c::onNewNotificationArrived(const QVariantMap &notificationData)
-{
-    addNotificationToList(
-        notificationData.value("notificationId").toInt(),
-        notificationData.value("title").toString(),
-        notificationData.value("message").toString(),
-        "همین الان",
-        false,
-        true
-        );
+void NotificationWindow_c::onNewNotificationArrived(const QVariantMap &notificationData) {
+    addNotificationToList( notificationData.value("notificationId").toInt(), notificationData.value("title").toString(),
+        notificationData.value("message").toString(), "همین الان", false, true );
 }
-void NotificationWindow_c::onRefreshButtonClicked()
-{
+void NotificationWindow_c::onRefreshButtonClicked() {
     notificationController->refreshNotifications();
 }
-void NotificationWindow_c::onBackButtonClicked()
-{
+void NotificationWindow_c::onBackButtonClicked() {
     emit backRequested();
 }

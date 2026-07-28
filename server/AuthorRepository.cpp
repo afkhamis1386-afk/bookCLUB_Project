@@ -82,5 +82,3 @@ int AuthorRepository::getOrCreateAuthor(const QString &authorName){
     newAuthor.setAuthorName(authorName);
     return insertAuthor(newAuthor);
 }
-
-

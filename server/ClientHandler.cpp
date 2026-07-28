@@ -345,11 +345,7 @@ Response ClientHandler::handleAuthRequest(const Request &req) {
     case RequestType::BootstrapFirstAdmin: {
         AdminManager adminManager;
         return adminManager.createAdmin(
-            p.value("username").toString(),
-            p.value("password").toString(),
-            p.value("firstName").toString(),
-            p.value("lastName").toString(),
-            true);
+            p.value("username").toString(), p.value("password").toString(), p.value("firstName").toString(), p.value("lastName").toString(), true);
     }
     default:
         return Response(ResponseStatus::Error, "درخواست احراز هویت نامعتبر");
@@ -376,21 +372,15 @@ Response ClientHandler::handleBookRequest(const Request &req) {
     case RequestType::SaveReadingProgress:
         return bookManager.saveReadingProgress(
             authenticatedUserId,
-            p.value("bookId").toInt(),
-            p.value("lastPage").toInt() );
+            p.value("bookId").toInt(), p.value("lastPage").toInt() );
     case RequestType::AddBook:
         return bookManager.addBook(
             authenticatedUserId,
-            p.value("bookName").toString(),
-            p.value("description").toString(),
-            p.value("price").toDouble(),
-            p.value("genreTitle").toString(),
-            p.value("categoryTitle").toString(),
-            p.value("authorName").toString(),
-            p.value("coverImageData").toByteArray(),
-            p.value("coverImageExtension").toString(),
-            p.value("pdfData").toByteArray(),
-            p.value("discountPercent").toDouble());
+            p.value("bookName").toString(), p.value("description").toString(),
+            p.value("price").toDouble(), p.value("genreTitle").toString(),
+            p.value("categoryTitle").toString(), p.value("authorName").toString(),
+            p.value("coverImageData").toByteArray(), p.value("coverImageExtension").toString(),
+            p.value("pdfData").toByteArray(), p.value("discountPercent").toDouble());
     case RequestType::GetBooksByGenre:
         return bookManager.getBooksByGenre(p.value("genreId").toInt());
     case RequestType::GetBooksByCategory:
@@ -409,16 +399,11 @@ Response ClientHandler::handleBookRequest(const Request &req) {
         return bookManager.updateBook(
             authenticatedUserId,
             authenticatedRole,
-            p.value("bookId").toInt(),
-            p.value("bookName").toString(),
-            p.value("description").toString(),
-            p.value("price").toDouble(),
-            p.value("genreTitle").toString(),
-            p.value("categoryTitle").toString(),
-            p.value("authorName").toString(),
-            p.value("coverImageData").toByteArray(),
-            p.value("coverImageExtension").toString(),
-            p.value("pdfData").toByteArray());
+            p.value("bookId").toInt(), p.value("bookName").toString(),
+            p.value("description").toString(), p.value("price").toDouble(),
+            p.value("genreTitle").toString(), p.value("categoryTitle").toString(),
+            p.value("authorName").toString(), p.value("coverImageData").toByteArray(),
+            p.value("coverImageExtension").toString(), p.value("pdfData").toByteArray());
     case RequestType::DeactivateBook:
         return bookManager.deactivateBook(authenticatedUserId, p.value("bookId").toInt());
     case RequestType::ReactivateBook:
@@ -427,17 +412,13 @@ Response ClientHandler::handleBookRequest(const Request &req) {
         return bookManager.applyDiscount(
             authenticatedUserId,
             authenticatedRole,
-            p.value("bookId").toInt(),
-            p.value("discountPercent").toDouble(),
-            p.value("discountAmount").toDouble());
+            p.value("bookId").toInt(), p.value("discountPercent").toDouble(), p.value("discountAmount").toDouble());
     case RequestType::ApplyTimedDiscount:
         return bookManager.applyTimedDiscount(
             authenticatedUserId,
             authenticatedRole,
-            p.value("bookId").toInt(),
-            p.value("discountPercent").toDouble(),
-            p.value("startDate").toDateTime(),
-            p.value("endDate").toDateTime());
+            p.value("bookId").toInt(), p.value("discountPercent").toDouble(),
+            p.value("startDate").toDateTime(), p.value("endDate").toDateTime());
     case RequestType::CancelTimedDiscount:
         return bookManager.cancelTimedDiscount(authenticatedUserId, authenticatedRole, p.value("bookId").toInt());
     default:
@@ -586,10 +567,8 @@ Response ClientHandler::handleAdminRequest(const Request &req) {
         return adminManager.removeInvalidBook(p.value("bookId").toInt());
     case RequestType::UpdateBookByAdmin:
         return adminManager.updateBook(
-            p.value("bookId").toInt(),
-            p.value("bookName").toString(),
-            p.value("description").toString(),
-            p.value("price").toDouble());
+            p.value("bookId").toInt(), p.value("bookName").toString(),
+            p.value("description").toString(), p.value("price").toDouble());
     case RequestType::GetAllReviews:
         return adminManager.getAllReviews();
     case RequestType::DeleteReviewByAdmin: {
@@ -598,10 +577,8 @@ Response ClientHandler::handleAdminRequest(const Request &req) {
     }
     case RequestType::CreateAdditionalAdmin:
         return adminManager.createAdmin(
-            p.value("username").toString(),
-            p.value("password").toString(),
-            p.value("firstName").toString(),
-            p.value("lastName").toString(),
+            p.value("username").toString(), p.value("password").toString(),
+            p.value("firstName").toString(), p.value("lastName").toString(),
             false);
     default:
         return Response(ResponseStatus::Error, "درخواست ادمین نامعتبر");

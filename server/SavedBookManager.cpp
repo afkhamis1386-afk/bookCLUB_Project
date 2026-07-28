@@ -19,7 +19,6 @@ bool convertUniquePositiveIds(const QVariantList &values, QVector<int> &ids) {
     }
     return true;
 }
-
 bool containSameIds(const QVector<int> &left, const QVector<int> &right) {
     if (left.size() != right.size())
         return false;
@@ -31,7 +30,6 @@ bool containSameIds(const QVector<int> &left, const QVector<int> &right) {
         rightSet.insert(id);
     return leftSet == rightSet && leftSet.size() == left.size();
 }
-
 Response buildBookListResponse(const QVector<int> &ids, const QString &message) {
     BookRepository bookRepo;
     QVariantList books;
@@ -47,12 +45,10 @@ Response buildBookListResponse(const QVector<int> &ids, const QString &message) 
     }
     QVariantMap data;
     data["books"] = books;
-    // Backward-compatible key for older clients.
     data["bookIds"] = books;
     return Response(ResponseStatus::Success, message, data);
 }
 }
-
 SavedBookManager::SavedBookManager() {}
 
 Response SavedBookManager::saveBook(int userId, int bookId) {
@@ -60,7 +56,6 @@ Response SavedBookManager::saveBook(int userId, int bookId) {
     std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
     if (!book)
         return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
-
     SavedBookRepository savedRepo;
     if (savedRepo.isBookSaved(userId, bookId))
         return Response(ResponseStatus::Error, "این کتاب قبلاً ذخیره شده است");
@@ -68,7 +63,6 @@ Response SavedBookManager::saveBook(int userId, int bookId) {
         return Response(ResponseStatus::Error, "خطا در ذخیره کتاب");
     return Response(ResponseStatus::Success, "کتاب به کتاب های ذخیره شده اضافه شد");
 }
-
 Response SavedBookManager::unsaveBook(int userId, int bookId) {
     SavedBookRepository savedRepo;
     if (!savedRepo.isBookSaved(userId, bookId))
@@ -77,16 +71,13 @@ Response SavedBookManager::unsaveBook(int userId, int bookId) {
         return Response(ResponseStatus::Error, "خطا در حذف کتاب از کتاب های ذخیره شده");
     return Response(ResponseStatus::Success, "کتاب از کتاب های ذخیره شده و لیست علاقه مندی حذف شد");
 }
-
 Response SavedBookManager::getSavedBooks(int userId) {
     SavedBookRepository savedRepo;
     return buildBookListResponse(savedRepo.getSavedBookIds(userId), "کتاب های ذخیره شده بازیابی شدند");
 }
-
 Response SavedBookManager::addFavoriteBook(int userId, int bookId) {
     if (userId <= 0 || bookId <= 0)
         return Response(ResponseStatus::ValidationFailed, "شناسه کاربر یا کتاب نامعتبر است");
-
     SavedBookRepository savedRepo;
     if (!savedRepo.isBookSaved(userId, bookId)) {
         return Response(ResponseStatus::ValidationFailed, "فقط کتاب های ذخیره شده را می توان به لیست علاقه مندی افزود");
@@ -97,11 +88,9 @@ Response SavedBookManager::addFavoriteBook(int userId, int bookId) {
         return Response(ResponseStatus::Error, "خطا در افزودن کتاب به لیست علاقه مندی ها");
     return Response(ResponseStatus::Success, "کتاب به لیست علاقه مندی ها اضافه شد");
 }
-
 Response SavedBookManager::removeFavoriteBook(int userId, int bookId) {
     if (userId <= 0 || bookId <= 0)
         return Response(ResponseStatus::ValidationFailed, "شناسه کاربر یا کتاب نامعتبر است");
-
     SavedBookRepository savedRepo;
     if (!savedRepo.isFavoriteBook(userId, bookId))
         return Response(ResponseStatus::Error, "این کتاب در لیست علاقه مندی ها نیست");
@@ -109,17 +98,14 @@ Response SavedBookManager::removeFavoriteBook(int userId, int bookId) {
         return Response(ResponseStatus::Error, "خطا در حذف کتاب از لیست علاقه مندی ها");
     return Response(ResponseStatus::Success, "کتاب از لیست علاقه مندی ها حذف شد");
 }
-
 Response SavedBookManager::getFavoriteBooks(int userId) {
     SavedBookRepository savedRepo;
     return buildBookListResponse(savedRepo.getFavoriteBookIds(userId), "لیست علاقه مندی ها بازیابی شد");
 }
-
 Response SavedBookManager::reorderFavoriteBooks(int userId, const QVariantList &bookIds) {
     QVector<int> requestedIds;
     if (!convertUniquePositiveIds(bookIds, requestedIds))
         return Response(ResponseStatus::ValidationFailed, "ترتیب لیست علاقه مندی ها نامعتبر است");
-
     SavedBookRepository savedRepo;
     const QVector<int> currentIds = savedRepo.getFavoriteBookIds(userId);
     if (!containSameIds(currentIds, requestedIds)) {

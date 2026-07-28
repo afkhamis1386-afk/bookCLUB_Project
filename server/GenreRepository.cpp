@@ -7,8 +7,7 @@ GenreRepository::GenreRepository(){}
 int GenreRepository::insertGenre(const Genre &genre){
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
-    query.prepare(
-        "INSERT INTO Genres (GenreTitle) OUTPUT INSERTED.GenreID VALUES (:title)");
+    query.prepare( "INSERT INTO Genres (GenreTitle) OUTPUT INSERTED.GenreID VALUES (:title)");
     query.bindValue(":title", genre.getGenreTitle());
     if(!query.exec() || !query.next()){
         qWarning() << "خطا در ثبت ژانر جدید:" << query.lastError().text();
@@ -70,5 +69,3 @@ bool GenreRepository::genreExists(const QString &title) {
         return query.value(0).toInt() > 0;
     return false;
 }
-
-

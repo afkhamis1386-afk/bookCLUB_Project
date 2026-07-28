@@ -24,8 +24,7 @@ bool ClientRegistry::isUserOnline(int userId) const {
     return onlineUsers.contains(userId);
 }
 void ClientRegistry::pushToUser(int userId, const Notification &notification){
-    ClientHandler *handler = nullptr;
-    {
+    ClientHandler *handler = nullptr; {
         QMutexLocker locker(&mapMutex);
         if(!onlineUsers.contains(userId))
             return;

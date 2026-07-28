@@ -7,10 +7,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-
     qRegisterMetaType<Notification>("Notification");
     qRegisterMetaType<Response>("Response");
-
     DatabaseManager::getInstance()->configure(".", "BookClub", "", "");
     ServerApplication server;
     if (!server.startListening(5555)) {

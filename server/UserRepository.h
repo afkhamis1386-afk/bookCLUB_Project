@@ -16,8 +16,7 @@ public:
     bool updateActiveStatus(int userId, bool isActive);
     bool updatePasswordHash(int userId, const QString &newPasswordHash);
     bool isUsernameTakenByOther(const QString &encryptedUsername, int excludedUserId);
-    bool updateNormalUserAccount(int userId, const QString &encryptedUsername,
-                                 const QString &newPasswordHash, const QString &newSecurityAnswerHash);
+    bool updateNormalUserAccount(int userId, const QString &encryptedUsername, const QString &newPasswordHash, const QString &newSecurityAnswerHash);
     QVector<int> getAllUserIds();
     QVector<int> getAllNormalUserIds();
     QVector<int> getFavoriteGenreIds(int userId);

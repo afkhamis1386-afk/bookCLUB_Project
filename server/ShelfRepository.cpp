@@ -17,7 +17,6 @@ int ShelfRepository::insertShelf(const Shelf &shelf) {
         qWarning() << "خطا در شروع تراکنش ساخت قفسه:" << db.lastError().text();
         return -1;
     }
-
     QSqlQuery orderQuery(db);
     orderQuery.prepare(
         "SELECT COALESCE(MAX(DisplayOrder), -1) + 1 "
@@ -29,7 +28,6 @@ int ShelfRepository::insertShelf(const Shelf &shelf) {
         return -1;
     }
     const int displayOrder = orderQuery.value(0).toInt();
-
     QSqlQuery insertQuery(db);
     insertQuery.prepare(
         "INSERT INTO Shelves (UserID, ShelfName, DisplayOrder) "
@@ -42,7 +40,6 @@ int ShelfRepository::insertShelf(const Shelf &shelf) {
         db.rollback();
         return -1;
     }
-
     QSqlQuery idQuery(db);
     idQuery.prepare(
         "SELECT ShelfID FROM Shelves "
@@ -63,7 +60,6 @@ int ShelfRepository::insertShelf(const Shelf &shelf) {
     }
     return shelfId;
 }
-
 Shelf* ShelfRepository::loadShelfById(int shelfId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
@@ -73,7 +69,6 @@ Shelf* ShelfRepository::loadShelfById(int shelfId) {
         qWarning() << "قفسه یافت نشد:" << query.lastError().text();
         return nullptr;
     }
-
     Shelf *shelf = new Shelf(
         query.value(0).toInt(),
         query.value(1).toInt(),
@@ -81,7 +76,6 @@ Shelf* ShelfRepository::loadShelfById(int shelfId) {
     shelf->setBookIds(getBookIdsByShelf(shelfId));
     return shelf;
 }
-
 QVector<int> ShelfRepository::getShelfIdsByUser(int userId) {
     QVector<int> ids;
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
@@ -93,12 +87,12 @@ QVector<int> ShelfRepository::getShelfIdsByUser(int userId) {
     if (query.exec()) {
         while (query.next())
             ids.append(query.value(0).toInt());
-    } else {
+    }
+    else {
         qWarning() << "خطا در بازیابی ترتیب قفسه ها:" << query.lastError().text();
     }
     return ids;
 }
-
 QVector<int> ShelfRepository::getBookIdsByShelf(int shelfId) {
     QVector<int> ids;
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
@@ -115,7 +109,6 @@ QVector<int> ShelfRepository::getBookIdsByShelf(int shelfId) {
     }
     return ids;
 }
-
 bool ShelfRepository::updateShelfName(int shelfId, const QString &newName) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
@@ -128,14 +121,12 @@ bool ShelfRepository::updateShelfName(int shelfId, const QString &newName) {
     }
     return true;
 }
-
 bool ShelfRepository::deleteShelf(int shelfId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction()) {
         qWarning() << "خطا در شروع تراکنش حذف قفسه:" << db.lastError().text();
         return false;
     }
-
     QSqlQuery deleteItems(db);
     deleteItems.prepare("DELETE FROM ShelfBooks WHERE ShelfID = :shelfId");
     deleteItems.bindValue(":shelfId", shelfId);
@@ -144,7 +135,6 @@ bool ShelfRepository::deleteShelf(int shelfId) {
         db.rollback();
         return false;
     }
-
     QSqlQuery deleteShelfQuery(db);
     deleteShelfQuery.prepare("DELETE FROM Shelves WHERE ShelfID = :shelfId");
     deleteShelfQuery.bindValue(":shelfId", shelfId);
@@ -153,7 +143,6 @@ bool ShelfRepository::deleteShelf(int shelfId) {
         db.rollback();
         return false;
     }
-
     if (!db.commit()) {
         qWarning() << "خطا در نهایی سازی تراکنش حذف قفسه:" << db.lastError().text();
         db.rollback();
@@ -161,14 +150,12 @@ bool ShelfRepository::deleteShelf(int shelfId) {
     }
     return true;
 }
-
 bool ShelfRepository::addBookToShelf(int shelfId, int bookId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.isOpen()) {
         qWarning() << "اتصال دیتابیس برای افزودن کتاب به قفسه باز نیست:" << db.lastError().text();
         return false;
     }
-
     QSqlQuery orderQuery(db);
     orderQuery.prepare(
         "SELECT COALESCE(MAX(DisplayOrder), -1) + 1 "
@@ -178,7 +165,6 @@ bool ShelfRepository::addBookToShelf(int shelfId, int bookId) {
         qWarning() << "خطا در محاسبه ترتیب کتاب قفسه:" << orderQuery.lastError().text();
         return false;
     }
-
     QSqlQuery insertQuery(db);
     insertQuery.prepare(
         "INSERT INTO ShelfBooks (ShelfID, BookID, DisplayOrder) "
@@ -192,7 +178,6 @@ bool ShelfRepository::addBookToShelf(int shelfId, int bookId) {
     }
     return true;
 }
-
 bool ShelfRepository::shelfContainsBook(int shelfId, int bookId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
@@ -207,7 +192,6 @@ bool ShelfRepository::shelfContainsBook(int shelfId, int bookId) {
     }
     return query.value(0).toInt() > 0;
 }
-
 bool ShelfRepository::removeBookFromShelf(int shelfId, int bookId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
@@ -220,14 +204,12 @@ bool ShelfRepository::removeBookFromShelf(int shelfId, int bookId) {
     }
     return query.numRowsAffected() > 0;
 }
-
 bool ShelfRepository::reorderShelves(int userId, const QVector<int> &shelfIds) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction()) {
         qWarning() << "خطا در شروع تراکنش مرتب سازی قفسه ها:" << db.lastError().text();
         return false;
     }
-
     QSqlQuery query(db);
     query.prepare(
         "UPDATE Shelves SET DisplayOrder = :displayOrder "
@@ -242,7 +224,6 @@ bool ShelfRepository::reorderShelves(int userId, const QVector<int> &shelfIds) {
             return false;
         }
     }
-
     if (!db.commit()) {
         qWarning() << "خطا در نهایی سازی ترتیب قفسه ها:" << db.lastError().text();
         db.rollback();
@@ -250,14 +231,12 @@ bool ShelfRepository::reorderShelves(int userId, const QVector<int> &shelfIds) {
     }
     return true;
 }
-
 bool ShelfRepository::reorderShelfBooks(int shelfId, const QVector<int> &bookIds) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction()) {
         qWarning() << "خطا در شروع تراکنش مرتب سازی کتاب های قفسه:" << db.lastError().text();
         return false;
     }
-
     QSqlQuery query(db);
     query.prepare(
         "UPDATE ShelfBooks SET DisplayOrder = :displayOrder "
@@ -272,7 +251,6 @@ bool ShelfRepository::reorderShelfBooks(int shelfId, const QVector<int> &bookIds
             return false;
         }
     }
-
     if (!db.commit()) {
         qWarning() << "خطا در نهایی سازی ترتیب کتاب های قفسه:" << db.lastError().text();
         db.rollback();
@@ -280,7 +258,6 @@ bool ShelfRepository::reorderShelfBooks(int shelfId, const QVector<int> &bookIds
     }
     return true;
 }
-
 bool ShelfRepository::shelfNameExistsForUser(int userId, const QString &shelfName) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);
@@ -292,7 +269,6 @@ bool ShelfRepository::shelfNameExistsForUser(int userId, const QString &shelfNam
         return query.value(0).toInt() > 0;
     return false;
 }
-
 bool ShelfRepository::shelfBelongsToUser(int shelfId, int userId) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     QSqlQuery query(db);

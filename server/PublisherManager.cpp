@@ -60,7 +60,7 @@ Response PublisherManager::getMyBooks(int publisherUserId) {
     BookRepository bookRepo;
     QVector<int> bookIds = bookRepo.getBooksByPublisher(publisherUserId);
     QVariantList bookList;
-    for (int bookId : bookIds) {
+    for (int bookId : qAsConst(bookIds)) {
         std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
         if (!book) continue;
         QVariantMap bookData;
@@ -86,7 +86,7 @@ Response PublisherManager::getFullDashboard(int publisherUserId) {
     QVector<int> bookIds = bookRepo.getBooksByPublisher(publisherUserId);
     double totalRevenue = publisherRepo.getTotalRevenue(publisherUserId);
     QVariantList bookStats;
-    for (int bookId : bookIds) {
+    for (int bookId : qAsConst(bookIds)) {
         std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
         if (!book) continue;
         double avgRating = ratingRepo.getAverageRating(bookId);

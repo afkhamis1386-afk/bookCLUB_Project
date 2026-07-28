@@ -2,8 +2,7 @@
 Notification::Notification()
     : notificationId(-1), userId(-1), targetId(-1), senderId(-1),
     notificationType(NotificationType::NewBookInFavouriteGenre),
-    read(false), createdAt(QDateTime::currentDateTime())
-{}
+    read(false), createdAt(QDateTime::currentDateTime()) {}
 Notification::Notification(int userId, NotificationType type, const QString &title, const QString &message, int targetId, int senderId)
     : notificationId(-1), userId(userId > 0 ? userId : -1), targetId(targetId),
     senderId(senderId), notificationType(type), read(false),

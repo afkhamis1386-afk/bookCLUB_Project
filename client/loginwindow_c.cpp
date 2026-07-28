@@ -6,11 +6,7 @@
 #include "windownav.h"
 #include <QMessageBox>
 LoginWindow_c::LoginWindow_c(NetworkManager *networkManager, QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::LoginWindow_c)
-    , networkManager(networkManager)
-    , loginController(new LoginController(networkManager, this))
-{
+    : QMainWindow(parent) , ui(new Ui::LoginWindow_c), networkManager(networkManager), loginController(new LoginController(networkManager, this)){
     ui->setupUi(this);
     ui->passwordLineEdit->setEchoMode(QLineEdit::Password);
     connect(ui->loginButton, &QPushButton::clicked, this, &LoginWindow_c::onLoginButtonClicked);
@@ -20,17 +16,14 @@ LoginWindow_c::LoginWindow_c(NetworkManager *networkManager, QWidget *parent)
     connect(loginController, &LoginController::loginFailed, this, &LoginWindow_c::onLoginFailed);
     connect(loginController, &LoginController::validationError, this, &LoginWindow_c::onValidationError);
 }
-LoginWindow_c::~LoginWindow_c()
-{
+LoginWindow_c::~LoginWindow_c() {
     delete ui;
 }
-void LoginWindow_c::onLoginButtonClicked()
-{
+void LoginWindow_c::onLoginButtonClicked() {
     ui->statusLabel->clear();
     loginController->attemptLogin(ui->usernameLineEdit->text(), ui->passwordLineEdit->text());
 }
-void LoginWindow_c::onGoToRegisterButtonClicked()
-{
+void LoginWindow_c::onGoToRegisterButtonClicked() {
     if(!registerWindow){
         registerWindow = new RegisterWindow_c(networkManager);
         connect(registerWindow, &RegisterWindow_c::backToLoginRequested, this, [this](){
@@ -41,8 +34,7 @@ void LoginWindow_c::onGoToRegisterButtonClicked()
     showFollowingState(registerWindow, this);
     this->hide();
 }
-void LoginWindow_c::onForgotPasswordButtonClicked()
-{
+void LoginWindow_c::onForgotPasswordButtonClicked() {
     if(!forgotPasswordWindow) {
         forgotPasswordWindow = new ForgotPasswordWindow_c(networkManager);
         connect(forgotPasswordWindow, &ForgotPasswordWindow_c::backToLoginRequested, this, [this]() {
@@ -53,8 +45,7 @@ void LoginWindow_c::onForgotPasswordButtonClicked()
     showFollowingState(forgotPasswordWindow, this);
     this->hide();
 }
-void LoginWindow_c::onLoginSucceeded(UserRole role)
-{
+void LoginWindow_c::onLoginSucceeded(UserRole role) {
     if(role == UserRole::NormalUser){
         if (!networkManager->getHasFavoriteGenres()) {
             if (!genreSelectionWindow) {
@@ -101,18 +92,13 @@ void LoginWindow_c::onLoginSucceeded(UserRole role)
         this->hide();
     }
 }
-void LoginWindow_c::onLoginFailed(const QString &message)
-{
+void LoginWindow_c::onLoginFailed(const QString &message) {
     ui->statusLabel->setText(message);
 }
-
-void LoginWindow_c::onValidationError(const QString &message)
-{
+void LoginWindow_c::onValidationError(const QString &message) {
     ui->statusLabel->setText(message);
 }
-
-void LoginWindow_c::openHomeWindow()
-{
+void LoginWindow_c::openHomeWindow() {
     HomeWindow_c *homeWindow = new HomeWindow_c(networkManager);
     homeWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(homeWindow, &HomeWindow_c::logoutRequested, this, [this, homeWindow]() {
@@ -123,9 +109,7 @@ void LoginWindow_c::openHomeWindow()
     showFollowingState(homeWindow, this);
     this->hide();
 }
-
-void LoginWindow_c::clearLoginFields()
-{
+void LoginWindow_c::clearLoginFields() {
     ui->usernameLineEdit->clear();
     ui->passwordLineEdit->clear();
     ui->statusLabel->clear();

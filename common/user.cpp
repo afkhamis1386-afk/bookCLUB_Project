@@ -32,9 +32,7 @@ bool User::isStrongPassword(const QString &password) {
     static const QRegularExpression upperRegex("[A-Z]");
     static const QRegularExpression lowerRegex("[a-z]");
     static const QRegularExpression digitRegex("[0-9]");
-    return upperRegex.match(password).hasMatch() &&
-           lowerRegex.match(password).hasMatch() &&
-           digitRegex.match(password).hasMatch();
+    return upperRegex.match(password).hasMatch() && lowerRegex.match(password).hasMatch() && digitRegex.match(password).hasMatch();
 }
 User::User()
     : userId(-1), encryptedUsername(""), passwordHash(""), hashedSecurityAnswer(""),

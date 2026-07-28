@@ -14,8 +14,7 @@ int CartRepository::getOrCreateCartId(int userId) {
     }
     QSqlQuery insertQuery(db);
     insertQuery.prepare(
-        "INSERT INTO ShoppingCarts (UserID) OUTPUT INSERTED.CartID VALUES (:userId)"
-        );
+        "INSERT INTO ShoppingCarts (UserID) OUTPUT INSERTED.CartID VALUES (:userId)" );
     insertQuery.bindValue(":userId", userId);
     if (!insertQuery.exec() || !insertQuery.next()) {
         qWarning() << "خطا در ساخت سبد خرید جدید:" << insertQuery.lastError().text();
@@ -35,17 +34,13 @@ Cart* CartRepository::loadCartByUserId(int userId) {
         "SELECT b.BookID, b.BookPrice, b.DiscountPercent, b.DiscountAmount "
         "FROM CartItems ci "
         "JOIN Books b ON ci.BookID = b.BookID "
-        "WHERE ci.CartID = :cartId"
-        );
+        "WHERE ci.CartID = :cartId" );
     query.bindValue(":cartId", cartId);
     if (query.exec()) {
         while (query.next()) {
             cart->addBook(
-                query.value(0).toInt(),
-                query.value(1).toDouble(),
-                query.value(2).toDouble(),
-                query.value(3).toDouble()
-                );
+                query.value(0).toInt(), query.value(1).toDouble(),
+                query.value(2).toDouble(), query.value(3).toDouble() );
         }
     }
     return cart;
@@ -82,7 +77,6 @@ bool CartRepository::isBookInCart(int cartId, int bookId) {
     query.prepare("SELECT COUNT(*) FROM CartItems WHERE CartID = :cartId AND BookID = :bookId");
     query.bindValue(":cartId", cartId);
     query.bindValue(":bookId", bookId);
-
     if (query.exec() && query.next())
         return query.value(0).toInt() > 0;
     return false;

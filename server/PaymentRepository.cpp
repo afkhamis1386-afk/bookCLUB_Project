@@ -12,8 +12,7 @@ int PaymentRepository::insertPayment(const Payment &payment) {
     query.prepare(
         "INSERT INTO Payments (OrderID, Amount, TransactionCode, PaymentDate, PaymentStatusID) "
         "OUTPUT INSERTED.PaymentID "
-        "VALUES (:orderId, :amount, :transactionCode, :paymentDate, :statusId)"
-        );
+        "VALUES (:orderId, :amount, :transactionCode, :paymentDate, :statusId)" );
     query.bindValue(":orderId", payment.getOrderId());
     query.bindValue(":amount", payment.getAmount());
     if (payment.getTransactionCode().isEmpty())
@@ -47,7 +46,6 @@ Payment* PaymentRepository::loadPaymentById(int paymentId) {
     payment->setTransactionCode(query.value(3).toString());
     payment->setPaymentDate(query.value(4).toDateTime());
     payment->setPaymentStatusId(query.value(5).toInt());
-
     return payment;
 }
 Payment* PaymentRepository::loadPaymentByOrderId(int orderId) {
@@ -55,8 +53,7 @@ Payment* PaymentRepository::loadPaymentByOrderId(int orderId) {
     QSqlQuery query(db);
     query.prepare(
         "SELECT PaymentID, OrderID, Amount, TransactionCode, PaymentDate, PaymentStatusID "
-        "FROM Payments WHERE OrderID = :orderId"
-        );
+        "FROM Payments WHERE OrderID = :orderId" );
     query.bindValue(":orderId", orderId);
     if (!query.exec() || !query.next()) {
         qWarning() << "پرداخت برای این سفارش یافت نشد:" << query.lastError().text();

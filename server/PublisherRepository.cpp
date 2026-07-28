@@ -16,8 +16,7 @@ int PublisherRepository::insertPublisher(const Publisher &publisher) {
     insertUser.prepare(
         "INSERT INTO Users (Username, PasswordHash, IsBlocked, IsDeleted, RegisterDate, RoleID) "
         "OUTPUT INSERTED.UserID "
-        "VALUES (:username, :passwordHash, :isBlocked, :isDeleted, :registerDate, :roleId)"
-        );
+        "VALUES (:username, :passwordHash, :isBlocked, :isDeleted, :registerDate, :roleId)" );
     insertUser.bindValue(":username", publisher.getEncryptedUsername());
     insertUser.bindValue(":passwordHash", publisher.getPasswordHash());
     insertUser.bindValue(":isBlocked", publisher.getIsBlocked());
@@ -35,8 +34,7 @@ int PublisherRepository::insertPublisher(const Publisher &publisher) {
         "INSERT INTO Publishers "
         "(UserID, FirstName, LastName, Email, ShortDescription, PublicationName, "
         "PublisherLicenseNumber, SecurityAnswerHash) "
-        "VALUES (:userId, :firstName, :lastName, :email, :shortDesc, :pubName, :licenseNum, :answerHash)"
-        );
+        "VALUES (:userId, :firstName, :lastName, :email, :shortDesc, :pubName, :licenseNum, :answerHash)" );
     insertPub.bindValue(":userId", newUserId);
     insertPub.bindValue(":firstName", publisher.getFirstName());
     insertPub.bindValue(":lastName", publisher.getLastName());
@@ -66,29 +64,20 @@ Publisher* PublisherRepository::loadPublisherById(int userId) {
         "p.FirstName, p.LastName, p.Email, p.PublicationName, "
         "p.PublisherLicenseNumber, p.ShortDescription "
         "FROM Users u JOIN Publishers p ON u.UserID = p.UserID "
-        "WHERE u.UserID = :userId"
-        );
+        "WHERE u.UserID = :userId" );
     query.bindValue(":userId", userId);
     if (!query.exec() || !query.next()) {
         qWarning() << "ناشر یافت نشد:" << query.lastError().text();
         return nullptr;
     }
     Publisher *publisher = new Publisher(
-        query.value(0).toInt(),
-        query.value(1).toString(),
-        query.value(2).toString(),
-        query.value(3).toString(),
-        query.value(4).toBool(),
-        query.value(5).toBool(),
-        query.value(6).toBool(),
-        query.value(7).toDateTime(),
-        query.value(8).toString(),
-        query.value(9).toString(),
-        query.value(10).toString(),
-        query.value(11).toString(),
-        query.value(12).toString(),
-        query.value(13).toString()
-        );
+        query.value(0).toInt(), query.value(1).toString(),
+        query.value(2).toString(), query.value(3).toString(),
+        query.value(4).toBool(), query.value(5).toBool(),
+        query.value(6).toBool(), query.value(7).toDateTime(),
+        query.value(8).toString(), query.value(9).toString(),
+        query.value(10).toString(), query.value(11).toString(),
+        query.value(12).toString(), query.value(13).toString() );
     QSqlQuery bookQuery(db);
     bookQuery.prepare("SELECT BookID FROM Books WHERE PublisherUserID = :userId AND IsDeleted = 0");
     bookQuery.bindValue(":userId", userId);
@@ -108,8 +97,7 @@ bool PublisherRepository::updateProfile(int userId, const QString &firstName, co
         "UPDATE Publishers SET "
         "FirstName = :firstName, LastName = :lastName, Email = :email, "
         "ShortDescription = :shortDesc, PublicationName = :pubName "
-        "WHERE UserID = :userId"
-        );
+        "WHERE UserID = :userId" );
     query.bindValue(":firstName", firstName);
     query.bindValue(":lastName", lastName);
     query.bindValue(":email", email);
@@ -122,22 +110,18 @@ bool PublisherRepository::updateProfile(int userId, const QString &firstName, co
     }
     return true;
 }
-bool PublisherRepository::updateAccount(int userId, const QString &encryptedUsername,
-                                        const QString &newPasswordHash, const QString &newSecurityAnswerHash,
-                                        const QString &firstName, const QString &lastName,
-                                        const QString &email, const QString &shortDescription,
+bool PublisherRepository::updateAccount(int userId, const QString &encryptedUsername, const QString &newPasswordHash, const QString &newSecurityAnswerHash,
+                                        const QString &firstName, const QString &lastName, const QString &email, const QString &shortDescription,
                                         const QString &publicationName, const QString &publisherLicenseNumber) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction()) {
         qWarning() << "خطا در شروع تراکنش ویرایش حساب ناشر:" << db.lastError().text();
         return false;
     }
-
     QString updateUserSql = "UPDATE Users SET Username = :username";
     if (!newPasswordHash.isEmpty())
         updateUserSql += ", PasswordHash = :passwordHash";
     updateUserSql += " WHERE UserID = :userId AND RoleID = :roleId";
-
     QSqlQuery updateUser(db);
     updateUser.prepare(updateUserSql);
     updateUser.bindValue(":username", encryptedUsername);
@@ -150,7 +134,6 @@ bool PublisherRepository::updateAccount(int userId, const QString &encryptedUser
         db.rollback();
         return false;
     }
-
     QString updatePublisherSql =
         "UPDATE Publishers SET FirstName = :firstName, LastName = :lastName, "
         "Email = :email, ShortDescription = :shortDesc, PublicationName = :pubName, "
@@ -158,7 +141,6 @@ bool PublisherRepository::updateAccount(int userId, const QString &encryptedUser
     if (!newSecurityAnswerHash.isEmpty())
         updatePublisherSql += ", SecurityAnswerHash = :answerHash";
     updatePublisherSql += " WHERE UserID = :userId";
-
     QSqlQuery updatePublisher(db);
     updatePublisher.prepare(updatePublisherSql);
     updatePublisher.bindValue(":firstName", firstName);
@@ -175,7 +157,6 @@ bool PublisherRepository::updateAccount(int userId, const QString &encryptedUser
         db.rollback();
         return false;
     }
-
     if (!db.commit()) {
         qWarning() << "خطا در نهایی سازی ویرایش حساب ناشر:" << db.lastError().text();
         db.rollback();
@@ -189,8 +170,7 @@ QVector<int> PublisherRepository::getAllPublisherIds() {
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID FROM Users u JOIN Publishers p ON u.UserID = p.UserID "
-        "WHERE u.IsDeleted = 0"
-        );
+        "WHERE u.IsDeleted = 0" );
     if (query.exec()) {
         while (query.next())
             ids.append(query.value(0).toInt());

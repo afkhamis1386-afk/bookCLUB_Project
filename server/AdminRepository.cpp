@@ -64,8 +64,7 @@ Admin* AdminRepository::loadAdminById(int userId){
     Admin *admin = new Admin(
         query.value(0).toInt(), query.value(1).toString(), query.value(2).toString(), QString(),
         query.value(3).toBool(), query.value(4).toBool(),
-        query.value(5).toBool(),
-        query.value(6).toDateTime(),
+        query.value(5).toBool(), query.value(6).toDateTime(),
         query.value(7).toString(), query.value(8).toString());
     return admin;
 }

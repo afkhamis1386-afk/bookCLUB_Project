@@ -14,8 +14,7 @@ int UserRepository::insertNormalUser(const NormalUser &user) {
     insertUser.prepare(
         "INSERT INTO Users (Username, PasswordHash, IsBlocked, IsDeleted, RegisterDate, RoleID) "
         "OUTPUT INSERTED.UserID "
-        "VALUES (:username, :passwordHash, :isBlocked, :isDeleted, :registerDate, :roleId)"
-        );
+        "VALUES (:username, :passwordHash, :isBlocked, :isDeleted, :registerDate, :roleId)");
     insertUser.bindValue(":username", user.getEncryptedUsername());
     insertUser.bindValue(":passwordHash", user.getPasswordHash());
     insertUser.bindValue(":isBlocked", user.getIsBlocked());
@@ -62,15 +61,10 @@ NormalUser* UserRepository::loadNormalUserById(int userId) {
         return nullptr;
     }
     NormalUser *user = new NormalUser(
-        query.value(0).toInt(),
-        query.value(1).toString(),
-        query.value(2).toString(),
-        query.value(3).toString(),
-        query.value(4).toBool(),
-        query.value(5).toBool(),
-        query.value(6).toBool(),
-        query.value(7).toDateTime()
-        );
+        query.value(0).toInt(), query.value(1).toString(),
+        query.value(2).toString(), query.value(3).toString(),
+        query.value(4).toBool(), query.value(5).toBool(),
+        query.value(6).toBool(), query.value(7).toDateTime());
     user->setFavoriteGenres(getFavoriteGenreIds(userId));
     user->setPurchasedBooks(getPurchasedBookIds(userId));
     user->setReadingProgress(getReadingProgress(userId));
@@ -140,8 +134,7 @@ bool UserRepository::isUsernameTakenByOther(const QString &encryptedUsername, in
     query.bindValue(":userId", excludedUserId);
     return query.exec() && query.next() && query.value(0).toInt() > 0;
 }
-bool UserRepository::updateNormalUserAccount(int userId, const QString &encryptedUsername,
-                                             const QString &newPasswordHash, const QString &newSecurityAnswerHash) {
+bool UserRepository::updateNormalUserAccount(int userId, const QString &encryptedUsername, const QString &newPasswordHash, const QString &newSecurityAnswerHash) {
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
     if (!db.transaction()) {
         qWarning() << "خطا در شروع تراکنش ویرایش حساب کاربر عادی:" << db.lastError().text();
@@ -166,8 +159,7 @@ bool UserRepository::updateNormalUserAccount(int userId, const QString &encrypte
     if (!newSecurityAnswerHash.isEmpty()) {
         QSqlQuery updateNormalUser(db);
         updateNormalUser.prepare(
-            "UPDATE NormalUsers SET SecurityAnswerHash = :answerHash WHERE UserID = :userId"
-            );
+            "UPDATE NormalUsers SET SecurityAnswerHash = :answerHash WHERE UserID = :userId");
         updateNormalUser.bindValue(":answerHash", newSecurityAnswerHash);
         updateNormalUser.bindValue(":userId", userId);
         if (!updateNormalUser.exec()) {
@@ -200,8 +192,7 @@ QVector<int> UserRepository::getAllNormalUserIds() {
     QSqlQuery query(db);
     query.prepare(
         "SELECT u.UserID FROM Users u JOIN NormalUsers nu ON u.UserID = nu.UserID "
-        "WHERE u.IsDeleted = 0"
-        );
+        "WHERE u.IsDeleted = 0");
     if (query.exec()) {
         while (query.next())
             ids.append(query.value(0).toInt());
@@ -287,4 +278,3 @@ bool UserRepository::findRoleById(int userId, UserRole &outRole) {
     outRole = static_cast<UserRole>(roleId - 1);
     return true;
 }
-

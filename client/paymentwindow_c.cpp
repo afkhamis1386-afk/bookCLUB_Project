@@ -3,10 +3,7 @@
 #include <QRegularExpression>
 
 PaymentWindow_c::PaymentWindow_c(double totalAmount, const QString &expectedCardHolderName, QWidget *parent)
-    : QDialog(parent)
-    , ui(new Ui::PaymentWindow_c)
-    , expectedCardHolderName(expectedCardHolderName.trimmed())
-{
+    : QDialog(parent), ui(new Ui::PaymentWindow_c), expectedCardHolderName(expectedCardHolderName.trimmed()) {
     ui->setupUi(this);
     setWindowTitle("پرداخت");
     ui->amountLabel->setText(QString("مبلغ قابل پرداخت: %1 تومان").arg(totalAmount, 0, 'f', 0));
@@ -15,18 +12,15 @@ PaymentWindow_c::PaymentWindow_c(double totalAmount, const QString &expectedCard
     connect(ui->cancelButton, &QPushButton::clicked, this, &PaymentWindow_c::onCancelButtonClicked);
     setFixedSize(480, 460);
 }
-PaymentWindow_c::~PaymentWindow_c()
-{
+PaymentWindow_c::~PaymentWindow_c() {
     delete ui;
 }
-QString PaymentWindow_c::getCardNumber() const
-{
+QString PaymentWindow_c::getCardNumber() const {
     QString cardNumber = ui->cardNumberLineEdit->text();
     cardNumber.remove(' ');
     return cardNumber;
 }
-void PaymentWindow_c::onPayButtonClicked()
-{
+void PaymentWindow_c::onPayButtonClicked() {
     ui->statusLabel->clear();
     QString cardNumber = getCardNumber();
     static const QRegularExpression cardRegex(R"(^\d{16}$)");
@@ -66,7 +60,6 @@ void PaymentWindow_c::onPayButtonClicked()
     }
     accept();
 }
-void PaymentWindow_c::onCancelButtonClicked()
-{
+void PaymentWindow_c::onCancelButtonClicked() {
     reject();
 }

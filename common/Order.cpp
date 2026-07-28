@@ -1,15 +1,10 @@
 #include "Order.h"
-OrderItem::OrderItem()
-    : orderItemId(-1), orderId(-1), bookId(-1), unitPrice(0), discountPercent(0), discountAmount(0) {}
-OrderItem::OrderItem(int bookId, double unitPrice, double discountPercent, double discountAmount)
-    : orderItemId(-1), orderId(-1), bookId(bookId),
-    unitPrice(unitPrice >= 0 ? unitPrice : 0),
-    discountPercent(discountPercent >= 0 && discountPercent <= 100 ? discountPercent : 0),
+OrderItem::OrderItem() : orderItemId(-1), orderId(-1), bookId(-1), unitPrice(0), discountPercent(0), discountAmount(0) {}
+OrderItem::OrderItem(int bookId, double unitPrice, double discountPercent, double discountAmount) : orderItemId(-1), orderId(-1), bookId(bookId),
+    unitPrice(unitPrice >= 0 ? unitPrice : 0), discountPercent(discountPercent >= 0 && discountPercent <= 100 ? discountPercent : 0),
     discountAmount(discountAmount >= 0 ? discountAmount : 0) {}
-OrderItem::OrderItem(int orderItemId, int orderId, int bookId, double unitPrice, double discountPercent, double discountAmount)
-    : orderItemId(orderItemId), orderId(orderId), bookId(bookId),
-    unitPrice(unitPrice >= 0 ? unitPrice : 0),
-    discountPercent(discountPercent >= 0 && discountPercent <= 100 ? discountPercent : 0),
+OrderItem::OrderItem(int orderItemId, int orderId, int bookId, double unitPrice, double discountPercent, double discountAmount) : orderItemId(orderItemId), orderId(orderId), bookId(bookId),
+    unitPrice(unitPrice >= 0 ? unitPrice : 0), discountPercent(discountPercent >= 0 && discountPercent <= 100 ? discountPercent : 0),
     discountAmount(discountAmount >= 0 ? discountAmount : 0) {}
 int OrderItem::getOrderItemId() const { return orderItemId; }
 int OrderItem::getOrderId() const { return orderId; }

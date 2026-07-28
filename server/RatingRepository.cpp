@@ -35,10 +35,8 @@ Rating* RatingRepository::loadRating(int userId, int bookId){
         return nullptr;
     }
     return new Rating(
-        query.value(0).toInt(),
-        query.value(1).toInt(),
-        query.value(2).toInt(),
-        query.value(3).toInt());
+        query.value(0).toInt(), query.value(1).toInt(),
+        query.value(2).toInt(), query.value(3).toInt());
 }
 double RatingRepository::getAverageRating(int bookId){
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
@@ -47,7 +45,7 @@ double RatingRepository::getAverageRating(int bookId){
     query.bindValue(":bookId", bookId);
     if(query.exec() && query.next())
         return query.value(0).toDouble();
-    return 0.0;
+    return 0;
 }
 int RatingRepository::getRatingCount(int bookId){
     QSqlDatabase db = DatabaseManager::getInstance()->getConnection();
@@ -70,4 +68,3 @@ bool RatingRepository::deleteRating(int userId, int bookId){
     }
     return true;
 }
-

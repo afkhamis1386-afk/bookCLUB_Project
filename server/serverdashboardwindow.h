@@ -21,7 +21,6 @@ private slots:
     void onClientDisconnected(qintptr socketDescriptor);
     void onRequestProcessed(const QString &requestType, int statusCode);
     void refreshStats();
-
 private:
     Ui::ServerDashboardWindow *ui;
     ServerApplication *server;

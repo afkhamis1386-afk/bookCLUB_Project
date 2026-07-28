@@ -5,7 +5,6 @@ SavedBookController::SavedBookController(NetworkManager *networkManager, QObject
     connect(networkManager, &NetworkManager::responseReceived,
             this, &SavedBookController::onResponseReceived);
 }
-
 void SavedBookController::saveBook(int bookId) {
     if (bookId <= 0) {
         emit validationError("شناسه کتاب نامعتبر است");
@@ -17,7 +16,6 @@ void SavedBookController::saveBook(int bookId) {
     }
     networkManager->saveBook(bookId);
 }
-
 void SavedBookController::unsaveBook(int bookId) {
     if (bookId <= 0) {
         emit validationError("شناسه کتاب نامعتبر است");
@@ -29,7 +27,6 @@ void SavedBookController::unsaveBook(int bookId) {
     }
     networkManager->unsaveBook(bookId);
 }
-
 void SavedBookController::refreshSavedBooks() {
     if (!networkManager->isConnected()) {
         emit savedBooksLoadFailed("اتصال به سرور برقرار نیست");
@@ -37,7 +34,6 @@ void SavedBookController::refreshSavedBooks() {
     }
     networkManager->getSavedBooks();
 }
-
 void SavedBookController::addFavoriteBook(int bookId) {
     if (bookId <= 0) {
         emit validationError("ابتدا یک کتاب ذخیره شده را انتخاب کنید");
@@ -49,7 +45,6 @@ void SavedBookController::addFavoriteBook(int bookId) {
     }
     networkManager->addFavoriteBook(bookId);
 }
-
 void SavedBookController::removeFavoriteBook(int bookId) {
     if (bookId <= 0) {
         emit validationError("ابتدا یک کتاب را از لیست علاقه مندی انتخاب کنید");
@@ -61,7 +56,6 @@ void SavedBookController::removeFavoriteBook(int bookId) {
     }
     networkManager->removeFavoriteBook(bookId);
 }
-
 void SavedBookController::refreshFavoriteBooks() {
     if (!networkManager->isConnected()) {
         emit favoriteBooksLoadFailed("اتصال به سرور برقرار نیست");
@@ -69,7 +63,6 @@ void SavedBookController::refreshFavoriteBooks() {
     }
     networkManager->getFavoriteBooks();
 }
-
 void SavedBookController::reorderFavoriteBooks(const QVariantList &bookIds) {
     if (!networkManager->isConnected()) {
         emit favoriteBooksReorderFailed("اتصال به سرور برقرار نیست");
@@ -77,7 +70,6 @@ void SavedBookController::reorderFavoriteBooks(const QVariantList &bookIds) {
     }
     networkManager->reorderFavoriteBooks(bookIds);
 }
-
 void SavedBookController::onResponseReceived(RequestType type, const Response &response) {
     switch (type) {
     case RequestType::SaveBook:

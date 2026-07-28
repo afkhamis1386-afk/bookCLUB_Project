@@ -1,12 +1,9 @@
 #include "NotificationController.h"
 
 NotificationController::NotificationController(NetworkManager *networkManager, QObject *parent)
-    : QObject(parent), networkManager(networkManager)
-{
-    connect(networkManager, &NetworkManager::responseReceived,
-            this, &NotificationController::onResponseReceived);
-    connect(networkManager, &NetworkManager::pushNotificationReceived,
-            this, &NotificationController::onPushNotificationReceived);
+    : QObject(parent), networkManager(networkManager) {
+    connect(networkManager, &NetworkManager::responseReceived, this, &NotificationController::onResponseReceived);
+    connect(networkManager, &NetworkManager::pushNotificationReceived, this, &NotificationController::onPushNotificationReceived);
 }
 void NotificationController::refreshNotifications() {
     if (!networkManager->isConnected()) {

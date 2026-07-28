@@ -19,8 +19,7 @@ int OrderRepository::insertOrder(const Order &order) {
         "(UserID, OrderDate, TotalPrice, DiscountAmount, FinalPrice, StatusID) "
         "OUTPUT INSERTED.OrderID "
         "VALUES "
-        "(:userId, :orderDate, :totalPrice, :discountAmount, :finalPrice, :statusId)"
-        );
+        "(:userId, :orderDate, :totalPrice, :discountAmount, :finalPrice, :statusId)" );
     insertOrderQuery.bindValue(":userId", order.getUserId());
     insertOrderQuery.bindValue(":orderDate", order.getOrderDate());
     insertOrderQuery.bindValue(":totalPrice", order.getTotalPrice());
@@ -48,19 +47,16 @@ int OrderRepository::insertOrder(const Order &order) {
             "INSERT INTO OrderItems "
             "(OrderID, BookID, UnitPrice, DiscountPercent, DiscountAmount) "
             "VALUES "
-            "(:orderId, :bookId, :unitPrice, :discountPercent, :discountAmount)"
-            );
+            "(:orderId, :bookId, :unitPrice, :discountPercent, :discountAmount)" );
         insertItemQuery.bindValue(":orderId", newOrderId);
         insertItemQuery.bindValue(":bookId", item.getBookId());
         insertItemQuery.bindValue(":unitPrice", item.getUnitPrice());
         insertItemQuery.bindValue(
             ":discountPercent",
-            item.getDiscountPercent()
-            );
+            item.getDiscountPercent() );
         insertItemQuery.bindValue(
             ":discountAmount",
-            item.getDiscountAmount()
-            );
+            item.getDiscountAmount() );
         if (!insertItemQuery.exec()) {
             qWarning() << "خطا در ثبت آیتم سفارش:"
                        << insertItemQuery.lastError().text();
@@ -78,8 +74,7 @@ bool OrderRepository::addBookToLibrary(int userId, int bookId) {
     checkLibraryQuery.prepare(
         "SELECT COUNT(*) "
         "FROM UserLibrary "
-        "WHERE UserID = :userId AND BookID = :bookId"
-        );
+        "WHERE UserID = :userId AND BookID = :bookId" );
     checkLibraryQuery.bindValue(":userId", userId);
     checkLibraryQuery.bindValue(":bookId", bookId);
     if (!checkLibraryQuery.exec()) {
@@ -100,8 +95,7 @@ bool OrderRepository::addBookToLibrary(int userId, int bookId) {
     QSqlQuery insertLibraryQuery(db);
     insertLibraryQuery.prepare(
         "INSERT INTO UserLibrary (UserID, BookID) "
-        "VALUES (:userId, :bookId)"
-        );
+        "VALUES (:userId, :bookId)" );
     insertLibraryQuery.bindValue(":userId", userId);
     insertLibraryQuery.bindValue(":bookId", bookId);
     if (!insertLibraryQuery.exec()) {
@@ -118,8 +112,7 @@ Order* OrderRepository::loadOrderById(int orderId) {
         "SELECT "
         "OrderID, UserID, OrderDate, TotalPrice, DiscountAmount, FinalPrice, StatusID "
         "FROM Orders "
-        "WHERE OrderID = :orderId"
-        );
+        "WHERE OrderID = :orderId" );
     orderQuery.bindValue(":orderId", orderId);
     if (!orderQuery.exec()) {
         qWarning() << "خطا در اجرای کوئری دریافت سفارش:" << orderQuery.lastError().text();
@@ -144,8 +137,7 @@ Order* OrderRepository::loadOrderById(int orderId) {
         "OrderItemID, OrderID, BookID, UnitPrice, DiscountPercent, DiscountAmount "
         "FROM OrderItems "
         "WHERE OrderID = :orderId "
-        "ORDER BY OrderItemID ASC"
-        );
+        "ORDER BY OrderItemID ASC" );
     itemsQuery.bindValue(":orderId", orderId);
     if (!itemsQuery.exec()) {
         qWarning() << "خطا در بارگذاری آیتم های سفارش:" << itemsQuery.lastError().text();
@@ -174,8 +166,7 @@ QStringList OrderRepository::getBookNamesByOrderId(int orderId) {
         "FROM OrderItems oi "
         "INNER JOIN Books b ON b.BookID = oi.BookID "
         "WHERE oi.OrderID = :orderId "
-        "ORDER BY oi.OrderItemID ASC"
-        );
+        "ORDER BY oi.OrderItemID ASC" );
     query.bindValue(":orderId", orderId);
     if (!query.exec()) {
         qWarning() << "خطا در دریافت نام کتاب‌های سفارش:"
@@ -198,8 +189,7 @@ QVector<int> OrderRepository::getOrderIdsByUser(int userId) {
         "SELECT OrderID "
         "FROM Orders "
         "WHERE UserID = :userId "
-        "ORDER BY OrderDate DESC"
-        );
+        "ORDER BY OrderDate DESC" );
     query.bindValue(":userId", userId);
     if (!query.exec()) {
         qWarning() << "خطا در دریافت سفارش های کاربر:" << query.lastError().text();
@@ -218,8 +208,7 @@ QVector<int> OrderRepository::getAllOrderIds() {
     query.prepare(
         "SELECT OrderID "
         "FROM Orders "
-        "ORDER BY OrderDate DESC"
-        );
+        "ORDER BY OrderDate DESC" );
     if (!query.exec()) {
         qWarning() << "خطا در دریافت همه سفارش ها:" << query.lastError().text();
         return orderIds;
@@ -236,8 +225,7 @@ bool OrderRepository::updateStatus(int orderId, OrderStatus newStatus) {
     query.prepare(
         "UPDATE Orders "
         "SET StatusID = :statusId "
-        "WHERE OrderID = :orderId"
-        );
+        "WHERE OrderID = :orderId" );
     query.bindValue(":statusId", static_cast<int>(newStatus));
     query.bindValue(":orderId", orderId);
     if (!query.exec()) {

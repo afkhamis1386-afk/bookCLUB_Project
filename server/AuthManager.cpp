@@ -14,8 +14,7 @@
 #include <memory>
 #include <exception>
 AuthManager::AuthManager() {}
-Response AuthManager::validateNormalUserRegistration(const QString &username, const QString &plainPassword,
-                                                     const QString &plainAnswer) const {
+Response AuthManager::validateNormalUserRegistration(const QString &username, const QString &plainPassword, const QString &plainAnswer) const {
     const QString cleanUsername = username.trimmed();
     const QString cleanAnswer = plainAnswer.trimmed();
     if (!User::isValidUsername(cleanUsername)) {
@@ -30,8 +29,7 @@ Response AuthManager::validateNormalUserRegistration(const QString &username, co
     return Response(ResponseStatus::Success, "");
 }
 Response AuthManager::validatePublisherRegistration(const QString &username, const QString &plainPassword, const QString &plainAnswer, const QString &firstName,
-                                                    const QString &lastName, const QString &email, const QString &publicationName,
-                                                    const QString &licenseNumber) const {
+                                                    const QString &lastName, const QString &email, const QString &publicationName, const QString &licenseNumber) const {
     const QString cleanUsername = username.trimmed();
     const QString cleanAnswer = plainAnswer.trimmed();
     const QString cleanFirstName = firstName.trimmed();
@@ -110,8 +108,7 @@ Response AuthManager::buildLoginSuccessResponse(int userId, const QString &usern
     }
     return Response(ResponseStatus::Success, "ورود موفقیت آمیز بود", data);
 }
-Response AuthManager::registerNormalUser(const QString &username, const QString &plainPassword,
-                                         const QString &plainAnswer) {
+Response AuthManager::registerNormalUser(const QString &username, const QString &plainPassword, const QString &plainAnswer) {
     try {
         Response validation = validateNormalUserRegistration(username, plainPassword, plainAnswer);
         if (validation.getStatus() != ResponseStatus::Success) {
@@ -248,7 +245,6 @@ Response AuthManager::login(const QString &username, const QString &plainPasswor
         if (admin->getIsBlocked()) {
             return Response(ResponseStatus::Unauthorized, "حساب کاربری شما مسدود شده است");
         }
-
         return buildLoginSuccessResponse(admin->getUserId(), admin->getUsername(), UserRole::Admin);
     }
     catch (const std::exception &) {
@@ -520,14 +516,11 @@ Response AuthManager::updateAccount(int userId, UserRole role, const QVariantMap
         const QString username = accountData.value("username").toString().trimmed();
         const QString newPassword = accountData.value("password").toString();
         const QString securityAnswer = accountData.value("securityAnswer").toString().trimmed();
-
         if (!User::isValidUsername(username)) {
-            return Response(ResponseStatus::ValidationFailed,
-                            "نام کاربری نامعتبر است. طول مجاز ۳ تا ۱۵ کاراکتر و فقط حروف انگلیسی، اعداد، خط تیره و زیرخط است");
+            return Response(ResponseStatus::ValidationFailed, "نام کاربری نامعتبر است. طول مجاز ۳ تا ۱۵ کاراکتر و فقط حروف انگلیسی، اعداد، خط تیره و زیرخط است");
         }
         if (!newPassword.isEmpty() && !User::isStrongPassword(newPassword)) {
-            return Response(ResponseStatus::ValidationFailed,
-                            "رمز عبور جدید ضعیف است. باید حداقل ۸ کاراکتر و شامل حروف بزرگ، کوچک و عدد باشد");
+            return Response(ResponseStatus::ValidationFailed, "رمز عبور جدید ضعیف است. باید حداقل ۸ کاراکتر و شامل حروف بزرگ، کوچک و عدد باشد");
         }
         const QString encryptedUsername = User::encryptString(username);
         const QString passwordHash = newPassword.isEmpty() ? QString() : User::hashString(newPassword);
@@ -541,8 +534,7 @@ Response AuthManager::updateAccount(int userId, UserRole role, const QVariantMap
             if (!currentUser) {
                 return Response(ResponseStatus::NotFound, "کاربر یافت نشد");
             }
-            if (!userRepo.updateNormalUserAccount(userId, encryptedUsername, passwordHash,
-                                                  securityAnswerHash)) {
+            if (!userRepo.updateNormalUserAccount(userId, encryptedUsername, passwordHash, securityAnswerHash)) {
                 return Response(ResponseStatus::Error, "خطا در به روزرسانی حساب کاربری");
             }
             QVariantMap data;
@@ -557,7 +549,6 @@ Response AuthManager::updateAccount(int userId, UserRole role, const QVariantMap
         const QString publicationName = accountData.value("publicationName").toString().trimmed();
         const QString licenseNumber = accountData.value("licenseNumber").toString().trimmed();
         const QString shortDescription = accountData.value("shortDescription").toString().trimmed();
-
         if (firstName.isEmpty() || firstName.length() > 30) {
             return Response(ResponseStatus::ValidationFailed, "نام باید بین ۱ تا ۳۰ کاراکتر باشد");
         }
@@ -576,7 +567,6 @@ Response AuthManager::updateAccount(int userId, UserRole role, const QVariantMap
         if (shortDescription.length() > 500) {
             return Response(ResponseStatus::ValidationFailed, "توضیحات کوتاه باید حداکثر ۵۰۰ کاراکتر باشد");
         }
-
         PublisherRepository publisherRepo;
         std::unique_ptr<Publisher> currentPublisher(publisherRepo.loadPublisherById(userId));
         if (!currentPublisher) {
@@ -588,9 +578,7 @@ Response AuthManager::updateAccount(int userId, UserRole role, const QVariantMap
         if (publisherRepo.isLicenseNumberTaken(licenseNumber, userId)) {
             return Response(ResponseStatus::Error, "این شماره پروانه نشر قبلاً ثبت شده است");
         }
-
-        if (!publisherRepo.updateAccount(userId, encryptedUsername, passwordHash, securityAnswerHash,
-                                         firstName, lastName, email, shortDescription,
+        if (!publisherRepo.updateAccount(userId, encryptedUsername, passwordHash, securityAnswerHash, firstName, lastName, email, shortDescription,
                                          publicationName, licenseNumber)) {
             return Response(ResponseStatus::Error, "خطا در به روزرسانی حساب ناشر");
         }

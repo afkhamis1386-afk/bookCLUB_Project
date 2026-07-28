@@ -65,7 +65,6 @@ Response ReviewManager::editReview(int userId, int reviewId, const QString &newC
     }
     return Response(ResponseStatus::Success, "نظر با موفقیت ویرایش شد");
 }
-
 Response ReviewManager::deleteReview(int userId, int reviewId){
     ReviewRepository reviewRepo;
     std::unique_ptr<Review> review(reviewRepo.loadReviewById(reviewId));
@@ -80,7 +79,6 @@ Response ReviewManager::deleteReview(int userId, int reviewId){
     }
     return Response(ResponseStatus::Success, "نظر با موفقیت حذف شد");
 }
-
 Response ReviewManager::deleteReviewByAdmin(int reviewId){
     ReviewRepository reviewRepo;
     std::unique_ptr<Review> review(reviewRepo.loadReviewById(reviewId));
@@ -92,7 +90,6 @@ Response ReviewManager::deleteReviewByAdmin(int reviewId){
     }
     return Response(ResponseStatus::Success, "نظر با موفقیت حذف شد");
 }
-
 Response ReviewManager::getReviewsForBook(int bookId){
     ReviewRepository reviewRepo;
     QVector<int> reviewIds = reviewRepo.getReviewIdsByBook(bookId);
