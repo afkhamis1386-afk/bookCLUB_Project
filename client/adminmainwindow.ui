@@ -28,13 +28,9 @@ QTabWidget {
 QTabWidget::pane {
     border: 2px solid rgba(112, 146, 190, 0.8);
     background: rgba(255, 255, 255, 0.65);
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
+    border-radius: 20px;
     margin-top: -2px;
     padding: 20px;
-    border-radius: 20px;
 }
 
 QTabBar {
@@ -42,6 +38,7 @@ QTabBar {
     qproperty-drawBase: 0;
     margin: 0px;
     padding: 0px;
+    alignment: left;
 }
 
 QTabBar::tab {
@@ -62,6 +59,7 @@ QTabBar::tab {
 
 QTabBar::tab:first {
     border-top-left-radius: 20px;
+    margin-left: 0px;
 }
 
 QTabBar::tab:last {
@@ -90,8 +88,10 @@ QTableWidget {
     font-size: 13px;
     font-family: &quot;Segoe UI&quot;, &quot;Tahoma&quot;, sans-serif;
 }
+QTableWidget QAbstractScrollArea::viewport {
+    border-radius: 12px;
+}
 
-/* --- تنظیمات جدید هدر جدول --- */
 QHeaderView {
     background-color: transparent;
     border: none;
@@ -131,6 +131,9 @@ QHeaderView::section:vertical {
     min-width: 35px;
     max-width: 35px;
     padding: 2px;
+}
+QHeaderView::section:vertical:last {
+    border-bottom-left-radius: 12px;
 }
 
 QTableWidget::item {
@@ -507,7 +510,7 @@ QComboBox#userRoleFilterComboBox QAbstractItemView {
          <string>ایجاد ادمین جدید</string>
         </property>
        </widget>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>586</x>
@@ -540,7 +543,7 @@ QComboBox#userRoleFilterComboBox QAbstractItemView {
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>130</x>
