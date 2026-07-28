@@ -10,8 +10,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QStringList>
-AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent)
-    : QMainWindow(parent)
+AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent):QMainWindow(parent)
     , ui(new Ui::AdminMainWindow)
     , networkManager(networkManager)
     , adminController(new AdminController(networkManager, this)) {
@@ -22,7 +21,7 @@ AdminMainWindow::AdminMainWindow(NetworkManager *networkManager, QWidget *parent
     ui->usersTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->usersTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->booksTableWidget->setColumnCount(5);
-    ui->booksTableWidget->setHorizontalHeaderLabels({"شناسه", "نام کتاب", "شناسه ناشر", "فعال", "حذف‌شده"});
+    ui->booksTableWidget->setHorizontalHeaderLabels({"شناسه", "نام کتاب", "شناسه ناشر", "فعال", "حذف شده"});
     ui->booksTableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->booksTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->booksTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -121,10 +120,8 @@ void AdminMainWindow::applyUserSearchAndFilter() {
             const QString firstName = u.value("firstName").toString();
             const QString lastName = u.value("lastName").toString();
             const QString publicationName = u.value("publicationName").toString();
-            const bool matches = username.contains(searchText, Qt::CaseInsensitive)
-                                 || firstName.contains(searchText, Qt::CaseInsensitive)
-                                 || lastName.contains(searchText, Qt::CaseInsensitive)
-                                 || publicationName.contains(searchText, Qt::CaseInsensitive);
+            const bool matches = username.contains(searchText, Qt::CaseInsensitive) || firstName.contains(searchText, Qt::CaseInsensitive) || lastName.contains(searchText, Qt::CaseInsensitive)
+            || publicationName.contains(searchText, Qt::CaseInsensitive);
             if (!matches) continue;
         }
         filtered.append(u);
@@ -172,26 +169,26 @@ void AdminMainWindow::onViewUserDetailsButtonClicked() {
         const QString registerDate = selectedUser.value("registerDate").toDateTime().toString("yyyy/MM/dd");
         const QString activeStatus = selectedUser.value("isActive").toBool() ? "فعال" : "غیرفعال";
         const QString blockedStatus = selectedUser.value("isBlocked").toBool() ? "مسدود" : "مسدود نیست";
-        details = QString("نوع حساب: کاربر عادی\nنام کاربری: %1\nژانرهای مورد علاقه: %2\nتعداد کتاب‌های خریداری‌شده: %3\nتاریخ ثبت‌نام: %4\nوضعیت حساب: %5\nوضعیت دسترسی: %6")
-                      .arg(username)
-                      .arg(genreTitles.isEmpty() ? QString("انتخاب نشده") : genreTitles.join("، "))
-                      .arg(selectedUser.value("purchasedCount").toInt())
-                      .arg(registerDate.isEmpty() ? QString("ثبت نشده") : registerDate)
-                      .arg(activeStatus)
-                      .arg(blockedStatus);
+        details = QString("نوع حساب: کاربر عادی\nنام کاربری: %1\nژانرهای مورد علاقه: %2\nتعداد کتاب های خریداری شده: %3\nتاریخ ثبت نام: %4\nوضعیت حساب: %5\nوضعیت دسترسی: %6")
+        .arg(username)
+        .arg(genreTitles.isEmpty() ? QString("انتخاب نشده") : genreTitles.join("، "))
+        .arg(selectedUser.value("purchasedCount").toInt())
+        .arg(registerDate.isEmpty() ? QString("ثبت نشده") : registerDate)
+        .arg(activeStatus)
+        .arg(blockedStatus);
     } else if (role == "Publisher") {
         details = QString("نوع حساب: ناشر\nنام کاربری: %1\nنام: %2\nنام خانوادگی: %3\nنام انتشارات: %4\nشماره پروانه نشر: %5\nایمیل: %6")
-                      .arg(username)
-                      .arg(displayValue(selectedUser.value("firstName").toString()))
-                      .arg(displayValue(selectedUser.value("lastName").toString()))
-                      .arg(displayValue(selectedUser.value("publicationName").toString()))
-                      .arg(displayValue(selectedUser.value("publisherLicenseNumber").toString()))
-                      .arg(displayValue(selectedUser.value("email").toString()));
+        .arg(username)
+        .arg(displayValue(selectedUser.value("firstName").toString()))
+        .arg(displayValue(selectedUser.value("lastName").toString()))
+        .arg(displayValue(selectedUser.value("publicationName").toString()))
+        .arg(displayValue(selectedUser.value("publisherLicenseNumber").toString()))
+        .arg(displayValue(selectedUser.value("email").toString()));
     } else if (role == "Admin") {
         details = QString("نوع حساب: ادمین\nنام کاربری: %1\nنام: %2\nنام خانوادگی: %3")
-                      .arg(username)
-                      .arg(displayValue(selectedUser.value("firstName").toString()))
-                      .arg(displayValue(selectedUser.value("lastName").toString()));
+        .arg(username)
+        .arg(displayValue(selectedUser.value("firstName").toString()))
+        .arg(displayValue(selectedUser.value("lastName").toString()));
     } else {
         ui->statusLabel->setText("نقش کاربر انتخاب شده نامعتبر است");
         return;
@@ -252,11 +249,11 @@ void AdminMainWindow::onViewBookDetailsButtonClicked() {
 void AdminMainWindow::onBookDetailsForReviewLoaded(const QVariantMap &bookData) {
     const QString price = QString::number(bookData.value("price").toDouble(), 'f', 2);
     const QString details = QString("نام کتاب: %1\nنام نویسنده: %2\nقیمت کتاب: %3\nنوع ژانر: %4\nتوضیحات: %5")
-                                .arg(bookData.value("bookName").toString())
-                                .arg(bookData.value("authorName").toString())
-                                .arg(price)
-                                .arg(bookData.value("genreTitle").toString())
-                                .arg(bookData.value("description").toString());
+    .arg(bookData.value("bookName").toString())
+    .arg(bookData.value("authorName").toString())
+    .arg(price)
+    .arg(bookData.value("genreTitle").toString())
+    .arg(bookData.value("description").toString());
     QMessageBox::information(this, "جزئیات کامل کتاب", details);
 }
 void AdminMainWindow::onBookDetailsForReviewLoadFailed(const QString &message) { ui->statusLabel->setText(message); }
@@ -317,8 +314,7 @@ void AdminMainWindow::onReviewDeleted(const QString &message) { ui->statusLabel-
 void AdminMainWindow::onReviewDeleteFailed(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onValidationError(const QString &message) { ui->statusLabel->setText(message); }
 void AdminMainWindow::onLogoutButtonClicked() {
-    if (QMessageBox::question(this, "خروج از حساب کاربری",
-                              "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
+    if (QMessageBox::question(this, "خروج از حساب کاربری",  "آیا مطمئن هستید که می خواهید از حساب کاربری خود خارج شوید؟", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes) {
         networkManager->logout();
         emit logoutRequested();
     }

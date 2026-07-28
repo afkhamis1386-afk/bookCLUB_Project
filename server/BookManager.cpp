@@ -4,6 +4,7 @@
 #include "GenreRepository.h"
 #include "CategoryRepository.h"
 #include "AuthorRepository.h"
+#include "PublisherRepository.h"
 #include "RatingRepository.h"
 #include "UserRepository.h"
 #include "ReadingProgressRepository.h"
@@ -47,9 +48,7 @@ Response BookManager::addBook(int publisherUserId, const QString &bookName, cons
     if(discountPercent < 0 || discountPercent > 100){
         return Response(ResponseStatus::ValidationFailed, "درصد تخفیف باید بین ۰ تا ۱۰۰ باشد");
     }
-    if(genreTitle.trimmed().isEmpty() || genreTitle.length() > 30
-        || categoryTitle.trimmed().isEmpty() || categoryTitle.length() > 50
-        || authorName.trimmed().isEmpty() || authorName.length() > 60){
+    if(genreTitle.trimmed().isEmpty() || genreTitle.length() > 30 || categoryTitle.trimmed().isEmpty() || categoryTitle.length() > 50 || authorName.trimmed().isEmpty() || authorName.length() > 60){
         return Response(ResponseStatus::ValidationFailed, "ژانر، دسته بندی و نام نویسنده با محدودیت های پایگاه داده سازگار نیستند");
     }
     if(pdfData.isEmpty()){
@@ -157,7 +156,7 @@ Response BookManager::getCoverImageData(int bookId){
     return Response(ResponseStatus::Success, "عکس جلد بازیابی شد", data);
 }
 Response BookManager::updateBook(int actingUserId, UserRole actingRole, int bookId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-    const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData){
+                                 const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData){
     BookRepository bookRepo;
     std::unique_ptr<Book> book(bookRepo.loadBookById(bookId));
     if(!book){
@@ -175,7 +174,7 @@ Response BookManager::updateBook(int actingUserId, UserRole actingRole, int book
         return Response(ResponseStatus::ValidationFailed, "توضیحات کتاب نامعتبر است");
     }
     if(!book->setBookPrice(price)){
-        return Response(ResponseStatus::ValidationFailed, "قیمت کتاب باید بین صفر و ۹٬۹۹۹٬۹۹۹ باشد");
+        return Response(ResponseStatus::ValidationFailed, "قیمت کتاب باید بین صفر و ۹۹۹٬۹۹۹ باشد");
     }
     if(genreTitle.trimmed().isEmpty() || genreTitle.length() > 30
         || categoryTitle.trimmed().isEmpty() || categoryTitle.length() > 50
@@ -278,7 +277,7 @@ Response BookManager::applyDiscount(int actingUserId, UserRole actingRole, int b
         return Response(ResponseStatus::ValidationFailed, "درصد تخفیف باید بین ۰ تا ۱۰۰ باشد");
     }
     if(!book->setDiscountAmount(discountAmount)){
-        return Response(ResponseStatus::ValidationFailed, "مبلغ تخفیف باید بین صفر و ۹۹٬۹۹۹٬۹۹۹٫۹۹ باشد");
+        return Response(ResponseStatus::ValidationFailed, "مبلغ تخفیف باید بین صفر و ۹۹۹٬۹۹۹ باشد");
     }
     if(!bookRepo.updateDiscount(bookId, discountPercent, discountAmount)){
         return Response(ResponseStatus::Error, "خطا در اعمال تخفیف");
@@ -302,8 +301,7 @@ Response BookManager::applyTimedDiscount(int actingUserId, UserRole actingRole, 
         return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
     }
     const bool isAdmin = actingRole == UserRole::Admin;
-    const bool isOwnerPublisher = actingRole == UserRole::Publisher
-                                  && book->getPublisherUserId() == actingUserId;
+    const bool isOwnerPublisher = actingRole == UserRole::Publisher && book->getPublisherUserId() == actingUserId;
     if(!isAdmin && !isOwnerPublisher){
         return Response(ResponseStatus::Unauthorized, "شما اجازه اعمال تخفیف روی این کتاب را ندارید");
     }
@@ -346,8 +344,7 @@ Response BookManager::cancelTimedDiscount(int actingUserId, UserRole actingRole,
         return Response(ResponseStatus::NotFound, "کتاب یافت نشد");
     }
     const bool isAdmin = actingRole == UserRole::Admin;
-    const bool isOwnerPublisher = actingRole == UserRole::Publisher
-                                  && book->getPublisherUserId() == actingUserId;
+    const bool isOwnerPublisher = actingRole == UserRole::Publisher && book->getPublisherUserId() == actingUserId;
     if(!isAdmin && !isOwnerPublisher){
         return Response(ResponseStatus::Unauthorized, "شما اجازه لغو تخفیف این کتاب را ندارید");
     }
@@ -502,6 +499,8 @@ Response BookManager::getBookDetails(int bookId){
     std::unique_ptr<Category> category(categoryRepo.loadCategoryById(book->getCategoryId()));
     AuthorRepository authorRepo;
     std::unique_ptr<Author> author(authorRepo.loadAuthorById(book->getAuthorId()));
+    PublisherRepository publisherRepo;
+    std::unique_ptr<Publisher> publisher(publisherRepo.loadPublisherById(book->getPublisherUserId()));
     QVariantMap data;
     data["bookId"] = book->getBookId();
     data["bookName"] = book->getBookName();
@@ -517,6 +516,7 @@ Response BookManager::getBookDetails(int bookId){
     data["genreTitle"] = genre ? genre->getGenreTitle() : QString();
     data["categoryTitle"] = category ? category->getCategoryTitle() : QString();
     data["authorName"] = author ? author->getAuthorName() : QString();
+    data["publisherName"] = publisher ? publisher->getPublicationName() : QString();
     data["publisherUserId"] = book->getPublisherUserId();
     data["averageRating"] = avgRating;
     data["ratingCount"] = ratingCount;

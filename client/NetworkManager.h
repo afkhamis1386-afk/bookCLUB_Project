@@ -20,10 +20,8 @@ public:
     bool isLoggedIn() const;
     void logout();
     void registerNormalUser(const QString &username, const QString &password, const QString &securityAnswer);
-    void registerPublisher(const QString &username, const QString &password, const QString &securityAnswer,
-                           const QString &firstName, const QString &lastName, const QString &email,
-                           const QString &publicationName, const QString &licenseNumber,
-                           const QString &shortDescription);
+    void registerPublisher(const QString &username, const QString &password, const QString &securityAnswer, const QString &firstName, const QString &lastName, const QString &email,
+    const QString &publicationName, const QString &licenseNumber, const QString &shortDescription);
     void login(const QString &username, const QString &password);
     void changePassword(const QString &oldPassword, const QString &newPassword);
     void recoverPassword(const QString &username, const QString &securityAnswer, const QString &newPassword);
@@ -43,13 +41,9 @@ public:
     void getPopularBooks(int limit = 10);
     void getFreeBooks();
     void getRecommendedBooks();
-    void addBook(const QString &bookName, const QString &description, double price,
-                 const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-                 const QByteArray &coverImageData, const QString &coverImageExtension,
-                 const QByteArray &pdfData, double discountPercent = 0.0);
-    void updateBook(int bookId, const QString &bookName, const QString &description, double price,
-                    const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
-                    const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData);
+    void addBook(const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName,
+    const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData, double discountPercent = 0.0);
+    void updateBook(int bookId, const QString &bookName, const QString &description, double price, const QString &genreTitle, const QString &categoryTitle, const QString &authorName, const QByteArray &coverImageData, const QString &coverImageExtension, const QByteArray &pdfData);
     void deactivateBook(int bookId);
     void reactivateBook(int bookId);
     void applyDiscount(int bookId, double discountPercent, double discountAmount);

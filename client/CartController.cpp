@@ -1,10 +1,6 @@
 #include "CartController.h"
-
-CartController::CartController(NetworkManager *networkManager, QObject *parent)
-    : QObject(parent), networkManager(networkManager)
-{
-    connect(networkManager, &NetworkManager::responseReceived,
-            this, &CartController::onResponseReceived);
+CartController::CartController(NetworkManager *networkManager, QObject *parent):QObject(parent), networkManager(networkManager) {
+    connect(networkManager, &NetworkManager::responseReceived, this, &CartController::onResponseReceived);
 }
 void CartController::addBook(int bookId) {
     if (bookId <= 0) {

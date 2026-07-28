@@ -2,15 +2,12 @@
 #include <QMouseEvent>
 #include <QPixmap>
 
-BookCardWidget::BookCardWidget(int bookId, QWidget *parent)
-    : QWidget(parent), bookId(bookId)
-{
+BookCardWidget::BookCardWidget(int bookId, QWidget *parent):QWidget(parent), bookId(bookId) {
     setFixedSize(160, 290);
     setCursor(Qt::PointingHandCursor);
     setAttribute(Qt::WA_StyledBackground, true);
     setStyleSheet( "BookCardWidget { background-color: rgba(255,255,255,220); border-radius: 10px; }"
-    "BookCardWidget:hover { background-color: rgba(255,255,255,255); }"
-     );
+    "BookCardWidget:hover { background-color: rgba(255,255,255,255); }" );
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(8, 8, 8, 8);
     coverLabel = new QLabel(this);
@@ -35,32 +32,27 @@ BookCardWidget::BookCardWidget(int bookId, QWidget *parent)
     layout->addWidget(genreLabel);
     layout->addWidget(priceLabel);
 }
-int BookCardWidget::getBookId() const
-{
+int BookCardWidget::getBookId() const {
     return bookId;
 }
-void BookCardWidget::setCoverImage(const QByteArray &imageData)
-{
+void BookCardWidget::setCoverImage(const QByteArray &imageData) {
     QPixmap pixmap;
     if (pixmap.loadFromData(imageData)) {
         coverLabel->setPixmap(pixmap);
         coverLabel->setText("");
     }
 }
-void BookCardWidget::setBookInfo(const QString &bookName, double price)
-{
+void BookCardWidget::setBookInfo(const QString &bookName, double price) {
     nameLabel->setText(bookName);
     if (price <= 0)
         priceLabel->setText("رایگان");
     else
         priceLabel->setText(QString::number(price, 'f', 0) + " تومان");
 }
-void BookCardWidget::setGenreName(const QString &genreName)
-{
+void BookCardWidget::setGenreName(const QString &genreName) {
     genreLabel->setText(genreName);
 }
-void BookCardWidget::mousePressEvent(QMouseEvent *event)
-{
+void BookCardWidget::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton)
         emit clicked(bookId);
     QWidget::mousePressEvent(event);

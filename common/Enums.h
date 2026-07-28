@@ -4,8 +4,8 @@
 #include <QString>
 enum class UserRole {
     NormalUser = 0,
-    Publisher  = 1,
-    Admin      = 2
+    Publisher = 1,
+    Admin = 2
 };
 enum class RequestType {
     Register,

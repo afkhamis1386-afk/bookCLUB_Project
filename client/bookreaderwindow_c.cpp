@@ -6,8 +6,7 @@
 #include <QPointF>
 #include <QPdfPageNavigator>
 #include <QCloseEvent>
-BookReaderWindow_c::BookReaderWindow_c(NetworkManager *networkManager, int bookId, QWidget *parent)
-    : QMainWindow(parent)
+BookReaderWindow_c::BookReaderWindow_c(NetworkManager *networkManager, int bookId, QWidget *parent) :QMainWindow(parent)
     , ui(new Ui::BookReaderWindow_c)
     , networkManager(networkManager)
     , bookId(bookId)

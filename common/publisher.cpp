@@ -5,17 +5,17 @@ bool Publisher::isValidName(const QString &name) const {
 }
 Publisher::Publisher() : User() {}
 Publisher::Publisher(const QString &username, const QString &plainPassword, const QString &plainAnswer,
-                     const QString &firstName, const QString &lastName, const QString &email,
-                     const QString &publicationName, const QString &publisherLicenseNumber,
-                     const QString &shortDescription)
+    const QString &firstName, const QString &lastName, const QString &email,
+    const QString &publicationName, const QString &publisherLicenseNumber,
+    const QString &shortDescription)
     : User(username, plainPassword, plainAnswer),
     firstName(firstName.trimmed()), lastName(lastName.trimmed()), email(email.trimmed()),
     shortDescription(shortDescription), publicationName(publicationName.trimmed()), publisherLicenseNumber(publisherLicenseNumber.trimmed()) {}
 Publisher::Publisher(int userId, const QString &encryptedUsername, const QString &passwordHash,
-                     const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive,
-                     const QDateTime &registerDate, const QString &firstName, const QString &lastName,
-                     const QString &email, const QString &publicationName,
-                     const QString &publisherLicenseNumber, const QString &shortDescription)
+    const QString &answerHash, bool isBlocked, bool isDeleted, bool isActive,
+    const QDateTime &registerDate, const QString &firstName, const QString &lastName,
+    const QString &email, const QString &publicationName,
+    const QString &publisherLicenseNumber, const QString &shortDescription)
     : User(userId, encryptedUsername, passwordHash, answerHash, isBlocked, isDeleted, isActive, registerDate),
     firstName(firstName), lastName(lastName), email(email),
     shortDescription(shortDescription), publicationName(publicationName), publisherLicenseNumber(publisherLicenseNumber) {}
@@ -96,7 +96,7 @@ QDataStream &operator<<(QDataStream &out, const Publisher &publisher) {
 QDataStream &operator>>(QDataStream &in, Publisher &publisher) {
     publisher.deserializeBase(in);
     in >> publisher.firstName >> publisher.lastName >> publisher.email
-        >> publisher.shortDescription >> publisher.publicationName
-        >> publisher.publisherLicenseNumber >> publisher.publishedBookIds;
+       >> publisher.shortDescription >> publisher.publicationName
+       >> publisher.publisherLicenseNumber >> publisher.publishedBookIds;
     return in;
 }
